@@ -1,14 +1,13 @@
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orders {

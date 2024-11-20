@@ -1,18 +1,15 @@
 package org.example.backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.List;
 
-@Data
 @Entity
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductCostomer {
+public class ProductCustomers {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

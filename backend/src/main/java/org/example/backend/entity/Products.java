@@ -2,15 +2,14 @@ package org.example.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
 @Entity
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Products {
@@ -39,7 +38,7 @@ public class Products {
     private Integer event;
     @JsonIgnore
     @OneToMany(mappedBy = "products", cascade = CascadeType.REMOVE)
-    private List<ProductCostomer> productCostomers;
+    private List<ProductCustomers> productCostomers;
     @JsonIgnore
     @OneToMany(mappedBy = "products", cascade = CascadeType.REMOVE)
     private List<ProductReviews> productReviews;

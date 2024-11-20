@@ -2,9 +2,7 @@ package org.example.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,8 +11,9 @@ import java.util.List;
 /**
  * 스프링 시큐리티 구현시 메인될 유저 클래스는 1개여야해서 이런식으로 구현
  */
-@Data
 @Entity
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Users {
@@ -56,7 +55,7 @@ public class Users {
     }
     @JsonIgnore
     @OneToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
-    private List<ProductCostomer> productCostomers;
+    private List<ProductCustomers> productCostomers;
     @JsonIgnore
     @OneToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
     private List<Carts> carts;
