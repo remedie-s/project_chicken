@@ -1,0 +1,17 @@
+# Node 18 이미지를 기반으로
+FROM node:18
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# package.json과 package-lock.json을 먼저 복사하여 의존성 설치
+COPY package*.json ./
+
+# 의존성 설치
+RUN npm install
+
+# 애플리케이션 소스 파일 복사
+COPY . .
+
+# Next.js 앱 실행
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,112 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.1
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+      timeout: 5s
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.1
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+      timeout: 5s
+    networks:
+      - app-network
+
+  elasticsearch:
+    image: elasticsearch:8.16.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "19200:9200"
+      - "19300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+      timeout: 5s
+    networks:
+      - app-network
+
+  kibana:
+    image: kibana:8.16.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  spring:
+    image: gradle:jdk17-corretto-al2023
+    # Gradle 이미지를 사용
+    container_name: spring
+    build:
+      context: ./backend # Spring Boot 프로젝트 경로
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app # 로컬 소스를 컨테이너 내부에 마운트
+      - ~/.gradle:/root/.gradle # Gradle 캐시 공유
+    working_dir: /app
+    command: sh -c "gradle clean build && gradle bootRun --no-daemon"
+    networks:
+      - app-network
+
+  nextjs:
+    build:
+      context: ./frontend  # Dockerfile이 위치한 경로
+      dockerfile: Dockerfile  # Dockerfile 파일명 (기본적으로 Dockerfile이므로 생략 가능)
+    container_name: nextjs
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app  # 로컬 소스 마운트
+      - /app/node_modules  # node_modules 공유
+    working_dir: /app
+    networks:
+      - app-network
+
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
