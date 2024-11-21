@@ -40,6 +40,10 @@ public class Users {
     private Long totalPurchaseCount;
     // 구매 가격
     private Long totalPurchasePrice;
+    // 비밀번호 찾기 질문
+    private String passwordQuestion;
+    // 비밀번호 찾기 답변
+    private String passwordAnswer;
 
     public Users(String name, String email, String password, String gender, String address, LocalDate birthDate) {
         this.name = name;
