@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: Erp
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: your-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: host.docker.internal:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  datasource:
+    url: jdbc:mysql://database-project.clskqmqggip6.ap-northeast-2.rds.amazonaws.com:3306/project  # 데이터베이스 이름 추가
+    username: admin
+    password: 1q2w3e4r
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update  # 개발 환경에서만 사용
+    properties:
+      hibernate:
+        format_sql: true
