@@ -73,7 +73,7 @@ services:
     networks:
       - app-network
 
-  spring:
+  backend:
     image: gradle:jdk17-corretto-al2023
     # Gradle 이미지를 사용
     container_name: spring
@@ -83,6 +83,20 @@ services:
       - "8080:8080"
     volumes:
       - ./backend:/app # 로컬 소스를 컨테이너 내부에 마운트
+      - ~/.gradle:/root/.gradle # Gradle 캐시 공유
+    working_dir: /app
+    command: sh -c "gradle clean build && gradle bootRun --no-daemon"
+    networks:
+      - app-network
+  erp:
+    image: gradle:jdk17-corretto-al2023
+    container_name: erp
+    build:
+      context: ./Erp # ERP Spring Boot 프로젝트 경로
+    ports:
+      - "8081:8080" # ERP 서버는 8081 포트를 사용
+    volumes:
+      - ./Erp:/app # 로컬 소스를 컨테이너 내부에 마운트
       - ~/.gradle:/root/.gradle # Gradle 캐시 공유
     working_dir: /app
     command: sh -c "gradle clean build && gradle bootRun --no-daemon"
