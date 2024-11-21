@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AnswerService {
+public class AnswersService {
     private final AnswersRepository answersRepository;
     private final QuestionsRepository questionsRepository;
     private final EmployeeRepository employeeRepository;
@@ -26,13 +26,13 @@ public class AnswerService {
 
     //답변 리스트 불러오기기능(상세페이지에서)
 
-    //질문 생성로직(관리자 필요한가?)
+    //TODO 질문 생성로직(관리자 필요한가?) - 질문 생성되면 카프카로 경고 넣을지 정해야함
 
-    //질문 변경로직?
+    //TODO 질문 변경로직? 질문 상태를 엔티티에 추가하고 완료버튼 누르면 작동하는 로직? 구매자 측에서 생성해서 카프카로 메시지
 
     //질문 삭제로직
 
-    //답변 생성로직
+    //TODO 답변 생성로직 답변 생성시 구매자에게 카프카로 메시지
 
     //답변 변경로직
 
