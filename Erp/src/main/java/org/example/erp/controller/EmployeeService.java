@@ -1,17 +1,19 @@
-package org.example.erp.service;
+package org.example.erp.controller;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.erp.repository.AttendanceRepository;
 import org.example.erp.repository.EmployeeRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+@RestController
+@RequestMapping("/api/employee")
 public class EmployeeService {
+
     private final EmployeeRepository employeeRepository;
-    private final AttendanceRepository attendanceRepository;
 
     // 직원 리스트조회
 
@@ -26,8 +28,7 @@ public class EmployeeService {
     // 직원 가입
 
     // 직원 변경
-    
-    // 추가로직
 
+    // 추가로직
 
 }
