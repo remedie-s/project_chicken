@@ -1,6 +1,8 @@
 spring:
   application:
     name: backend
+  elasticsearch:
+    uris: http://localhost:19200
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
