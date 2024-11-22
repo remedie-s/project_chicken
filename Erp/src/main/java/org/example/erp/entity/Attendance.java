@@ -20,6 +20,7 @@ public class Attendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     //출근 시간(초과근무시 같은날 로그인 2번, 근무시간 8시간 오버이면 초과근무로 잡으면 될듯?)
+    //TODO 휴가 엔티티를 하나 더 만들어서 로직으로 하루에 한번 휴가자는 휴가라고 입력되게 하면 되긴할듯 
     private LocalDateTime loginTime;
     //퇴근 시간
     private LocalDateTime logoutTime;
