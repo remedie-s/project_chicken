@@ -1,13 +1,10 @@
-package org.example.erp.dto;
+package org.example.backend.dto;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
-import org.example.erp.entity.*;
+import org.example.backend.entity.Partner;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 물품 관리시 사용하는 DTO
