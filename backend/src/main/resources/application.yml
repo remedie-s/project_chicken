@@ -2,7 +2,7 @@ spring:
   application:
     name: backend
   elasticsearch:
-    uris: ${SPRING_ELASTICSEARCH_URIS:http://localhost:19200}
+    uris: ${SPRING_ELASTICSEARCH_URIS:http://localhost:9200}
     connection-timeout: 10s       # 연결 타임아웃 설정
     socket-timeout: 30s          # 소켓 타임아웃 설정
     repositories:
