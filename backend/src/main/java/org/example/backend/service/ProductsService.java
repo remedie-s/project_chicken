@@ -24,13 +24,13 @@ public class ProductsService {
     private final ProductsRepository productsRepository;
     private final UsersRepository usersRepository;
     //엘라스틱서치용 리포지토리
-    private final ProductsSearchRepository productsSearchRepository;
+
     private final CartsRepository cartsRepository;
     private final OrdersRepository ordersRepository;
     //TODO 생각해봐야함 굳이 넣어야할까
     private final DiscountPolicyRepository discountPolicyRepository;
     private final ProductReviewsRepository productReviewsRepository;
-
+    private final ProductsSearchRepository productsSearchRepository;
     /**
      * 키워드 기반 검색
      */
