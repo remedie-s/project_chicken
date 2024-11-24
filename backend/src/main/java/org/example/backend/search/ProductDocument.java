@@ -29,6 +29,9 @@ public class ProductDocument {
     private String imageUrl;
     @Field(type = FieldType.Long)
     private Long sellCount; // sellCount 필드 추가
+    // 브랜드
+    @Field(type = FieldType.Text)
+    private String brand;
 
     public static ProductDocument fromEntity(Products product) {
         ProductDocument document = new ProductDocument();
@@ -39,6 +42,8 @@ public class ProductDocument {
         document.setCategory(product.getCategory());
         document.setStock(product.getStock());
         document.setImageUrl(product.getImageUrl());
+        document.setSellCount(product.getSellCount());
+        document.setBrand(product.getBrand());
         return document;
     }
 }

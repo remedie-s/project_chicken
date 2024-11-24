@@ -35,4 +35,24 @@ public interface ProductsSearchRepository extends ElasticsearchRepository<Produc
 
     // 페이징 및 정렬이 포함된 검색
     Page<ProductDocument> findByNameContaining(String keyword, Pageable pageable);
+
+    // 추가 메서드
+    List<ProductDocument> findByBrand(String brand);
+    List<ProductDocument> findByBrandAndPriceBetween(String brand, Double minPrice, Double maxPrice);
+    List<ProductDocument> findByBrandAndCategory(String brand, String category);
+    Page<ProductDocument> findByBrandOrderBySellCountDesc(String brand, Pageable pageable);
+    List<ProductDocument> findByBrandAndNameContaining(String brand, String keyword);
+    @Query("""
+       {
+           "bool": {
+               "must": [
+                   {"term": {"brand": "?0"}},
+                   {"term": {"category": "?1"}},
+                   {"range": {"price": {"gte": ?2, "lte": ?3}}}
+               ]
+           }
+       }
+    """)
+    List<ProductDocument> findByBrandCategoryAndPriceRange(String brand, String category, Double minPrice, Double maxPrice);
+    List<ProductDocument> findByBrandIn(List<String> brands);
 }
