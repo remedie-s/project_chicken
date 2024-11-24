@@ -26,5 +26,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+jwt:
+  secret: 51C691E0E1CE78DBC31D0115202A9B93C0174A8A40B7F26F481402628D559CD1
+  expiration: 3600000 # 1 hour in milliseconds (ex. 3600000ms = 1 hour)
 server:
   port: 8081

@@ -105,6 +105,53 @@ public class ProductsService {
         return productsSearchRepository.findByNameContaining(keyword, pageable);
     }
 
+    // 브랜드 기반 검색
+    public List<ProductDocument> searchProductsByBrand(String brand) {
+        return productsSearchRepository.findByBrand(brand);
+    }
+
+    // 브랜드와 가격 범위 검색
+    public List<ProductDocument> searchProductsByBrandAndPriceRange(String brand, Double minPrice, Double maxPrice) {
+        return productsSearchRepository.findByBrandAndPriceBetween(brand, minPrice, maxPrice);
+    }
+
+    // 브랜드와 카테고리 검색
+    public List<ProductDocument> searchProductsByBrandAndCategory(String brand, String category) {
+        return productsSearchRepository.findByBrandAndCategory(brand, category);
+    }
+
+    // 판매량 기준 상위 브랜드 검색
+    public Page<ProductDocument> getTopSellingProductsByBrand(String brand, Pageable pageable) {
+        return productsSearchRepository.findByBrandOrderBySellCountDesc(brand, pageable);
+    }
+
+    // 브랜드와 키워드 검색
+    public List<ProductDocument> searchProductsByBrandAndKeyword(String brand, String keyword) {
+        return productsSearchRepository.findByBrandAndNameContaining(brand, keyword);
+    }
+
+    // 브랜드 목록 기반 검색
+    public List<ProductDocument> searchProductsByBrands(List<String> brands) {
+        return productsSearchRepository.findByBrandIn(brands);
+    }
+
+    // Elasticsearch에서 상품 추가
+    public void registerProductToElasticsearch(Products products) {
+        ProductDocument productDocument = ProductDocument.fromEntity(products);
+        productsSearchRepository.save(productDocument);
+    }
+
+    // Elasticsearch에서 상품 업데이트
+    public void updateProductInElasticsearch(Products products) {
+        ProductDocument productDocument = ProductDocument.fromEntity(products);
+        productsSearchRepository.save(productDocument);
+    }
+
+    // Elasticsearch에서 상품 삭제
+    public void deleteProductFromElasticsearch(Products products) {
+        productsSearchRepository.deleteById(products.getId());
+    }
+
     @KafkaListener(topics = "product-changes", groupId = "shopping-mall")
     public void listenProductChanges(String message) {
         try {
@@ -130,21 +177,6 @@ public class ProductsService {
         } catch (JsonProcessingException e) {
             log.error("Failed to parse Kafka message: {}", message, e);
         }
-    }
-    public void registerProductToElasticsearch(Products products) {
-        ProductDocument productDocument = fromEntity(products);
-        productsSearchRepository.save(productDocument);
-    }
-
-    // Elasticsearch에서 물품 업데이트
-    public void updateProductInElasticsearch(Products products) {
-        ProductDocument productDocument = fromEntity(products);
-        productsSearchRepository.save(productDocument);
-    }
-
-    // Elasticsearch에서 물품 삭제
-    public void deleteProductFromElasticsearch(Products products) {
-        productsSearchRepository.deleteById(products.getId());
     }
 
     // 물품 구매로직(즉시)
