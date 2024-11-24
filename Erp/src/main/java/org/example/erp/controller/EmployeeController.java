@@ -26,8 +26,6 @@ public class EmployeeController {
 
     // 직원 상세페이지(임원, 인사과)
 
-    // 직원 가입
-
     // 직원 변경
 
     // 추가로직
