@@ -1,42 +1,42 @@
-name: Deploy to Server
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Debug HOME directory
-      run: echo $HOME
-
-    - name: SSH 접속
-      uses: appleboy/ssh-action@v1.1.0
-      with:
-        host: 192.168.0.8
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script_stop: true
-        script: |
-          sudo mkdir -p ~/.ssh
-          sudo echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          sudo chmod 600 ~/.ssh/id_rsa
-          sudo ssh-keyscan -H 192.168.0.8 >> ~/.ssh/known_hosts
-
-    - name: Verify git status
-      run: |
-        git status # Git 상태 확인
-
-    - name: Deploy to server
-      run: |
-        ssh -i ~/.ssh/id_rsa user@192.168.0.8 << 'EOF'
-            cd /mnt/d/project/project_chicken || exit 1  # Windows 경로 수정
-            git pull origin master || exit 1  # git 상태 확인 후 pull
-            docker-compose down || true  # 기존 컨테이너 중지
-            docker-compose up -d --build || exit 1  # 컨테이너 재시작
-          EOF
+#name: Deploy to Server
+#
+#on:
+#  push:
+#    branches:
+#      - master
+#
+#jobs:
+#  deploy:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - name: Checkout code
+#      uses: actions/checkout@v4
+#
+#    - name: Debug HOME directory
+#      run: echo $HOME
+#
+#    - name: SSH 접속
+#      uses: appleboy/ssh-action@v1.1.0
+#      with:
+#        host: 192.168.0.8
+#        key: ${{ secrets.SSH_PRIVATE_KEY }}
+#        script_stop: true
+#        script: |
+#          sudo mkdir -p ~/.ssh
+#          sudo echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#          sudo chmod 600 ~/.ssh/id_rsa
+#          sudo ssh-keyscan -H 192.168.0.8 >> ~/.ssh/known_hosts
+#
+#    - name: Verify git status
+#      run: |
+#        git status # Git 상태 확인
+#
+#    - name: Deploy to server
+#      run: |
+#        ssh -i ~/.ssh/id_rsa user@192.168.0.8 << 'EOF'
+#            cd /mnt/d/project/project_chicken || exit 1  # Windows 경로 수정
+#            git pull origin master || exit 1  # git 상태 확인 후 pull
+#            docker-compose down || true  # 기존 컨테이너 중지
+#            docker-compose up -d --build || exit 1  # 컨테이너 재시작
+#          EOF
