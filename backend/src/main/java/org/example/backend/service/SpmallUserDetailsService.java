@@ -17,7 +17,7 @@ public class SpmallUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users users = usersRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Employee not found with email: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
         return User.builder()
                 .username(users.getEmail())
