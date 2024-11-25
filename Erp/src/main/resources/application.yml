@@ -3,16 +3,19 @@ spring:
     name: Erp
   kafka:
     consumer:
-      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소로 변경
+      #bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      bootstrap-servers: localhost:9092  # Kafka 서버 주소
       group-id: your-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
-      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소로 변경
+      #bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      bootstrap-servers: localhost:9092  # Kafka 서버 주소
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   datasource:
-    url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소로 변경
+    #url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소
+    url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소
     username: root
     password: 1q2w3e4r
     driver-class-name: com.mysql.cj.jdbc.Driver
