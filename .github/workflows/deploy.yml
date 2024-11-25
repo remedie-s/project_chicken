@@ -1,0 +1,30 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/ver2
+        chmod 600 ~/.ssh/ver2
+        ssh-keyscan -H 192.168.0.8 >> ~/.ssh/known_hosts
+
+    - name: Deploy to server
+      run: |
+        ssh -i ~/.ssh/ver2 user@192.168.0.8 << 'EOF'
+            cd /d/project/project_chicken || exit 1
+            git pull origin master || exit 1
+            docker-compose down || true
+            docker-compose up -d --build || exit 1
+          EOF
