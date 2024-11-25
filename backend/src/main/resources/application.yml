@@ -2,23 +2,23 @@ spring:
   application:
     name: backend
   elasticsearch:
-    uris: ${SPRING_ELASTICSEARCH_URIS:http://localhost:9200}
+    uris: http://192.168.0.8:9200  # Elasticsearch 서버 주소
     connection-timeout: 10s       # 연결 타임아웃 설정
     socket-timeout: 30s          # 소켓 타임아웃 설정
     repositories:
       enabled: true
   kafka:
     consumer:
-      bootstrap-servers: host.docker.internal:9092
+      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
       group-id: your-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
-      bootstrap-servers: host.docker.internal:9092
+      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   datasource:
-    url: jdbc:mysql://localhost:3306/project_db  # 데이터베이스 이름 추가
+    url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소
     username: root
     password: 1q2w3e4r
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -32,3 +32,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+server:
+  address: 0.0.0.0  # 모든 네트워크 인터페이스에서 접근 가능
+  port: 8080        # 애플리케이션 포트
