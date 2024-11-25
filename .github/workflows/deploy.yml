@@ -13,9 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Debug HOME directory
+      run: echo $HOME
+
     - name: Set up SSH
       run: |
-        mkdir -p ~/.ssh
+        sudo mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 192.168.0.8 >> ~/.ssh/known_hosts
