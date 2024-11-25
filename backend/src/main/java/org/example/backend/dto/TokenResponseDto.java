@@ -1,4 +1,4 @@
-package org.example.erp.dto;
+package org.example.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,4 +12,6 @@ public class TokenResponseDto {
     private String token;
     private String email;
     private String name;
+
+
 }
