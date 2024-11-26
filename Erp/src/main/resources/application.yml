@@ -3,17 +3,20 @@ spring:
     name: Erp
   kafka:
     consumer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       group-id: your-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
-      bootstrap-servers: host.docker.internal:9092
+      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   datasource:
-    url: jdbc:mysql://database-project.clskqmqggip6.ap-northeast-2.rds.amazonaws.com:3306/project  # 데이터베이스 이름 추가
-    username: admin
+    url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소
+    #url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소
+    username: root
     password: 1q2w3e4r
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
@@ -26,3 +29,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+jwt:
+  secret: 51C691E0E1CE78DBC31D0115202A9B93C0174A8A40B7F26F481402628D559CD1
+  expiration: 3_600_000  # 1시간 (밀리초 단위)
+  expiration1: 1_209_600_000 # 2주
+
+
+server:
+  address: 0.0.0.0  # 외부에서 접속할 수 있도록 설정
+  port: 8081        # 애플리케이션 포트 변경
