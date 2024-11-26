@@ -2,27 +2,27 @@ spring:
   application:
     name: backend
   elasticsearch:
-    #uris: http://192.168.0.8:9200  # Elasticsearch 서버 주소
-    uris: http://localhost:9200  # Elasticsearch 서버 주소
+    uris: http://192.168.0.8:9200  # Elasticsearch 서버 주소
+    #uris: http://localhost:9200  # Elasticsearch 서버 주소
     connection-timeout: 10s       # 연결 타임아웃 설정
     socket-timeout: 30s          # 소켓 타임아웃 설정
     repositories:
       enabled: true
   kafka:
     consumer:
-      #bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
-      bootstrap-servers: localhost:9092  # Kafka 서버 주소
+      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       group-id: your-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
-      #bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
-      bootstrap-servers: localhost:9092  # Kafka 서버 주소
+      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   datasource:
-    #url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소
-    url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소
+    url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소
+    #url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소
     username: root
     password: 1q2w3e4r
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -39,6 +39,7 @@ spring:
 jwt:
   secret: 51C691E0E1CE78DBC31D0115202A9B93C0174A8A40B7F26F481402628D559CD1
   expiration: 3600000  # 1시간 (밀리초 단위)
+  expiration1: 1_209_600_000 # 2주
 
 server:
   address: 0.0.0.0  # 모든 네트워크 인터페이스에서 접근 가능
