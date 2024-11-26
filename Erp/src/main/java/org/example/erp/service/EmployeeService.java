@@ -168,11 +168,16 @@ public class EmployeeService {
         return null;
     }
 
+    public void saveRefreshToken(String email, String refreshToken) {
+        Employee employee=findByEmail(email);
+        if(employee!=null){
+            employee.setRefreshToken(refreshToken);
+            employeeRepository.save(employee);
+        }
+
+    }
 
 
-
-
-    
     // 추가로직
 
 
