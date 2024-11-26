@@ -41,6 +41,8 @@ public class Users {
     private Long totalPurchaseCount;
     // 구매 가격
     private Long totalPurchasePrice;
+    @Column(name="refresh_token")
+    private String refreshToken;
     @JsonIgnore
     @OneToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
     private List<ProductCustomers> productCostomers;

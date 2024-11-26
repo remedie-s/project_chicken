@@ -40,19 +40,42 @@ public class AuthController {
         // 이메일로 사용자 조회
         Users login = usersService.findByEmail(usersDto.getEmail());
         if (login == null) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("User not found.", null, null, null));
+            return ResponseEntity.badRequest().body(new TokenResponseDto("User not found.", null, null, null, null));
         }
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(usersDto.getPassword(), login.getPassword())) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid email or password.", null, null, null));
+            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid email or password.", null, null, null, null));
         }
 
         // 토큰 생성
-        String token = jwtUtil.generateToken(login.getEmail());
+        String accessToken  = jwtUtil.generateToken(login.getEmail());
+        String refreshToken = jwtUtil.generateRefreshToken(login.getEmail());
+
+        // 리프레시 토큰 저장
+        usersService.saveRefreshToken(login.getEmail(), refreshToken);
 
         // 성공적으로 로그인한 사용자 정보와 토큰 반환
-        return ResponseEntity.ok(new TokenResponseDto("Login successful", token, login.getEmail(), login.getName()));
+        return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName()));
     }
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponseDto> refresh(@RequestBody String refreshToken) {
+        // 리프레시 토큰 검증
+        if (!jwtUtil.validateRefreshToken(refreshToken)) {
+            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null));
+        }
+
+        // 토큰에서 사용자 정보 추출
+        String username = jwtUtil.extractUsername(refreshToken);
+        if (username == null || usersService.findByEmail(username) == null) {
+            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null));
+        }
+
+        // 새로운 액세스 토큰 발급
+        String newAccessToken = jwtUtil.generateToken(username);
+
+        return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, username,this.usersService.findByEmail(username).getName()));
+    }
+
 
 }
