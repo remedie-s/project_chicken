@@ -15,5 +15,7 @@ public class CartsDto {
     private Long quantity;
     private Users users;
     private Products products;
+    private Long userId;
+    private Long productId;
 
 }

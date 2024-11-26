@@ -14,4 +14,6 @@ public class KafkaProductMessage {
     private String category;
     private String imageUrl;
     private Long stock;
+    private String brand;
+    private Long cost;
 }
