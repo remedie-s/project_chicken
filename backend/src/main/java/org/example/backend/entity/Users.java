@@ -30,6 +30,8 @@ public class Users {
     private LocalDateTime createdAt;
     // 성별(남/여)
     private String gender;
+    // 핸드폰 번호
+    private String phoneNumber;
     // 주소
     private String address;
     // 태어난 날 (나이를 받으려고했으나, 시간이 지남에따라 자동 계산해야하므로 변경)
@@ -44,14 +46,19 @@ public class Users {
     private String passwordQuestion;
     // 비밀번호 찾기 답변
     private String passwordAnswer;
+    @Column(name="refresh_token")
+    private String refreshToken;
 
-    public Users(String name, String email, String password, String gender, String address, LocalDate birthDate) {
+    public Users(String name, String email, String password, String gender, String address, LocalDate birthDate,String passwordQuestion, String passwordAnswer, String phoneNumber) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.createdAt = LocalDateTime.now();
         this.gender = gender;
         this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.passwordQuestion = passwordQuestion;
+        this.passwordAnswer = passwordAnswer;
         this.birthDate = birthDate;
         this.userGrade = 0;
         this.totalPurchaseCount = 0L;

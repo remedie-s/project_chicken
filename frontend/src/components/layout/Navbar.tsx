@@ -27,21 +27,21 @@ export default function Navbar() {
 
     return (
         <>
-            <AppBar position="static" sx={{width: "100%", backgroundColor: '#000000'}}>
-                <Toolbar sx={{backgroundColor: '#000000', padding: 0, margin: 0, flexDirection: 'row', alignItems: 'center' }}>
+            <AppBar position="static" sx={{ height: 60, width: "100%", backgroundColor: '#000000', display: "flex"}}>
+                <Toolbar sx={{height: 60, backgroundColor: '#000000', padding: 0, margin: 0, alignItems: 'center' }}>
                     <Box
                         id="categoryMenu"
-                        sx={{height: "100%", backgroundColor: "#FFDF00", color: "#000000", display: 'flex', alignItems: 'center',
+                        sx={{height: 60, backgroundColor: "#FFDF00", color: "#000000", display: 'flex', alignItems: 'center',
                             justifyContent: 'center'}}
                         onClick={menuOpen}>
                         <MenuIcon/>
                         전체 카테고리
                     </Box>
-                    <Button color="inherit">홈</Button>
-                    <Button color="inherit">신상품</Button>
-                    <Button color="inherit">이벤트 상품</Button>
-                    <Button color="inherit">공지사항</Button>
-                    <Button color="inherit">고객센터</Button>
+                    <Button color="inherit" onClick={() => router.push("/")}>홈</Button>
+                    <Button color="inherit" onClick={() => router.push("/")}>신상품</Button>
+                    <Button color="inherit" onClick={() => router.push("/")}>이벤트 상품</Button>
+                    <Button color="inherit" onClick={() => router.push("/")}>공지사항</Button>
+                    <Button color="inherit" onClick={() => router.push("/")}>고객센터</Button>
                 </Toolbar>
             </AppBar>
             <Menu

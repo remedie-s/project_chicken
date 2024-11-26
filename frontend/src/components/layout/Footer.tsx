@@ -4,11 +4,7 @@ import {Box} from "@mui/material";
 
 export default function Footer() {
     return (
-        <footer style={{
-            margin: 0,
-            padding: 0
-
-        }}>
+        <footer style={{margin: 0,padding: 0}}>
             <Box sx={{
                 backgroundColor: "#FFDF00",
                 display: "flex",

@@ -39,8 +39,12 @@ export default function Header(){
                     sx={{ height: "70px", width: "auto", objectFit: "contain", marginRight: 2, }}
                     onClick={goHome}/>
                 <TextField variant="outlined" size="small" placeholder="상품 검색" sx={{ flexGrow: 1, marginRight: 2 }} />
-                <Button sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 1 }}>로그인</Button>
-                <Button sx={{ backgroundColor: "#000000", color: "#FFFFFF" }}>회원가입</Button>
+                <Button
+                    sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 1 }}
+                onClick={()=>{router.push("/user/login")}}>로그인</Button>
+                <Button
+                    sx={{ backgroundColor: "#000000", color: "#FFFFFF" }}
+                    onClick={()=>{router.push("/user/register")}}>회원가입</Button>
             </Box>
         </Box>
     );

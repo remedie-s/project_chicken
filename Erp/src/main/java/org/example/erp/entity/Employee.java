@@ -55,6 +55,8 @@ public class Employee {
     private Integer rating;
     // 근퇴 여부 테이블과 연결
     // 근태와의 관계 (1:N)
+    @Column(name="refresh_token")
+    private String refreshToken;
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
     private List<Attendance> attendances;
