@@ -38,6 +38,8 @@ public class Products {
     private Integer event;
     // 브랜드
     private String brand;
+    // 원가
+    private Long cost;
     @JsonIgnore
     @OneToMany(mappedBy = "products", cascade = CascadeType.REMOVE)
     private List<ProductCustomers> productCostomers;

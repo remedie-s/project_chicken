@@ -42,6 +42,8 @@ public class Products {
     private String brand;
     // 이벤트 번호(로직 시 이벤트 번호에 따라 이벤트 작동여부? 이벤트 테이블 생성? 추후 고려해야함)
     private Integer event;
+    // 원가
+    private Long cost;
     @JsonIgnore
     @OneToMany(mappedBy = "products", cascade = CascadeType.REMOVE)
     private List<ProductCustomers> productCostomers;

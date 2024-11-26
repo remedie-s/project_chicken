@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.example.backend.entity.Products;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class KafkaProductMessage {
@@ -14,7 +16,14 @@ public class KafkaProductMessage {
     private Long price;
     private String category;
     private String imageUrl;
+    private String brand;
+    private Long cost;
     private Long stock;
+    private Long discount;
+    private Long payPrice;
+    private String address;
+    private Long userId;
+    private LocalDateTime createdAt;
     public Products toEntity() {
         Products product = new Products();
         product.setId(this.id);
@@ -24,6 +33,8 @@ public class KafkaProductMessage {
         product.setCategory(this.category);
         product.setImageUrl(this.imageUrl);
         product.setStock(this.stock);
+        product.setBrand(this.brand);
+        product.setCost(this.cost);
         return product;
     }
 }
