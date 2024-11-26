@@ -2,6 +2,7 @@ package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.example.backend.dto.UsersDto;
 import org.example.backend.entity.Users;
 import org.example.backend.repository.UsersRepository;
@@ -47,6 +48,7 @@ public class UsersService {
         users.setGender(usersDto.getGender());
         users.setBirthDate(usersDto.getBirthDate());
         users.setUserGrade(0);
+        users.setPhoneNumber(usersDto.getPhoneNumber());
         users.setTotalPurchaseCount(0L);
         // 구매 가격
         users.setTotalPurchasePrice(0L);
@@ -73,6 +75,7 @@ public class UsersService {
             users.setBirthDate(usersDto.getBirthDate());
             users.setUserGrade(0);
             users.setTotalPurchaseCount(0L);
+            users.setPhoneNumber(usersDto.getPhoneNumber());
             // 구매 가격
             users.setTotalPurchasePrice(0L);
             // 비밀번호 찾기 질문
@@ -84,6 +87,14 @@ public class UsersService {
         }
         else {
             log.info("Users not found");
+        }
+    }
+
+    public void saveRefreshToken(String email, String refreshToken) {
+        Users users = findByEmail(email);
+        if (users != null) {
+            users.setRefreshToken(refreshToken);
+            this.usersRepository.save(users);
         }
     }
 
