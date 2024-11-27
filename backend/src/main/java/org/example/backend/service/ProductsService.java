@@ -37,6 +37,18 @@ public class ProductsService {
     private final ProductsSearchRepository productsSearchRepository;
     private final KafkaMessage kafkaMessage;
 
+    // 물품 전체 목록
+    public List<Products> allList(){
+        return productsRepository.findAll();
+    }
+    // 물품 상세 페이지
+    public ProductsDto productsDetail(Long productId) {
+        Optional<Products> byId = this.productsRepository.findById(productId);
+        if(byId.isPresent()){
+            return ProductsDto.productsEntityToDto( byId.get());
+        }
+        return null;
+    }
 
     /**
      * 키워드 기반 검색
@@ -213,6 +225,7 @@ public class ProductsService {
         order.setDiscount(ordersDto.getDiscount());
         order.setPayPrice(ordersDto.getPayPrice()); // 할인 적용
         order.setCreatedAt(LocalDateTime.now());
+        order.setStatus("주문 접수");
         order.setAvailable(false);
         order.setAddress(ordersDto.getAddress());
         ordersRepository.save(order);
@@ -233,6 +246,7 @@ public class ProductsService {
     }
 
     // 물품 구매 로직(장바구니로 이동) - 유저는 프린시팔에서 가져옴
+    // TODO (엘라스틱 서치 색인도 변경 필요)
     public boolean moveToCart(CartsDto cartsDto, Users users) {
         // 1. 상품 조회
         Optional<Products> productOpt = productsRepository.findById(cartsDto.getProductId());
@@ -271,8 +285,8 @@ public class ProductsService {
 
 
     //물품 리뷰 리스트 (물품 상세페이지)
-    public List<ProductReviews> reviewsList(ProductsDto productsDto) {
-        List<ProductReviews> byProductsId = this.productReviewsRepository.findByProducts_id(productsDto.getId());
+    public List<ProductReviews> reviewsList(Long productId) {
+        List<ProductReviews> byProductsId = this.productReviewsRepository.findByProducts_id(productId);
         if(byProductsId.isEmpty()) {
             byProductsId.add(new ProductReviews());
         }
@@ -280,7 +294,7 @@ public class ProductsService {
     }
 
     //물품 리뷰 작성 로직
-    public boolean createReview(ProductReviewsDto productReviewsDto) {
+    public boolean createReview(ProductReviewsDto productReviewsDto,Users users) {
         Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
         if (byId.isEmpty()) {
             log.warn("Product with ID {} not found", productReviewsDto.getProductId());
@@ -289,24 +303,28 @@ public class ProductsService {
         Products product = byId.get();
         ProductReviews review = new ProductReviews();
         review.setProducts(product);
-        review.setUsers(productReviewsDto.getUsers());
+        review.setUsers(users);
         review.setCreatedAt(LocalDateTime.now());
         review.setContent(productReviewsDto.getContent());
         review.setRating(productReviewsDto.getRating());
         this.productReviewsRepository.save(review);
         log.info("{}번 물품에 대한 리뷰가 등록되었습니다.", productReviewsDto.getProductId());
+        // 리뷰 평점이 3.0 보다 낮으면 메시지 발송
+        if(review.getRating()<=3.0){
+            this.kafkaMessage.sendKafkaProductReviewMsg(review, "review");
+        }
         return true;
     }
 
     //물품 리뷰 변경 로직
-    public boolean modifyReview(ProductReviewsDto productReviewsDto) {
+    public boolean modifyReview(ProductReviewsDto productReviewsDto,Long reviewId) {
         Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
         if (byId.isEmpty()) {
             log.warn("Product with ID {} not found", productReviewsDto.getProductId());
             return false;
         }
         Products product = byId.get();
-        Optional<ProductReviews> review = this.productReviewsRepository.findById(productReviewsDto.getId());
+        Optional<ProductReviews> review = this.productReviewsRepository.findById(reviewId);
         if (review.isEmpty()) {
             log.warn("Product with ID {} not found", productReviewsDto.getProductId());
             return false;
@@ -314,21 +332,25 @@ public class ProductsService {
         ProductReviews reviews = review.get();
         reviews.setRating(productReviewsDto.getRating());
         reviews.setContent(productReviewsDto.getContent());
-        log.info("{}번 물품에 대한 리뷰가 수정되었습니다.", productReviewsDto.getProductId());
+        log.info("{}번 물품에 대한 리뷰가 수정되었습니다.", reviewId);
         this.productReviewsRepository.save(reviews);
+        // 리뷰 평점이 3.0 보다 낮으면 메시지 발송
+        if(reviews.getRating()<=3.0){
+            this.kafkaMessage.sendKafkaProductReviewMsg(reviews, "review");
+        }
         return true;
     }
 
     //물품 리뷰 삭제 로직
-    public boolean deleteReview(ProductReviewsDto productReviewsDto) {
+    public boolean deleteReview(ProductReviewsDto productReviewsDto,Long reviewId) {
         Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
         if (byId.isEmpty()) {
             log.warn("Product with ID {} not found", productReviewsDto.getProductId());
             return false;
         }
-        Optional<ProductReviews> review = this.productReviewsRepository.findById(productReviewsDto.getId());
+        Optional<ProductReviews> review = this.productReviewsRepository.findById(reviewId);
         if (review.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getId());
+            log.warn("Product with ID {} not found",reviewId);
             return false;
         }
         this.productReviewsRepository.delete(review.get());

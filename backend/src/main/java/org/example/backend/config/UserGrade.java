@@ -1,4 +1,5 @@
 package org.example.backend.config;
 
-public class UserGrade {
+public enum UserGrade {
+    SILVER, GOLD, PLATE, DIAMOND, VIP
 }
