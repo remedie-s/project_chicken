@@ -27,4 +27,11 @@ public class CartsDto {
         cartsDto.setProducts(carts.getProducts());
         return cartsDto;
     }
+
+    public CartsDto(Long id, Long quantity, Long userId, Long productId) {
+        this.id = id;
+        this.quantity = quantity;
+        this.userId = userId;
+        this.productId = productId;
+    }
 }
