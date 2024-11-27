@@ -4,7 +4,10 @@ package org.example.backend.utility;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.example.backend.entity.Users;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -100,6 +103,14 @@ public class JwtUtil {
             log.error("Failed to extract username: {}", e.getMessage());
             return null;
         }
+    }
+    public void authenticateUser(Users users) {
+        // Authentication 객체 생성
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(users, null, users.getAuthorities());
+
+        // SecurityContext에 설정
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
 }

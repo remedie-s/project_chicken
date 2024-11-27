@@ -16,7 +16,9 @@ import org.example.backend.service.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -29,6 +31,7 @@ import java.util.Map;
 @RequestMapping("/api/products")
 public class ProductsController {
     private final ProductsService productsService;
+    private final UsersService usersService;
     
     //TODO Discount 할인 정책 적용시 어디서, 어떻게 적용할것인지
     
@@ -50,12 +53,29 @@ public class ProductsController {
 
     // 물품 카트 등록
     @PostMapping("/cart")
-    public ResponseEntity<?> productToCart(@RequestBody @Valid CartsDto cartsDto,
-                                           @AuthenticationPrincipal Users users) {
-        if(cartsDto.getUserId()!=users.getId()){
-            log.error("로그인한 유저와 요청 유저가 다릅니다.");
-            return ResponseEntity.status(500).body("로그인한 유저와 요청 유저가 다릅니다.");
+    public ResponseEntity<?> productToCart(@RequestBody @Valid CartsDto cartsDto
+                                           ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증 정보가 null이거나 사용자 정보가 없는 경우
+        if (authentication == null || authentication.getPrincipal() == null) {
+            log.error("No authentication found or user is not logged in.");
+            throw new RuntimeException("User not logged in");
         }
+
+        String username = authentication.getName(); // 인증된 사용자의 이메일 또는 사용자명
+
+        // username을 기반으로 Users 객체를 DB에서 조회
+        Users users = this.usersService.findByEmail(username);
+
+        if (users == null) {
+            log.error("User not found: {}", username);
+            throw new RuntimeException("User not found");
+        }
+
+        // user가 null이 아니면 이후 로직 수행
+        log.info("User found: {}", users.getId());
+
         Map<String, Object> responseBody = new HashMap<>();
         if(this.productsService.moveToCart(cartsDto, users)){
             responseBody.put("success", true);

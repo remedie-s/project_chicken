@@ -8,6 +8,9 @@ import org.example.backend.entity.Users;
 import org.example.backend.service.UsersService;
 import org.example.backend.utility.JwtUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,6 +57,19 @@ public class AuthController {
 
         // 리프레시 토큰 저장
         usersService.saveRefreshToken(login.getEmail(), refreshToken);
+        // 로그인 후 SecurityContextHolder에 인증 정보 저장
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                login.getEmail(), null, login.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // SecurityContextHolder에 담긴 인증 정보 로그 출력
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            log.info("Authentication: {}", auth);
+            log.info("Authenticated User: {}", auth.getName()); // 로그인한 사용자 이름
+        } else {
+            log.warn("No Authentication found.");
+        }
 
         // 성공적으로 로그인한 사용자 정보와 토큰 반환
         return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName()));
