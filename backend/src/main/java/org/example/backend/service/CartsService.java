@@ -33,8 +33,8 @@ public class CartsService {
 
     // 카트 리스트 보기 메소드
     public List<CartsDto> getCarts(Users users) {
-        if(!this.cartsRepository.findByUser(users).isEmpty()){
-        List<Carts> byUser = this.cartsRepository.findByUser(users);
+        if(!this.cartsRepository.findByUsers(users).isEmpty()){
+        List<Carts> byUser = this.cartsRepository.findByUsers(users);
         List<CartsDto> cartsDtos = new ArrayList<>();
         for (Carts carts : byUser) {
             cartsDtos.add(cartsToDto(carts));
