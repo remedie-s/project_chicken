@@ -25,6 +25,7 @@ public class CartsController {
     // 카트 리스트 보기
     @GetMapping("/list")
     public ResponseEntity<?> cartList(@AuthenticationPrincipal Users users){
+        log.info("{}의 카트 리스트 요청입니다",users);
         List<CartsDto> carts = this.cartsService.getCarts(users);
         return ResponseEntity.ok(carts);
     }
