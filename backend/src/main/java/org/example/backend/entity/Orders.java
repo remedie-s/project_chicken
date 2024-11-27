@@ -2,6 +2,7 @@ package org.example.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.backend.dto.OrdersDto;
 
 import java.time.LocalDateTime;
 
@@ -31,10 +32,29 @@ public class Orders {
     private Long invoice;
     // 배송지
     private String address;
-
+    // 주문 상태
+    private String status;
     @ManyToOne
     private Users users;
     @ManyToOne
     private Products products;
+
+    // 엔티티 -> DTO 변환 메소드
+    public OrdersDto toDto() {
+        return new OrdersDto(
+                id,
+                quantity,
+                price,
+                discount,
+                payPrice,
+                createdAt,
+                available,
+                invoice,
+                address,
+                status,
+                users,
+                products
+        );
+    }
 
 }
