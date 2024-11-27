@@ -2,14 +2,8 @@ package org.example.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.backend.dto.CartsDto;
-import org.example.backend.dto.KafkaProductMessage;
-import org.example.backend.dto.OrdersDto;
-import org.example.backend.dto.ProductsDto;
-import org.example.backend.entity.Carts;
-import org.example.backend.entity.Orders;
-import org.example.backend.entity.Products;
-import org.example.backend.entity.Users;
+import org.example.backend.dto.*;
+import org.example.backend.entity.*;
 import org.example.backend.repository.*;
 import org.example.backend.utility.KafkaMessage;
 import org.springframework.data.domain.Page;
@@ -34,14 +28,12 @@ import static org.example.backend.search.ProductDocument.fromEntity;
 @Slf4j
 public class ProductsService {
     private final ProductsRepository productsRepository;
-    private final UsersRepository usersRepository;
-    //엘라스틱서치용 리포지토리
-
     private final CartsRepository cartsRepository;
     private final OrdersRepository ordersRepository;
     //TODO 생각해봐야함 굳이 넣어야할까
     private final DiscountPolicyRepository discountPolicyRepository;
     private final ProductReviewsRepository productReviewsRepository;
+    //엘라스틱서치용 리포지토리
     private final ProductsSearchRepository productsSearchRepository;
     private final KafkaMessage kafkaMessage;
 
@@ -278,13 +270,70 @@ public class ProductsService {
 
 
 
-    //TODO 물품 리뷰 리스트 (물품 상세페이지)
+    //물품 리뷰 리스트 (물품 상세페이지)
+    public List<ProductReviews> reviewsList(ProductsDto productsDto) {
+        List<ProductReviews> byProductsId = this.productReviewsRepository.findByProducts_id(productsDto.getId());
+        if(byProductsId.isEmpty()) {
+            byProductsId.add(new ProductReviews());
+        }
+        return byProductsId;
+    }
 
-    //TODO 물품 리뷰 작성 로직
+    //물품 리뷰 작성 로직
+    public boolean createReview(ProductReviewsDto productReviewsDto) {
+        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
+        if (byId.isEmpty()) {
+            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
+            return false;
+        }
+        Products product = byId.get();
+        ProductReviews review = new ProductReviews();
+        review.setProducts(product);
+        review.setUsers(productReviewsDto.getUsers());
+        review.setCreatedAt(LocalDateTime.now());
+        review.setContent(productReviewsDto.getContent());
+        review.setRating(productReviewsDto.getRating());
+        this.productReviewsRepository.save(review);
+        log.info("{}번 물품에 대한 리뷰가 등록되었습니다.", productReviewsDto.getProductId());
+        return true;
+    }
 
-    //TODO 물품 리뷰 변경 로직
+    //물품 리뷰 변경 로직
+    public boolean modifyReview(ProductReviewsDto productReviewsDto) {
+        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
+        if (byId.isEmpty()) {
+            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
+            return false;
+        }
+        Products product = byId.get();
+        Optional<ProductReviews> review = this.productReviewsRepository.findById(productReviewsDto.getId());
+        if (review.isEmpty()) {
+            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
+            return false;
+        }
+        ProductReviews reviews = review.get();
+        reviews.setRating(productReviewsDto.getRating());
+        reviews.setContent(productReviewsDto.getContent());
+        log.info("{}번 물품에 대한 리뷰가 수정되었습니다.", productReviewsDto.getProductId());
+        this.productReviewsRepository.save(reviews);
+        return true;
+    }
 
-    //TODO 물품 리뷰 삭제 로직
+    //물품 리뷰 삭제 로직
+    public boolean deleteReview(ProductReviewsDto productReviewsDto) {
+        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
+        if (byId.isEmpty()) {
+            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
+            return false;
+        }
+        Optional<ProductReviews> review = this.productReviewsRepository.findById(productReviewsDto.getId());
+        if (review.isEmpty()) {
+            log.warn("Product with ID {} not found", productReviewsDto.getId());
+            return false;
+        }
+        this.productReviewsRepository.delete(review.get());
+        return true;
+    }
 
 
 
