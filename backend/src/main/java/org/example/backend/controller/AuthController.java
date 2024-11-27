@@ -58,18 +58,7 @@ public class AuthController {
         // 리프레시 토큰 저장
         usersService.saveRefreshToken(login.getEmail(), refreshToken);
         // 로그인 후 SecurityContextHolder에 인증 정보 저장
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                login.getEmail(), null, login.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // SecurityContextHolder에 담긴 인증 정보 로그 출력
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            log.info("Authentication: {}", auth);
-            log.info("Authenticated User: {}", auth.getName()); // 로그인한 사용자 이름
-        } else {
-            log.warn("No Authentication found.");
-        }
+        jwtUtil.authenticateUser(login);
 
         // 성공적으로 로그인한 사용자 정보와 토큰 반환
         return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName()));
