@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dto.KafkaProductMessage;
+import org.example.backend.dto.KafkaProductReviewMessage;
 import org.example.backend.entity.Orders;
 import org.example.backend.entity.Products;
+import org.example.backend.entity.ProductReviews;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +43,7 @@ public class KafkaMessage {
             // JSON으로 변환
             String message = objectMapper.writeValueAsString(orderMessage);
             // Kafka에 전송
-            kafkaTemplate.send("Order Confirm", message);
+            kafkaTemplate.send("Order-Confirm", message);
             log.info("Kafka order message sent: {}", message);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize order message", e);
@@ -66,7 +68,27 @@ public class KafkaMessage {
                     .build();
 
             String message = objectMapper.writeValueAsString(productMessage);
-            kafkaTemplate.send("Out of Stock", message);
+            kafkaTemplate.send("Out-of-Stock", message);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize Kafka message", e);
+        }
+    }
+    // 물품 리뷰 관련 카프카 메시지 별점 일정 이하시 발송
+    public void sendKafkaProductReviewMsg(ProductReviews productsReviews, String action) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            KafkaProductReviewMessage productReviewMessage = KafkaProductReviewMessage.builder()
+                    .action(action)
+                    .id(productsReviews.getId())
+                    .content(productsReviews.getContent())
+                    .user(productsReviews.getUsers())
+                    .createdAt(productsReviews.getCreatedAt())
+                    .rating(productsReviews.getRating())
+                    .products(productsReviews.getProducts())
+                    .build();
+
+            String message = objectMapper.writeValueAsString(productReviewMessage);
+            kafkaTemplate.send("Low-Rating", message);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize Kafka message", e);
         }
