@@ -31,6 +31,7 @@ public class ProductsService {
     private final String TOPIC = "product-changes"; // 카프카 주제
 
 
+
     //물품 등록 로직(엘라스틱서치 색인도 동시에 진행)
     public void registerProduct(ProductsDto productsDto) {
         
@@ -127,12 +128,11 @@ public class ProductsService {
 
 
 
-    //TODO 물품 수량 낮음 경고(카프카)- 수신쪽으로 봐야할듯? 구매완료시 쇼핑몰 서버에서 카프카로 메시지 보내면 여기서 받아서 진행하는 로직 - 경고 서비스로 따로 뺄지 생각중
+    //TODO 물품 수량 낮음 경고(카프카)- 수신
 
 
-    // 물품 구매로직(직접구매) - 쇼핑몰 서버에서 구현 주문들어옴 경고(카프카)
+    //TODO 물품 구매로직 - 쇼핑몰 서버에서 구현 주문들어옴 경고(카프카)- 수신
 
-    // 물품 구매로직(장바구니로 이동)  - 쇼핑몰 서버에서 구현 주문들어옴 경고(카프카)
     
     //TODO 물품 리뷰 관리 로직 (삭제 ? 아니면 여기에 답글 달기 기능 추가 여부?) 물품 리뷰가 들어오면 경고 이벤트?
 

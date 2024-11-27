@@ -3,11 +3,13 @@ package org.example.erp.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class KafkaProductMessage {
-    private String action; // register, update, delete
-    private Long id;       // Product ID
+    private String action;
+    private Long id;
     private String name;
     private String description;
     private Long price;
@@ -16,4 +18,9 @@ public class KafkaProductMessage {
     private Long stock;
     private String brand;
     private Long cost;
+    private Long discount;
+    private Long payPrice;
+    private String address;
+    private Long userId;
+    private LocalDateTime createdAt;
 }

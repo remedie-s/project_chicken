@@ -22,6 +22,7 @@ public class ProductReviewsDto {
     private float rating;
     // 리뷰 작성일
     private LocalDateTime createdAt;
+    private Long userId;
     private Long productId;
     private Users users;
     private Products products;

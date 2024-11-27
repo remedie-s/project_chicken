@@ -61,19 +61,20 @@ public class CartsService {
     }
     
     // 카트 삭제 메소드
-    public boolean deleteCarts(Users users, CartsDto cartsDto) {
-        Optional<Carts> byId = this.cartsRepository.findById(cartsDto.getId());
+    public boolean deleteCarts(Long cartId) {
+        Optional<Carts> byId = this.cartsRepository.findById(cartId);
         if(byId.isPresent()) {
             Carts carts = byId.get();
             cartsRepository.delete(carts);
-            log.info("Delete carts by id: {}", cartsDto.getId());
+            log.info("Delete carts by id: {}", cartId);
             return true;
         }
         log.error("카트가 없어요");
         return false;
 
     }
-    // 카트에서 주문 하기 메소드
+    // 카트에서 주문 하기 메소드(엘라스틱 서치 색인도 변경 필요)
+    // TODO (엘라스틱 서치 색인도 변경 필요)
     @Transactional
     public boolean cartToOrders(Users users, OrdersDto ordersDto) {
         Optional<Carts> optionalCart = cartsRepository.findById(ordersDto.getId()); // 1. 카트 ID를 기반으로 조회
@@ -97,6 +98,7 @@ public class CartsService {
             orders.setPayPrice(ordersDto.getPayPrice());
             orders.setAvailable(false);
             orders.setCreatedAt(LocalDateTime.now());
+            orders.setStatus("주문 접수");
             orders.setAddress(ordersDto.getAddress()); // 주소 처리 추가 필요(배송지 선택 관련)
             ordersRepository.save(orders);
 

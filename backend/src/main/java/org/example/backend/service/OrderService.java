@@ -28,15 +28,30 @@ public class OrderService {
         List<Orders> byUsersId = this.ordersRepository.findByUsers_Id((user.getId()));
         List<OrdersDto> ordersDtos = new ArrayList<>();
         for (Orders order : byUsersId) {
-            OrdersDto ordersDto = order.toDto();
-            ordersDtos.add(ordersDto);
+            if(order.isAvailable()) {
+                OrdersDto ordersDto = order.toDto();
+                ordersDtos.add(ordersDto);
+            }
+        }
+        return ordersDtos;
+    }
+    // 숨긴 주문 목록보기
+    public List<OrdersDto> ordersListHide(Users user) {
+        List<Orders> byUsersId = this.ordersRepository.findByUsers_Id((user.getId()));
+        List<OrdersDto> ordersDtos = new ArrayList<>();
+        for (Orders order : byUsersId) {
+            if(!order.isAvailable()) {
+                OrdersDto ordersDto = order.toDto();
+                ordersDtos.add(ordersDto);
+            }
         }
         return ordersDtos;
     }
 
+
     // 주문 숨기기
-    public boolean hideOrder(Users user, OrdersDto ordersDto) {
-        Optional<Orders> byId = this.ordersRepository.findById(ordersDto.getId());
+    public boolean hideOrder(Users user, Long orderId) {
+        Optional<Orders> byId = this.ordersRepository.findById(orderId);
         if (byId.isPresent()) {
             Orders order = byId.get();
             order.setAvailable(!order.isAvailable()); // 상태를 토글
@@ -45,31 +60,41 @@ public class OrderService {
             return true;
         }
         else {
-            log.error("{}번 주문이 없어요", ordersDto.getId());
+            log.error("{}번 주문이 없어요", orderId);
             return false;
         }
 
 
     }
 
-    public boolean refundOrder(Users user, OrdersDto ordersDto) {
-        Optional<Orders> byId = this.ordersRepository.findById(ordersDto.getId());
+    //반품
+    public boolean refundOrder(Long orderId) {
+        Optional<Orders> byId = this.ordersRepository.findById(orderId);
         if (byId.isPresent()) {
             Orders order = byId.get();
-            if (ordersDto.getStatus() == null) {
+            if (order.getStatus() == null) {
                 log.error("주문 상태가 없습니다. 반품 신청 실패.");
                 return false;
             }
-            order.setStatus(ordersDto.getStatus());
+            order.setStatus("반품 신청");
             this.ordersRepository.save(order);
-            log.info("{}번 주문의 반품 신청이 접수되었습니다.", ordersDto.getId());
+            log.info("{}번 주문의 반품 신청이 접수되었습니다.", orderId);
             this.kafkaMessage.sendKafkaOrderMsg(order, "refund");
             return true;
         } else {
-            log.error("{}번 주문이 존재하지 않습니다.", ordersDto.getId());
+            log.error("{}번 주문이 존재하지 않습니다.", orderId);
             return false;
         }
     }
 
-
+    // 주문 하나 특정
+    public Orders findById(Long orderId) {
+        Optional<Orders> byId = this.ordersRepository.findById(orderId);
+        if (byId.isPresent()) {
+            return byId.get();
+        }
+        else {
+            return null;
+        }
+    }
 }
