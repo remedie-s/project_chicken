@@ -19,10 +19,6 @@ public class EmployeeUserDetailsService implements UserDetailsService {
         Employee employee = employeeRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found with email: " + username));
 
-        return User.builder()
-                .username(employee.getEmail())
-                .password(employee.getPassword())
-                .roles("USER") // 필요에 따라 역할 추가
-                .build();
+        return employee;
     }
 }

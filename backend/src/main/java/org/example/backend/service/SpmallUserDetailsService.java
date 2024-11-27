@@ -19,10 +19,6 @@ public class SpmallUserDetailsService implements UserDetailsService {
         Users users = usersRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-        return User.builder()
-                .username(users.getEmail())
-                .password(users.getPassword())
-                .roles("USER") // 필요에 따라 역할 추가
-                .build();
+        return users;
     }
 }

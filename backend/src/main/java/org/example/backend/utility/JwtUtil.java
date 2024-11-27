@@ -65,6 +65,7 @@ public class JwtUtil {
                     .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token);
+
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Invalid access token: {}", e.getMessage());
@@ -111,6 +112,9 @@ public class JwtUtil {
 
         // SecurityContext에 설정
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 디버깅: 인증 정보 확인
+        log.info("Authenticated user: {}", authentication.getPrincipal());
     }
 
 }
