@@ -82,4 +82,12 @@ public class OrdersService {
     }
 
 
+    public Orders findById(Long orderId) {
+        Optional<Orders> byId = this.ordersRepository.findById(orderId);
+        if (byId.isPresent()) {
+            return byId.get();
+        }
+        log.info("{} : find orders fail", orderId);
+        return null;
+    }
 }

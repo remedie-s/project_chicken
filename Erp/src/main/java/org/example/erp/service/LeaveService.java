@@ -33,7 +33,7 @@ public class LeaveService {
         leave.setEndDate(endDate);
         leave.setEmployee(employee);
 
-        // startDate와 endDate 사이의 날짜 계산
+        // startDate 와 endDate 사이의 날짜 계산
         long leaveDays = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 양쪽 포함
         if (leaveDays <= 0) {
             throw new IllegalArgumentException("Invalid leave dates. Start date must be before or equal to end date.");
