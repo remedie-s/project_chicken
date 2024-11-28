@@ -65,9 +65,9 @@ public class EmployeeService {
 
     }
     // 직원 변경
-    public void modify(EmployeeDto employeeDto) {
+    public boolean modify(Long id, EmployeeDto employeeDto) {
 
-        Optional<Employee> byId = this.employeeRepository.findById(employeeDto.getId());
+        Optional<Employee> byId = this.employeeRepository.findById(id);
         if (byId.isPresent()) {
             Employee employee = byId.get();
             employee.setName(employeeDto.getName());
@@ -86,9 +86,11 @@ public class EmployeeService {
             employee.setRating(employeeDto.getRating());
             this.employeeRepository.save(employee);
             log.info("Employee Successfully Modified");
+            return true;
         }
         else {
             log.info("Employee not found");
+            return false;
         }
     }
     // 직원 삭제

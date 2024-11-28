@@ -4,13 +4,17 @@ package org.example.erp.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.EmployeeDto;
+import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
 import org.example.erp.repository.EmployeeRepository;
+import org.example.erp.service.AttendanceService;
 import org.example.erp.service.EmployeeService;
+import org.example.erp.service.LeaveService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +24,8 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final AttendanceService attendanceService;
+    private final LeaveService leaveService;
 
     // 직원 리스트조회
     @GetMapping("/list")
@@ -57,10 +63,54 @@ public class EmployeeController {
     // 직원 변경
     @PostMapping("/modify/{id}")
     public ResponseEntity<?> modifyEmployee(@PathVariable("id") Long id, @RequestBody EmployeeDto employeeDto) {
-        return null;
+        if(this.employeeService.modify(id, employeeDto)){
+            return ResponseEntity.ok(employeeDto);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
 
-    // 추가로직
+    //근태 관련
+
+    @PostMapping("/attendance/login")
+    public ResponseEntity<String> markAttendanceLogin(@RequestBody String email) {
+        Employee employee = employeeService.findByEmail(email);
+        if (employee == null) {
+            return ResponseEntity.badRequest().body("Employee not found.");
+        }
+
+        attendanceService.markLogin(employee.getId());
+        log.info("Attendance marked for login: {}", email);
+        return ResponseEntity.ok("Attendance login successful.");
+    }
+
+    @PostMapping("/attendance/logout")
+    public ResponseEntity<String> markAttendanceLogout(@RequestBody String email) {
+        Employee employee = employeeService.findByEmail(email);
+        if (employee == null) {
+            return ResponseEntity.badRequest().body("Employee not found.");
+        }
+
+        Attendance todayAttendance = attendanceService.findTodayAttendance(employee.getId());
+        if (todayAttendance == null) {
+            return ResponseEntity.badRequest().body("No login record found for today.");
+        }
+
+        attendanceService.markLogout(todayAttendance.getId());
+        log.info("Attendance marked for logout: {}", email);
+        return ResponseEntity.ok("Attendance logout successful.");
+    }
+    @PostMapping("/leave/request")
+    public ResponseEntity<String> requestLeave(
+            @RequestParam Long employeeId,
+            @RequestParam String reason,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+
+        leaveService.requestLeave(employeeId, reason, startDate, endDate);
+        log.info("Leave requested for Employee ID: {} | Reason: {} | Start: {} | End: {}",
+                employeeId, reason, startDate, endDate);
+        return ResponseEntity.ok("Leave requested successfully.");
+    }
 
 }
