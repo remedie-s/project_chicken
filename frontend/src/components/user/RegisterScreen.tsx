@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import dayjs, {Dayjs} from "dayjs";
 import {
     Box, Button,
@@ -25,6 +25,7 @@ export default function RegisterScreen(){
     const [gender, setGender] = useState("");
     const [birthday,setBirthday] = useState(dayjs());
     const [address, setAddress] = useState("");
+    const [phone, setPhone] = useState("");
 
 
     const questionChange = (e:SelectChangeEvent) => {
@@ -36,11 +37,71 @@ export default function RegisterScreen(){
     };
     const birthdayChange = (date:Dayjs|null) =>{
         if (date) { setBirthday(date); }
+    };
+
+    const phoneChange = (e:ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        // 숫자만 허용하고 최대 11자리까지만 입력 가능
+        if (/^\d*$/.test(value) && value.length <= 11) {
+            setPhone(value);
+        }
+    };
+
+    const formatPhoneNumber = (number: string): string => {
+        return `${number.slice(0, 3)}-${number.slice(3, 7)}-${number.slice(7)}`;
+    };
+
+    const checkData = () => {
+        if(!email) {
+            alert("이메일을 입력해주세요.");
+            return;
+        }
+        if(!password) {
+            alert("비밀번호를 입력해주세요.");
+        }
+        if(password!==confirmPassword) {
+            alert("비밀번호 확인이 잘못됐습니다.");
+            return;
+        }
+        if(!name) {
+            alert("이름을 입력해주세요.");
+            return;
+        }
+        if(!phone) {
+            alert("핸드폰 번호를 입력해주세요.");
+            return;
+        }
+        if(phone.length!==11) {
+            alert("핸드폰 번호 11자리를 입력해주세요.");
+            return;
+        }
+        if(!gender) {
+            alert("성별을 선택해주세요.");
+            return;
+        }
+        if(!address) {
+            alert("주소를 입력해주세요.");
+            return;
+        }
+        if(!birthday) {
+            alert("생일을 선택해주세요.");
+            return;
+        }
+        if(!passwordQ) {
+            alert("비밀번호 변경 질문을 선택해주세요.");
+            return;
+        }
+        if(!passwordA) {
+            alert("비밀번호 변경 질문의 정답을 입력해주세요.");
+            return;
+        }
+        return true;
     }
 
 
     const registerHandler = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
+        if(!checkData()) return;
         const send = {
             name: name,
             email: email,
@@ -49,7 +110,8 @@ export default function RegisterScreen(){
             address: address,
             birthDate: birthday,
             passwordQuestion: passwordQ,
-            passwordAnswer: passwordA
+            passwordAnswer: passwordA,
+            phoneNumber: formatPhoneNumber(phone)
         };
         try {
             const res = await axios.post("http://localhost:8080/api/auth/register", send);
@@ -86,7 +148,6 @@ export default function RegisterScreen(){
                             name="email"
                             autoComplete="email"
                             autoFocus
-                            helperText="*필수 입력"
                             onChange={(e)=>setEmail(e.target.value)}
                         />
                         <TextField
@@ -97,7 +158,6 @@ export default function RegisterScreen(){
                             label="비밀번호"
                             type="password"
                             id="password"
-                            helperText="*필수 입력"
                             onChange={(e)=>setPassword(e.target.value)}
                         />
                         <TextField
@@ -122,30 +182,39 @@ export default function RegisterScreen(){
                                 label="비밀번호 변경시 질문"
                                 onChange={questionChange}
                             >
-                                <MenuItem value={"book"}>가장 좋아하는 책의 이름은 무엇인가요?</MenuItem>
-                                <MenuItem value={"animal"}>가장 좋아하는 동물의 이름은 무엇인가요?</MenuItem>
-                                <MenuItem value={"movie"}>가장 좋아하는 영화 제목은 무엇인가요?</MenuItem>
-                                <MenuItem value={"color"}>가장 좋아하는 색깔은 무엇인가요?</MenuItem>
-                                <MenuItem value={"food"}>가장 좋아하는 음식은 무엇인가요?</MenuItem>
+                                <MenuItem value={"가장 좋아하는 책의 이름은 무엇인가요?"}>가장 좋아하는 책의 이름은 무엇인가요?</MenuItem>
+                                <MenuItem value={"가장 좋아하는 동물의 이름은 무엇인가요?"}>가장 좋아하는 동물의 이름은 무엇인가요?</MenuItem>
+                                <MenuItem value={"가장 좋아하는 영화 제목은 무엇인가요?"}>가장 좋아하는 영화 제목은 무엇인가요?</MenuItem>
+                                <MenuItem value={"가장 좋아하는 색깔은 무엇인가요?"}>가장 좋아하는 색깔은 무엇인가요?</MenuItem>
+                                <MenuItem value={"가장 좋아하는 음식은 무엇인가요?"}>가장 좋아하는 음식은 무엇인가요?</MenuItem>
                             </Select>
                         </FormControl>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            name="security-answer"
                             label="비밀번호 변경시 정답"
-                            id="security-answer"
+                            value={passwordA}
                             onChange={(e)=>setPasswordA(e.target.value)}
                         />
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="name"
                             label="이름"
-                            name="name"
+                            value={name}
                             onChange={(e)=>setName(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="phone"
+                            label="핸드폰 번호"
+                            name="phone"
+                            onChange={phoneChange}
+                            value={phone}
+                            helperText="숫자만 입력됩니다"
                         />
                         <FormControl fullWidth margin="normal" required>
                             <InputLabel id="genderLabel">성별</InputLabel>

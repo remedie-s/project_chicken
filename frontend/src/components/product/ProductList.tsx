@@ -8,12 +8,13 @@ import {Box, Button, Grid2, Stack} from "@mui/material";
 import {ProductsDto} from "@/types/productType";
 
 
-export default function ProductTable( Product:ProductsDto[]) {
+export default function ProductList( products:ProductsDto[]) {
     return (
         <Box>
-            <Grid2>
-
-            </Grid2>
+            <DataGrid
+                columns={[{ field: 'name' }]}
+                rows={products}
+            />
         </Box>
     );
 }
