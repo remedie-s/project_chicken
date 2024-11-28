@@ -12,14 +12,16 @@ spring:
     consumer:
       bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
       #bootstrap-servers: localhost:9092  # Kafka 서버 주소
-      group-id: your-consumer-group
+      group-id: backend-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
     producer:
       bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
       #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      asks: 1
   datasource:
     url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소
     #url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소

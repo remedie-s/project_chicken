@@ -155,6 +155,7 @@ public class ProductsService {
 
             String message = objectMapper.writeValueAsString(productMessage);
             kafkaTemplate.send(TOPIC, message);
+            log.info("{}에 관한 메시지를 보냅니다",TOPIC);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize Kafka message", e);
         }
