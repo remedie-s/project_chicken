@@ -55,7 +55,8 @@ public class AuthController {
 
         // 리프레시 토큰 저장
         employeeService.saveRefreshToken(login.getEmail(), refreshToken);
-
+        // 로그인 후 SecurityContextHolder에 인증 정보 저장
+        jwtUtil.authenticateUser(login);
         // 성공적으로 로그인한 사용자 정보와 토큰 반환
         return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName()));
     }
