@@ -3,15 +3,15 @@ import {Dayjs} from "dayjs";
 export type UsersDto = {
     id: number,
     name: string,
-    email: string
-    password: string
-    createdAt: Dayjs
+    email: string,
+    password: string,
+    createdAt: Dayjs,
     gender: string,
     address: string,
     birthDate: Dayjs,
-    userGrade: number,
-    totalPurchaseCount: number,
-    totalPurchasePrice: number,
+    userGrade: number,              // 없음, 브론즈, 실버, 골드, 플래티넘
+    totalPurchaseCount: number,     // 총 주문 수량
+    totalPurchasePrice: number,     // 총 주문 금액
     passwordQuestion: string,
     passwordAnswer: string
 }

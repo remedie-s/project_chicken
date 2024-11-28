@@ -2,7 +2,7 @@ import {string} from "prop-types";
 import {Dayjs} from "dayjs";
 import type {ProductsDto} from "./productType";
 
-export type OrderType = {
+export type OrderDto = {
     id: number,
     quantity: number,
     price: number,

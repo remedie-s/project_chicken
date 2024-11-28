@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider());
 

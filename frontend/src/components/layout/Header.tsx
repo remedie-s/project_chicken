@@ -39,7 +39,7 @@ export default function Header({userName}:userNameType){
         document.cookie = cookie.serialize('refreshToken', '', { maxAge: -1, path: '/' });
         document.cookie = cookie.serialize('userName', '', { maxAge: -1, path: '/' });
         // 로그아웃시 새로고침
-        window.location.reload();
+        router.push("/")
     };
 
     return (
