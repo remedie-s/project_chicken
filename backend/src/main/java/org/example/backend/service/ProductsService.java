@@ -180,14 +180,17 @@ public class ProductsService {
             switch (productMessage.getAction()) {
                 case "register":
                     registerProductToElasticsearch(productMessage.toEntity());
+                    log.info("{} 물품이 등록되어 엘라스틱 서치에 색인합니다",productMessage.getId());
                     break;
 
                 case "update":
                     updateProductInElasticsearch(productMessage.toEntity());
+                    log.info("{} 물품이 갱신되어 엘라스틱 서치에 색인을 갱신합니다",productMessage.getId());
                     break;
 
                 case "delete":
                     deleteProductFromElasticsearch(productMessage.toEntity());
+                    log.info("{} 물품이 삭제되어 엘라스틱 서치에 색인을 삭제합니다",productMessage.getId());
                     break;
 
                 default:
