@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.KafkaProductMessage;
+import org.example.erp.dto.KafkaProductReviewMessage;
 import org.example.erp.dto.ProductsDto;
 import org.example.erp.entity.Products;
 import org.example.erp.repository.*;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -128,13 +130,6 @@ public class ProductsService {
 
 
 
-    //TODO 물품 수량 낮음 경고(카프카)- 수신
-
-
-    //TODO 물품 구매로직 - 쇼핑몰 서버에서 구현 주문들어옴 경고(카프카)- 수신
-
-    
-    //TODO 물품 리뷰 관리 로직 (삭제 ? 아니면 여기에 답글 달기 기능 추가 여부?) 물품 리뷰가 들어오면 경고 이벤트?
 
     // 카프카 메시지 전송 로직
     private void sendKafkaMsg(Products products,String action) {
@@ -160,6 +155,42 @@ public class ProductsService {
             log.error("Failed to serialize Kafka message", e);
         }
     }
+
+
+    //TODO 물품 수량 낮음 경고(카프카)- 수신
+    @KafkaListener(topics = "Out-of-Stock", groupId = "erp")
+    public void listenProductStock(String message) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            KafkaProductMessage productMessage = objectMapper.readValue(message, KafkaProductMessage.class);
+            log.info("{} : 해당 물품의 수량이 10개 이하입니다.", productMessage.getId());
+
+
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse Kafka message: {}", message, e);
+        }
+    }
+
+
+
+
+    //TODO 물품 리뷰 관리 로직 (삭제 ? 아니면 여기에 답글 달기 기능 추가 여부?) 물품 리뷰가 들어오면 경고 이벤트?
+    @KafkaListener(topics = "Out-of-Stock", groupId = "erp")
+    public void listenReviewLow(String message) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            KafkaProductReviewMessage productReviewMessage = objectMapper.readValue(message, KafkaProductReviewMessage.class);
+            log.info("{} : 해당 물품에 평점 3.0 이하인 리뷰가 생성되었습니다.", productReviewMessage.getId());
+
+
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse Kafka message: {}", message, e);
+        }
+    }
+
+
+
+
 
     // 전달 받은 DTO를 엔티티로 변경하는 메소드
     private void dtoToEntity(ProductsDto productsDto, Products products) {
