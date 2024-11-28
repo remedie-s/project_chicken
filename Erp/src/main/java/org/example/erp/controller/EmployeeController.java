@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.EmployeeDto;
 import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
+import org.example.erp.entity.Leave;
 import org.example.erp.repository.EmployeeRepository;
 import org.example.erp.service.AttendanceService;
 import org.example.erp.service.EmployeeService;
@@ -40,7 +41,7 @@ public class EmployeeController {
     public ResponseEntity<?> getEmployeeByEX(@AuthenticationPrincipal Employee employee ) {
         //TODO 권한 체크 메소드 만들어야함
         if(employee==null){
-            log.info("{}",employee);
+            log.info("권한이 없어요");
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(this.employeeService.findAll());
@@ -111,6 +112,40 @@ public class EmployeeController {
         log.info("Leave requested for Employee ID: {} | Reason: {} | Start: {} | End: {}",
                 employeeId, reason, startDate, endDate);
         return ResponseEntity.ok("Leave requested successfully.");
+    }
+    // 특정 직원의 휴가 조회
+    @GetMapping("/leave/{employeeId}")
+    public ResponseEntity<?> getEmployeeLeaves(@PathVariable Long employeeId) {
+        log.info("휴가 조회 요청: Employee ID={}", employeeId);
+        List<Leave> leaves = leaveService.getLeavesByEmployee(employeeId);
+        return ResponseEntity.ok(leaves);
+    }
+
+    // 휴가 취소
+    @DeleteMapping("/leave/cancel/{leaveId}")
+    public ResponseEntity<?> cancelLeave(@PathVariable Long leaveId) {
+        log.info("휴가 취소 요청: Leave ID={}", leaveId);
+        leaveService.cancelLeave(leaveId);
+        return ResponseEntity.ok("Leave canceled successfully.");
+    }
+
+    // 직원 부서별 리스트 조회
+    @GetMapping("/list/department/{department}")
+    public ResponseEntity<?> getEmployeesByDepartment(@PathVariable String department) {
+        log.info("부서별 직원 조회 요청: Department ={}", department);
+        List<EmployeeDto> employees = employeeService.findByDepartment(department);
+        return ResponseEntity.ok(employees);
+    }
+
+    // 직원 연차(Annual Leave) 조회
+    @GetMapping("/leave/annual/{employeeId}")
+    public ResponseEntity<?> getAnnualLeave(@PathVariable Long employeeId) {
+        log.info("직원의 남은 연차 조회 요청: Employee ID={}", employeeId);
+        EmployeeDto employeeDto = employeeService.findById(employeeId);
+        if (employeeDto == null) {
+            return ResponseEntity.badRequest().body("Employee not found.");
+        }
+        return ResponseEntity.ok("Remaining annual leave: " + employeeDto.getAnnualLeave());
     }
 
 }
