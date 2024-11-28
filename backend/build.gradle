@@ -40,7 +40,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     implementation 'org.springframework.data:spring-data-elasticsearch:5.0.0'  // Elasticsearch 8.x와 호환되는 버전
     implementation 'org.elasticsearch.client:elasticsearch-rest-client:8.16.0'
-
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
     // 스프링 시큐리티 - jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'

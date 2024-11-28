@@ -1,6 +1,10 @@
 package org.example.erp.utility;
 
+import lombok.extern.slf4j.Slf4j;
+import org.example.erp.entity.Employee;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -8,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
     // 액세스 토큰 키 및 만료시간
@@ -97,5 +102,17 @@ public class JwtUtil {
             System.err.println("Failed to extract username: " + e.getMessage());
             return null;
         }
+    }
+
+    public void authenticateUser(Employee users) {
+        // Authentication 객체 생성
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(users, null, users.getAuthorities());
+
+        // SecurityContext에 설정
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 디버깅: 인증 정보 확인
+        log.info("Authenticated user: {}", authentication.getPrincipal());
     }
 }
