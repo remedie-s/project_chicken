@@ -61,9 +61,14 @@ public class Employee implements UserDetails {
     // 근태와의 관계 (1:N)
     @Column(name="refresh_token")
     private String refreshToken;
+
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
     private List<Attendance> attendances;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
+    private List<Leave> leave;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

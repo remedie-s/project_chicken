@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.EmployeeDto;
 
 import org.example.erp.dto.TokenResponseDto;
+import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
+import org.example.erp.service.AttendanceService;
 import org.example.erp.service.EmployeeService;
 import org.example.erp.utility.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,9 @@ public class AuthController {
     private final EmployeeService employeeService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final AttendanceService attendanceService;
 
-   @PostMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody EmployeeDto employeeDto) {
        
        if (employeeService.findByEmail(employeeDto.getEmail())!= null) {
@@ -77,6 +80,24 @@ public class AuthController {
         String newAccessToken = jwtUtil.generateToken(username);
 
         return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, username,this.employeeService.findByEmail(username).getName()));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody String refreshToken) {
+        // 리프레시 토큰 검증
+        if (!jwtUtil.validateRefreshToken(refreshToken)) {
+            return ResponseEntity.badRequest().body("Invalid refresh token.");
+        }
+
+        // 리프레시 토큰으로 사용자 정보 추출
+        String username = jwtUtil.extractUsername(refreshToken);
+        if (username == null || employeeService.findByEmail(username) == null) {
+            return ResponseEntity.badRequest().body("Invalid refresh token.");
+        }
+
+        // 리프레시 토큰 삭제
+        employeeService.saveRefreshToken(username, null);
+        log.info("User '{}' logged out successfully.", username);
+        return ResponseEntity.ok("Logout successful.");
     }
 
 }
