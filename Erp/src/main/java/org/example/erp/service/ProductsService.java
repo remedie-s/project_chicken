@@ -48,7 +48,7 @@ public class ProductsService {
     }
 
     // 물품 변경로직(수량)
-    public void updateProduct(ProductsDto productsDto) {
+    public boolean updateProduct(ProductsDto productsDto) {
         Optional<Products> byId = this.productsRepository.findById(productsDto.getId());
         if (byId.isPresent()) {
             Products products = byId.get();
@@ -59,26 +59,26 @@ public class ProductsService {
 
             // Kafka 메시지 발행 - JSON 형식
             sendKafkaMsg(products,"update");
-
+            return true;
         } else {
             log.error("{} 물품이 없어요", productsDto.getName());
+            return false;
         }
+
     }
 
     // 물품 삭제로직
-    public void deleteProduct(ProductsDto productsDto) {
-        Optional<Products> byId = this.productsRepository.findById(productsDto.getId());
+    public boolean deleteProduct(Long productId) {
+        Optional<Products> byId = this.productsRepository.findById(productId);
         if (byId.isPresent()) {
             Products products = byId.get();
-            dtoToEntity(productsDto, products);
-
-            // ERP 시스템에서 물품 삭제
-            productsRepository.deleteById(productsDto.getId());
-
+            this.productsRepository.delete(products);
             // Kafka 메시지 발행 - JSON 형식
             sendKafkaMsg(products,"delete");
+            return true;
         } else {
-            log.error("{} 물품이 없어요", productsDto.getName());
+            log.error("{} 물품이 없어요", productId);
+            return false;
         }
     }
     // 물품 리스트 로직
