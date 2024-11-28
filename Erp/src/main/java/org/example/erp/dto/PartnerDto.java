@@ -3,6 +3,7 @@ package org.example.erp.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.erp.entity.Partner;
 import org.example.erp.entity.Products;
 
 import java.time.LocalDateTime;
@@ -39,5 +40,43 @@ public class PartnerDto {
     // 협력 마무리일
     private LocalDateTime contactEnd;
 
-    
+    // Partner -> PartnerDto 변환
+    public static PartnerDto toDto(Partner partner) {
+        if (partner == null) {
+            return null;
+        }
+        return new PartnerDto(
+                partner.getId(),
+                partner.getName(),
+                partner.getEmail(),
+                partner.getManagerName(),
+                partner.getPhone(),
+                partner.getAddress(),
+                partner.getWebsite(),
+                partner.getDescription(),
+                partner.getOutstanding(),
+                partner.getContactStart(),
+                partner.getContactEnd()
+        );
+    }
+
+    // PartnerDto -> Partner 변환
+    public static Partner toEntity(PartnerDto partnerDto) {
+        if (partnerDto == null) {
+            return null;
+        }
+        Partner partner = new Partner();
+        partner.setId(partnerDto.getId());
+        partner.setName(partnerDto.getName());
+        partner.setEmail(partnerDto.getEmail());
+        partner.setManagerName(partnerDto.getManagerName());
+        partner.setPhone(partnerDto.getPhone());
+        partner.setAddress(partnerDto.getAddress());
+        partner.setWebsite(partnerDto.getWebsite());
+        partner.setDescription(partnerDto.getDescription());
+        partner.setOutstanding(partnerDto.getOutstanding());
+        partner.setContactStart(partnerDto.getContactStart());
+        partner.setContactEnd(partnerDto.getContactEnd());
+        return partner;
+    }
 }

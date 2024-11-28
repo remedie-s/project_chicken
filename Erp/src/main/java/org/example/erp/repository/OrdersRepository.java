@@ -14,4 +14,8 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     List<Orders> findAllByOrderDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     List<Orders> findAllByProducts_Category(String category);
+
+    List<Orders> findByUsers_id(Long userId);
+
+    List<Orders> findByProducts_Id(Long productId);
 }
