@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.KafkaProductMessage;
 import org.example.erp.dto.KafkaProductReviewMessage;
 import org.example.erp.dto.ProductsDto;
+import org.example.erp.entity.Partner;
 import org.example.erp.entity.Products;
 import org.example.erp.repository.*;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -28,7 +29,7 @@ public class ProductsService {
     private final EventRepository eventRepository;
     private final InventoryAlertRepository inventoryAlertRepository;
     private final ProductReviewsRepository productReviewsRepository;
-
+    private final PartnerRepository partnerRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final String TOPIC = "product-changes"; // 카프카 주제
 
@@ -39,6 +40,11 @@ public class ProductsService {
         
         Products products = new Products();
         dtoToEntity(productsDto, products);
+        Optional<Partner> byId = partnerRepository.findById(productsDto.getPartnerId());
+        if (byId.isPresent()) {
+            products.setPartner(byId.get());
+        }
+
 
         // ERP 시스템에서 물품 등록
         productsRepository.save(products);

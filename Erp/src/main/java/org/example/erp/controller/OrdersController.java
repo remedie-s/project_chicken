@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api/order")
 public class OrdersController {
     private final OrdersService ordersService;
     private final UsersService usersService;
@@ -36,7 +36,7 @@ public class OrdersController {
     }
 
     // 주문 리스트(물품) 보기 메소드
-    @GetMapping("/category/{productId}")
+    @GetMapping("/product/{productId}")
     public ResponseEntity<?> getProductOrders(@PathVariable ("productId") Long productId) {
         return ResponseEntity.ok(this.ordersService.findByProductId(productId));
     }
@@ -69,6 +69,6 @@ public class OrdersController {
 
     }
 
-    //TODO 반품 관련 로직을 만들것인가?
+    // 반품 관련 로직을 만들것인가?- 상태로직으로 변경
 
 }
