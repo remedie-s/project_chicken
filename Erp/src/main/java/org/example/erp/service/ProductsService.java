@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.KafkaProductMessage;
 import org.example.erp.dto.KafkaProductReviewMessage;
 import org.example.erp.dto.ProductsDto;
+import org.example.erp.entity.Partner;
+import org.example.erp.entity.ProductReviews;
 import org.example.erp.entity.Products;
 import org.example.erp.repository.*;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -28,7 +30,7 @@ public class ProductsService {
     private final EventRepository eventRepository;
     private final InventoryAlertRepository inventoryAlertRepository;
     private final ProductReviewsRepository productReviewsRepository;
-
+    private final PartnerRepository partnerRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final String TOPIC = "product-changes"; // 카프카 주제
 
@@ -39,6 +41,11 @@ public class ProductsService {
         
         Products products = new Products();
         dtoToEntity(productsDto, products);
+        Optional<Partner> byId = partnerRepository.findById(productsDto.getPartnerId());
+        if (byId.isPresent()) {
+            products.setPartner(byId.get());
+        }
+
 
         // ERP 시스템에서 물품 등록
         productsRepository.save(products);
@@ -127,6 +134,36 @@ public class ProductsService {
         }
         return null;
     }
+    // 전체 리뷰 리스트 불러오기
+    public List<ProductReviews> allReviews() {
+        List<ProductReviews> all = this.productReviewsRepository.findAll();
+        if(all==null){
+            all=new ArrayList<>();
+        }
+        return all;
+    }
+    // 물품에 따른 리뷰 리스트 불러오기
+    public List<ProductReviews> reviews(Long productId){
+        List<ProductReviews> reviewsList=this.productReviewsRepository.findByProducts_Id(productId);
+        if(reviewsList==null){
+            reviewsList=new ArrayList<>();
+        }
+        return reviewsList;
+
+    }
+    // 리뷰 아이디 인수로 넣고 삭제
+    public boolean reviewDelete(Long reviewId){
+        Optional<ProductReviews> byId = productReviewsRepository.findById(reviewId);
+        if(byId.isPresent()){
+            this.productReviewsRepository.deleteById(reviewId);
+            log.info("{}번 리뷰를 삭제하였습니다.",reviewId);
+            return true;
+        }
+        log.error("{}번 리뷰 삭제중 오류가 발생하였습니다.", reviewId);
+        return false;
+
+    }
+
 
 
 

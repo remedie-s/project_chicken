@@ -107,8 +107,8 @@ public class FianceController {
     }
 
     // 내부재산 제거 메소드
-    @PostMapping("/inner/delete")
-    public ResponseEntity<?> deleteInner(@AuthenticationPrincipal Employee employee,@RequestParam("innerId") Long innerId) {
+    @DeleteMapping("/inner/{innerId}")
+    public ResponseEntity<?> deleteInner(@AuthenticationPrincipal Employee employee,@PathVariable("innerId") Long innerId) {
         if (employee == null) {
             return ResponseEntity.status(403).body("권한이 없습니다.");
         }
@@ -118,8 +118,8 @@ public class FianceController {
     }
 
     // 내부재산 수정 메소드
-    @PostMapping("/inner/update")
-    public ResponseEntity<?> updateInner(@AuthenticationPrincipal Employee employee,@RequestBody @Valid FianceDto fianceDto) {
+    @PutMapping("/inner/{innerId}")
+    public ResponseEntity<?> updateInner(@AuthenticationPrincipal Employee employee,@PathVariable("innerId") Long innerId,@RequestBody @Valid FianceDto fianceDto) {
         if (employee == null) {
             return ResponseEntity.status(403).body("권한이 없습니다.");
         }
