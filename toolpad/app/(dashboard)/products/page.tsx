@@ -2,7 +2,7 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 
 
-export default function ProductPage(): JSX.Element {
+export default function ProductDetailPage(): JSX.Element {
   
 
   return (

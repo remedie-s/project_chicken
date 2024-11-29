@@ -38,7 +38,7 @@ const NAVIGATION: Navigation = [
     icon: <ShoppingCartIcon />,
   },
   {
-    segment: 'product',
+    segment: 'products',
     title: '등록 물품 관리',
     icon: <ShoppingCartIcon />,
   },

@@ -123,6 +123,7 @@ public class EmployeeService {
         }
         return employeeDtos;
     }
+
     // 직원 상세페이지(임원, 인사과, 본인)
     public EmployeeDto findById(Long id) {
         Optional<Employee> byId = this.employeeRepository.findById(id);

@@ -2,8 +2,7 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 
 /**
- * 파트너 관리 페이지
- * @constructor
+ * 파트너 등록 페이지
  * id: number;
  *     name: string;
  *     email: string;
@@ -15,14 +14,15 @@ import Typography from '@mui/material/Typography';
  *     outstanding: number;
  *     contactStart: string;
  *     contactEnd: string;
+ * @constructor
  */
 
-export default function PartnerPage(): JSX.Element {
+export default function PartnerCreatePage(): JSX.Element {
   
 
   return (
     <Typography>
-      Welcome to the Toolpad partner Page!
+      Welcome to the Toolpad partnerCreate Page!
     </Typography>
   );
 }
