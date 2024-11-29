@@ -35,6 +35,8 @@ public class Orders {
     private Long invoice;
     // 배송지
     private String address;
+    // 주문 상태
+    private String status;
 
     @ManyToOne
     private Users users;

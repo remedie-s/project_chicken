@@ -5,9 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.KafkaProductMessage;
+import org.example.erp.dto.KafkaProductReviewMessage;
 import org.example.erp.dto.ProductsDto;
+import org.example.erp.entity.Partner;
+import org.example.erp.entity.ProductReviews;
 import org.example.erp.entity.Products;
 import org.example.erp.repository.*;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +30,7 @@ public class ProductsService {
     private final EventRepository eventRepository;
     private final InventoryAlertRepository inventoryAlertRepository;
     private final ProductReviewsRepository productReviewsRepository;
-
+    private final PartnerRepository partnerRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final String TOPIC = "product-changes"; // 카프카 주제
 
@@ -37,6 +41,11 @@ public class ProductsService {
         
         Products products = new Products();
         dtoToEntity(productsDto, products);
+        Optional<Partner> byId = partnerRepository.findById(productsDto.getPartnerId());
+        if (byId.isPresent()) {
+            products.setPartner(byId.get());
+        }
+
 
         // ERP 시스템에서 물품 등록
         productsRepository.save(products);
@@ -46,7 +55,7 @@ public class ProductsService {
     }
 
     // 물품 변경로직(수량)
-    public void updateProduct(ProductsDto productsDto) {
+    public boolean updateProduct(ProductsDto productsDto) {
         Optional<Products> byId = this.productsRepository.findById(productsDto.getId());
         if (byId.isPresent()) {
             Products products = byId.get();
@@ -57,26 +66,26 @@ public class ProductsService {
 
             // Kafka 메시지 발행 - JSON 형식
             sendKafkaMsg(products,"update");
-
+            return true;
         } else {
             log.error("{} 물품이 없어요", productsDto.getName());
+            return false;
         }
+
     }
 
     // 물품 삭제로직
-    public void deleteProduct(ProductsDto productsDto) {
-        Optional<Products> byId = this.productsRepository.findById(productsDto.getId());
+    public boolean deleteProduct(Long productId) {
+        Optional<Products> byId = this.productsRepository.findById(productId);
         if (byId.isPresent()) {
             Products products = byId.get();
-            dtoToEntity(productsDto, products);
-
-            // ERP 시스템에서 물품 삭제
-            productsRepository.deleteById(productsDto.getId());
-
+            this.productsRepository.delete(products);
             // Kafka 메시지 발행 - JSON 형식
             sendKafkaMsg(products,"delete");
+            return true;
         } else {
-            log.error("{} 물품이 없어요", productsDto.getName());
+            log.error("{} 물품이 없어요", productId);
+            return false;
         }
     }
     // 물품 리스트 로직
@@ -125,16 +134,39 @@ public class ProductsService {
         }
         return null;
     }
+    // 전체 리뷰 리스트 불러오기
+    public List<ProductReviews> allReviews() {
+        List<ProductReviews> all = this.productReviewsRepository.findAll();
+        if(all==null){
+            all=new ArrayList<>();
+        }
+        return all;
+    }
+    // 물품에 따른 리뷰 리스트 불러오기
+    public List<ProductReviews> reviews(Long productId){
+        List<ProductReviews> reviewsList=this.productReviewsRepository.findByProducts_Id(productId);
+        if(reviewsList==null){
+            reviewsList=new ArrayList<>();
+        }
+        return reviewsList;
+
+    }
+    // 리뷰 아이디 인수로 넣고 삭제
+    public boolean reviewDelete(Long reviewId){
+        Optional<ProductReviews> byId = productReviewsRepository.findById(reviewId);
+        if(byId.isPresent()){
+            this.productReviewsRepository.deleteById(reviewId);
+            log.info("{}번 리뷰를 삭제하였습니다.",reviewId);
+            return true;
+        }
+        log.error("{}번 리뷰 삭제중 오류가 발생하였습니다.", reviewId);
+        return false;
+
+    }
 
 
 
-    //TODO 물품 수량 낮음 경고(카프카)- 수신
 
-
-    //TODO 물품 구매로직 - 쇼핑몰 서버에서 구현 주문들어옴 경고(카프카)- 수신
-
-    
-    //TODO 물품 리뷰 관리 로직 (삭제 ? 아니면 여기에 답글 달기 기능 추가 여부?) 물품 리뷰가 들어오면 경고 이벤트?
 
     // 카프카 메시지 전송 로직
     private void sendKafkaMsg(Products products,String action) {
@@ -155,10 +187,47 @@ public class ProductsService {
 
             String message = objectMapper.writeValueAsString(productMessage);
             kafkaTemplate.send(TOPIC, message);
+            log.info("{}에 관한 메시지를 보냅니다",TOPIC);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize Kafka message", e);
         }
     }
+
+
+    //TODO 물품 수량 낮음 경고(카프카)- 수신
+    @KafkaListener(topics = "Out-of-Stock", groupId = "erp")
+    public void listenProductStock(String message) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            KafkaProductMessage productMessage = objectMapper.readValue(message, KafkaProductMessage.class);
+            log.info("{} : 해당 물품의 수량이 10개 이하입니다.", productMessage.getId());
+
+
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse Kafka message: {}", message, e);
+        }
+    }
+
+
+
+
+    //TODO 물품 리뷰 관리 로직 (삭제 ? 아니면 여기에 답글 달기 기능 추가 여부?) 물품 리뷰가 들어오면 경고 이벤트?
+    @KafkaListener(topics = "Out-of-Stock", groupId = "erp")
+    public void listenReviewLow(String message) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            KafkaProductReviewMessage productReviewMessage = objectMapper.readValue(message, KafkaProductReviewMessage.class);
+            log.info("{} : 해당 물품에 평점 3.0 이하인 리뷰가 생성되었습니다.", productReviewMessage.getId());
+
+
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse Kafka message: {}", message, e);
+        }
+    }
+
+
+
+
 
     // 전달 받은 DTO를 엔티티로 변경하는 메소드
     private void dtoToEntity(ProductsDto productsDto, Products products) {

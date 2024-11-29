@@ -8,7 +8,7 @@ export type OrderDto = {
     price: number,
     discount: number,
     payPrice: number,
-    createdAt: Dayjs,
+    createdAt: Date,
     available: boolean,
     invoice: number,
     address: string,
