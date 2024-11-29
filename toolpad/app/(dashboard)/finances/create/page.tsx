@@ -2,9 +2,8 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 
 /**
- * 파트너 관리 페이지
- * @constructor
- * id: number;
+ * 신규 거래처 등록
+ *     id: number;
  *     name: string;
  *     email: string;
  *     managerName: string;
@@ -15,14 +14,17 @@ import Typography from '@mui/material/Typography';
  *     outstanding: number;
  *     contactStart: string;
  *     contactEnd: string;
+ *     항목당 입력창 있어야함
+ *     맨아래 등록 , 초기화, 메인페이지로 버튼
+ * @constructor
  */
 
-export default function PartnerPage(): JSX.Element {
+export default function FinanceCreatePage(): JSX.Element {
   
 
   return (
     <Typography>
-      Welcome to the Toolpad partner Page!
+      Welcome to the Toolpad qna Page!
     </Typography>
   );
 }

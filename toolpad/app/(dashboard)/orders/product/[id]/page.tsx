@@ -2,8 +2,7 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 
 /**
- * 주문 관리 페이지
- * 주문 리스트 나와야함
+ *     상품별 주문 페이지
  *     id: number;
  *     quantity: number;          // 주문 수량
  *     price: number;             // 주문 시 원가격
@@ -16,16 +15,15 @@ import Typography from '@mui/material/Typography';
  *     status: string;            // 주문 상태
  *     userId: number;            // 사용자 ID
  *     productId: number;         // 상품 ID
- *
  * @constructor
  */
 
-export default function OrdersPage() {
-  
+export default function OrdersProductPage() {
 
-  return (
-    <Typography>
-      Welcome to the Toolpad orders!
-    </Typography>
-  );
+
+    return (
+        <Typography>
+            Welcome to the Toolpad orders!
+        </Typography>
+    );
 }
