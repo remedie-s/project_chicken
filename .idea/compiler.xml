@@ -10,5 +10,8 @@
         <module name="Erp.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Erp" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -17,7 +17,8 @@ export default function MypageProfile(){
         totalPurchaseCount: 10,     // 총 주문 수량
         totalPurchasePrice: 100000,  // 총 주문 금액
         passwordQuestion: "가장 좋아하는 책의 이름은 무엇인가요?",
-        passwordAnswer: "책"
+        passwordAnswer: "책",
+        password: "암호"
     }
     const [passwordChange, setPasswordChange] = useState(false);
 

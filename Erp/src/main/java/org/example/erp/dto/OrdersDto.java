@@ -37,5 +37,6 @@ public class OrdersDto {
     private String address;
     private Users users;
     private Products products;
+    private String status;
 
 }

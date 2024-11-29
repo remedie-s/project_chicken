@@ -5,10 +5,10 @@ export type UsersDto = {
     name: string,
     email: string,
     password: string,
-    createdAt: Dayjs,
+    createdAt: Date,
     gender: string,
     address: string,
-    birthDate: Dayjs,
+    birthDate: Date,
     userGrade: number,              // 없음, 브론즈, 실버, 골드, 플래티넘
     totalPurchaseCount: number,     // 총 주문 수량
     totalPurchasePrice: number,     // 총 주문 금액

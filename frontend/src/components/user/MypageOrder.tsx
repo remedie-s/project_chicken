@@ -1,4 +1,4 @@
-import {Box} from "@mui/material";
+import {Box, Paper} from "@mui/material";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {Dayjs} from "dayjs";
 import type {ProductsDto} from "@/types/productType";
@@ -11,10 +11,14 @@ type OrderlistType = {
 
 
 export default function MypageOrder( {orders}:OrderlistType ){
+
+    const paginationModel = {page: 0, pageSize: 10};
     if (!orders || orders.length === 0) {
         return (
-            <Box>
+            <Box sx={{ width: "100%", minWidth: 700}}>
+                <Paper sx={{height: 400, width: '100%'}}>
                 주문 내역이 없습니다.
+                </Paper>
             </Box>
         );
     }
@@ -28,21 +32,34 @@ export default function MypageOrder( {orders}:OrderlistType ){
         discount: order.discount,
         payPrice: order.payPrice,
         quantity: order.quantity,
-        createdAt: order.createdAt.format('YYYY-MM-DD'),
+        createdAt: order.createdAt,
     }));
 
     const columns: GridColDef[] = [
-        { field: 'image', headerName: '이미지', width: 150, renderCell: (params) => <img src={params.value} alt="product" style={{width: '100px', height: 'auto'}} /> },
-        { field: 'price', headerName: '가격', width: 130 },
-        { field: 'discount', headerName: '할인', width: 130 },
-        { field: 'payPrice', headerName: '최종 가격', width: 130 },
-        { field: 'quantity', headerName: '수량', width: 130 },
+        { field: 'image', headerName: '상품 이미지', width: 150, renderCell:
+                (params) =>
+                    <img src={params.value} alt="product" style={{width: '100px', height: 'auto'}} /> },
+        { field: 'name', headerName: '상품명', width: 120 },
+        { field: 'price', headerName: '가격', width: 100 },
+        { field: 'discount', headerName: '할인', width: 80 },
+        { field: 'payPrice', headerName: '최종 가격', width: 100 },
+        { field: 'quantity', headerName: '수량', width: 50 },
         { field: 'createdAt', headerName: '주문 날짜', width: 180 },
     ];
 
+
     return (
-        <Box>
-            <DataGrid rows={rows} columns={columns} />
+        <Box sx={{ width: "100%"}}>
+            <Paper sx={{height: 400, width: '100%'}}>
+                <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    initialState={{pagination: {paginationModel}}}
+                    pageSizeOptions={[10, 20]}
+                    checkboxSelection
+                    sx={{border: 0}}
+                />
+            </Paper>
         </Box>
-    )
+    );
 }
