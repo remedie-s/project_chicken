@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "leave_table")
 public class Leave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
