@@ -1,21 +1,18 @@
 import exp from "node:constants";
 
 export type signupData={
-    name:string;
-    password:string;
-    email:string;
-    gender:string;
-    address:string;
-    birthDate:string;
-    phoneNumber:string;
-    department:string;
-    position:string;
-    salary:number;
-    incentive:number;
-    hireDate:string;
-    resignationDate:string;
-    annualLeave:number;
-    rating:number;
+    email: string;
+    name: string;
+    password: string;
+    gender: 'male' | 'female' | 'other';
+    address: string;
+    birthDate: string;
+    phoneNumber: string;
+    department: string;
+    position: string;
+    salary: number;
+    incentive: number;
+    hireDate: string;
 }
 
 export type loginData = {
@@ -24,7 +21,7 @@ export type loginData = {
 }
 
 export type productRegData = {
-    id: number|null;
+    id?: number|null;
     name: string;
     description: string;
     price: number;
@@ -46,7 +43,7 @@ export type modifyOrderData = {
 
 }
 export type EmployeeDto = {
-    id: number|null;
+    id?: number|null;
     password: string;
     name: string;
     email: string;
@@ -65,7 +62,7 @@ export type EmployeeDto = {
 
 }
 export type FianceDto={
-    id: number|null;
+    id?: number|null;
     name: string;
     description: string;
     buyPrice: number;
@@ -76,7 +73,7 @@ export type FianceDto={
     sellTime: string; // LocalDateTime will be represented as an ISO string
 }
 export type PartnerDto={
-    id: number;
+    id?: number;
     name: string;
     email: string;
     managerName: string;
@@ -89,7 +86,7 @@ export type PartnerDto={
     contactEnd: string;
 }
 export type OrdersDto={
-    id: number;
+    id?: number;
     quantity: number;          // 주문 수량
     price: number;             // 주문 시 원가격
     discount: number;          // 주문 시 할인 가격
@@ -104,7 +101,7 @@ export type OrdersDto={
 
 }
 export type ProductDto={
-    id: number;                  // 상품 ID
+    id?: number;                  // 상품 ID
     name: string;                // 상품명
     description: string;         // 상품 설명
     price: number;               // 상품 가격
@@ -121,7 +118,7 @@ export type ProductDto={
 
 }
 export interface Partner {
-    id: number;               // 파트너사 ID
+    id?: number;               // 파트너사 ID
     name: string;             // 파트너사 이름
     email: string;            // 파트너사 이메일
     managerName: string;      // 파트너사 담당자 이름
