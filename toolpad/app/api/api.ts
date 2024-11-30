@@ -270,9 +270,9 @@ export const getEmployeeAttendance = async (id: number) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
-export const markAttendanceLogin = async (email: string) => {
+export const markAttendanceLogin = async () => {
     try {
-        const response = await api.post(`${API_URL}/employee/attendance/login`, email, {
+        const response = await api.post(`${API_URL}/employee/attendance/login`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -282,9 +282,9 @@ export const markAttendanceLogin = async (email: string) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
-export const markAttendanceLogout = async (email: string) => {
+export const markAttendanceLogout = async () => {
     try {
-        const response = await api.post(`${API_URL}/employee/attendance/logout`, email, {
+        const response = await api.post(`${API_URL}/employee/attendance/logout`, {
             headers: {
                 'Content-Type': 'application/json',
             },
