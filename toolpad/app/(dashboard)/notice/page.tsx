@@ -10,7 +10,7 @@ export default function NoticePage(): JSX.Element {
   
 
   return (
-    <Typography>S
+    <Typography>
       Welcome to the Toolpad Notice Page!
     </Typography>
   );

@@ -258,6 +258,18 @@ export const modifyEmployee = async (id: number, employeeData: EmployeeDto) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
+export const getEmployeeAttendance = async (id: number) => {
+    try {
+        const response = await api.get(`${API_URL}/employee/attendance/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 직원 상세 정보 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
 export const markAttendanceLogin = async (email: string) => {
     try {
         const response = await api.post(`${API_URL}/employee/attendance/login`, email, {
@@ -280,6 +292,24 @@ export const markAttendanceLogout = async (email: string) => {
         return response.data; // 성공 시 퇴근 체크 완료 메시지 반환
     } catch (error: any) {
         throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const getMonthlyAttendanceAndLeave = async (
+    employeeId: number,
+    year: number,
+    month: number
+) => {
+    try {
+        const response = await axios.get(`${API_URL}/attendance-leave/${employeeId}/${year}/${month}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log('Monthly Attendance and Leave Data:', response.data);
+        return response.data; // 성공 시 데이터 반환
+    } catch (error: any) {
+        console.error('Failed to fetch monthly attendance and leave:', error.response?.data || error.message);
+        throw error.response?.data || error.message; // 실패 시 에러 반환
     }
 };
 
