@@ -186,6 +186,18 @@ export const orderListProduct = async (productId:number)=>{
         throw error.response.data; // 실패시
     }
 }
+export const orderDetail = async (orderId:number)=>{
+    try{
+        const response = await api.put(`${API_URL}/order/${orderId}`, {
+            headers :{
+                'Content-Type' :'application/json',
+            },
+        });
+        return response.data; // 성공시
+    } catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
 export const orderModify = async (orderData:modifyOrderData)=>{
     try{
         const response = await api.put(`${API_URL}/order/${orderData.id}`,orderData, {

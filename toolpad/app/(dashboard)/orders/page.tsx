@@ -1,6 +1,11 @@
+'use client';
 import * as React from 'react';
+import Box from '@mui/material/Box';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
-
+import { orderList } from "@/app/api/api";
+import {OrdersDto} from "@/app/types/datatype"; // API 호출 함수
 /**
  * 주문 관리 페이지
  * 주문 리스트 나와야함
@@ -21,11 +26,81 @@ import Typography from '@mui/material/Typography';
  */
 
 export default function OrdersPage() {
-  
+    const [orders, setOrders] = React.useState<OrdersDto[]>([]);
+    const [loading, setLoading] = React.useState<boolean>(true);
+    const [error, setError] = React.useState<string | null>(null);
 
-  return (
-    <Typography>
-      Welcome to the Toolpad orders!
-    </Typography>
-  );
+    // 데이터 가져오기
+    React.useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                setLoading(true);
+                const data = await orderList(); // API 호출
+                setOrders(data);
+            } catch (err: any) {
+                setError(err || "Failed to fetch orders.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, []);
+
+    // 컬럼 정의
+    const columns: GridColDef<OrdersDto>[] = [
+        { field: 'id', headerName: 'Order ID', width: 90 },
+        { field: 'quantity', headerName: 'Quantity', width: 120, type: 'number' },
+        { field: 'price', headerName: 'Price', width: 120, type: 'number' },
+        { field: 'discount', headerName: 'Discount', width: 120, type: 'number' },
+        { field: 'payPrice', headerName: 'Pay Price', width: 120, type: 'number' },
+        { field: 'createdAt', headerName: 'Created At', width: 180 },
+        { field: 'available', headerName: 'Available', width: 120, type: 'boolean' },
+        { field: 'invoice', headerName: 'Invoice', width: 120, type: 'number' },
+        { field: 'address', headerName: 'Address', width: 200 },
+        { field: 'status', headerName: 'Status', width: 120 },
+        { field: 'userId', headerName: 'User ID', width: 120 },
+        { field: 'productId', headerName: 'Product ID', width: 120 },
+    ];
+
+    // 로딩 중일 때 표시
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    // 에러 발생 시 표시
+    if (error) {
+        return (
+            <Typography color="error" variant="h6" align="center">
+                {error}
+            </Typography>
+        );
+    }
+
+    return (
+        <Box sx={{ height: 600, width: '100%' }}>
+            <Typography variant="h4" sx={{ mb: 2 }}>
+                Order Details
+            </Typography>
+            <DataGrid
+                rows={orders}
+                columns={columns}
+                getRowId={(row) => row.id || Math.random()} // ID가 없는 경우 fallback 처리
+                initialState={{
+                    pagination: {
+                        paginationModel: {
+                            pageSize: 10,
+                        },
+                    },
+                }}
+                pageSizeOptions={[5, 10, 20]}
+                checkboxSelection
+                disableRowSelectionOnClick
+            />
+        </Box>
+    );
 }

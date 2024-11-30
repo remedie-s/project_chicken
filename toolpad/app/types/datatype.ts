@@ -36,6 +36,22 @@ export type productRegData = {
     cost: number;
     partnerId: number; // Partner는 별도의 타입으로 정의해야 합니다.
 }
+export type productData = {
+    id?: number|null;
+    name: string;
+    description: string;
+    price: number;
+    createdAt: string; // LocalDateTime은 ISO 8601 형식의 문자열로 변환할 수 있습니다.
+    imageUrl: string;
+    stock: number;
+    sellCount: number;
+    category: string;
+    mainItemNumber: number;
+    event: number;
+    brand: string;
+    cost: number;
+    partnerId: number; // Partner는 별도의 타입으로 정의해야 합니다.
+}
 export type modifyOrderData = {
     id: number;
     invoice:string;

@@ -1,5 +1,12 @@
-import * as React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import {orderDetail} from "@/app/api/api";
+import {OrdersDto} from "@/app/types/datatype";
 
 /**
  *     id: number;
@@ -17,12 +24,77 @@ import Typography from '@mui/material/Typography';
  * @constructor
  */
 
-export default function OrdersDetailPage() {
-  
 
-  return (
-    <Typography>
-      Welcome to the Toolpad orders!
-    </Typography>
-  );
+
+export default function OrdersDetailPage() {
+    const [order, setOrder] = useState<OrdersDto | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+    const { orderId } = router.query;
+
+    useEffect(() => {
+        if (!orderId) return; // orderId가 없으면 실행하지 않음
+
+        const fetchOrder = async () => {
+            try {
+                const data = await orderDetail(Number(orderId));
+                setOrder(data);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrder();
+    }, [orderId]);
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Typography color="error" variant="h6" align="center">
+                {error}
+            </Typography>
+        );
+    }
+
+    if (!order) {
+        return (
+            <Typography variant="h6" align="center">
+                Order not found.
+            </Typography>
+        );
+    }
+
+    return (
+        <Box sx={{ padding: 3 }}>
+            <Typography variant="h4">Order ID: {order.id}</Typography>
+            <Typography variant="body1" sx={{ mt: 2 }}>
+                Quantity: {order.quantity}
+            </Typography>
+            <Typography variant="body1" sx={{ mt: 2 }}>
+                Price: ${order.price}
+            </Typography>
+            <Typography variant="body1" sx={{ mt: 2 }}>
+                Pay Price: ${order.payPrice}
+            </Typography>
+            <Typography variant="body1" sx={{ mt: 2 }}>
+                Status: {order.status}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+                Address: {order.address}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+                Invoice: {order.invoice}
+            </Typography>
+        </Box>
+    );
 }
