@@ -1,3 +1,5 @@
+import exp from "node:constants";
+
 export type signupData={
     name:string;
     password:string;
@@ -130,4 +132,18 @@ export interface Partner {
     outstanding: number;      // 미수금
     contactStart: string;     // 협력 시작일 (ISO 문자열)
     contactEnd: string;       // 협력 마무리일 (ISO 문자열)
+}
+export interface Attendance {
+    date: string;
+    status: string;
+}
+
+export interface Leave {
+    date: string;
+    status: string;
+}
+
+export interface AttendanceLeaveData {
+    attendance: Attendance[];
+    leaves: Leave[];
 }

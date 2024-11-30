@@ -7,7 +7,6 @@ import org.example.erp.dto.EmployeeDto;
 import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
 import org.example.erp.entity.Leave;
-import org.example.erp.repository.EmployeeRepository;
 import org.example.erp.service.AttendanceService;
 import org.example.erp.service.EmployeeService;
 import org.example.erp.service.LeaveService;
@@ -82,21 +81,20 @@ public class EmployeeController {
     }
 
     @PostMapping("/attendance/login")
-    public ResponseEntity<String> markAttendanceLogin(@RequestBody String email) {
-        Employee employee = employeeService.findByEmail(email);
+    public ResponseEntity<String> markAttendanceLogin(@AuthenticationPrincipal Employee employee) {
+
         if (employee == null) {
             return ResponseEntity.badRequest().body("Employee not found.");
         }
 
         attendanceService.markLogin(employee.getId());
-        log.info("Attendance marked for login: {}", email);
+        log.info("Attendance marked for login: {}", employee.getEmail());
         return ResponseEntity.ok("Attendance login successful.");
     }
 
     @PostMapping("/attendance/logout")
-    public ResponseEntity<String> markAttendanceLogout(@RequestBody String email) {
-        // 직원 이메일로 직원 정보 검색
-        Employee employee = employeeService.findByEmail(email);
+    public ResponseEntity<String> markAttendanceLogout(@AuthenticationPrincipal Employee employee) {
+
         if (employee == null) {
             return ResponseEntity.badRequest().body("Employee not found.");
         }
@@ -109,7 +107,7 @@ public class EmployeeController {
 
         // 로그아웃 기록 업데이트
         attendanceService.markLogout(todayAttendance.getId());
-        log.info("Attendance marked for logout: {}", email);
+        log.info("Attendance marked for logout: {}", employee.getEmail());
         return ResponseEntity.ok("Attendance logout successful.");
     }
 
