@@ -186,6 +186,18 @@ export const orderListProduct = async (productId:number)=>{
         throw error.response.data; // 실패시
     }
 }
+export const orderDetail = async (orderId:number)=>{
+    try{
+        const response = await api.put(`${API_URL}/order/${orderId}`, {
+            headers :{
+                'Content-Type' :'application/json',
+            },
+        });
+        return response.data; // 성공시
+    } catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
 export const orderModify = async (orderData:modifyOrderData)=>{
     try{
         const response = await api.put(`${API_URL}/order/${orderData.id}`,orderData, {
@@ -258,9 +270,21 @@ export const modifyEmployee = async (id: number, employeeData: EmployeeDto) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
-export const markAttendanceLogin = async (email: string) => {
+export const getEmployeeAttendance = async (id: number) => {
     try {
-        const response = await api.post(`${API_URL}/employee/attendance/login`, email, {
+        const response = await api.get(`${API_URL}/employee/attendance/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 직원 상세 정보 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const markAttendanceLogin = async () => {
+    try {
+        const response = await api.post(`${API_URL}/employee/attendance/login`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -270,9 +294,9 @@ export const markAttendanceLogin = async (email: string) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
-export const markAttendanceLogout = async (email: string) => {
+export const markAttendanceLogout = async () => {
     try {
-        const response = await api.post(`${API_URL}/employee/attendance/logout`, email, {
+        const response = await api.post(`${API_URL}/employee/attendance/logout`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -280,6 +304,24 @@ export const markAttendanceLogout = async (email: string) => {
         return response.data; // 성공 시 퇴근 체크 완료 메시지 반환
     } catch (error: any) {
         throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const getMonthlyAttendanceAndLeave = async (
+    employeeId: number,
+    year: number,
+    month: number
+) => {
+    try {
+        const response = await axios.get(`${API_URL}/attendance-leave/${employeeId}/${year}/${month}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log('Monthly Attendance and Leave Data:', response.data);
+        return response.data; // 성공 시 데이터 반환
+    } catch (error: any) {
+        console.error('Failed to fetch monthly attendance and leave:', error.response?.data || error.message);
+        throw error.response?.data || error.message; // 실패 시 에러 반환
     }
 };
 

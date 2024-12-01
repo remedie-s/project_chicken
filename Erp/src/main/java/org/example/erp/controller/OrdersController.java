@@ -40,6 +40,16 @@ public class OrdersController {
     public ResponseEntity<?> getProductOrders(@PathVariable ("productId") Long productId) {
         return ResponseEntity.ok(this.ordersService.findByProductId(productId));
     }
+    // 주문 상태 변경 메소드
+    @PostMapping("/{orderId}")
+    public ResponseEntity<?> detailOrders(@PathVariable ("orderId") Long orderId) {
+        Orders byId = this.ordersService.findById(orderId);
+        if (byId == null) {
+            return ResponseEntity.badRequest().body("Order not found");
+        }
+        return ResponseEntity.ok(byId);
+
+    }
 
     // 주문 상태 변경 메소드
     @PutMapping("/{orderId}")
