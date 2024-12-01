@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,21 +28,34 @@ public class AttendanceService {
         return attendanceRepository.save(attendance);
     }
 
-    public Attendance markLogout(Long attendanceId) {
-        Attendance attendance = attendanceRepository.findById(attendanceId).orElseThrow();
-        attendance.setLogoutTime(LocalDateTime.now());
-        return attendanceRepository.save(attendance);
-    }
+
 
     public List<Attendance> getAttendanceByEmployee(Long employeeId) {
         return attendanceRepository.findByEmployeeId(employeeId);
     }
+
+    public List<Attendance> findMonthlyAttendance(Long employeeId, int year, int month) {
+        LocalDateTime startOfMonth = LocalDate.of(year, month, 1).atStartOfDay();
+        LocalDateTime endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.toLocalDate().lengthOfMonth())
+                .with(LocalTime.MAX);
+
+        return attendanceRepository.findByEmployeeIdAndLoginTimeBetween(employeeId, startOfMonth, endOfMonth);
+    }
+
     public Attendance findTodayAttendance(Long employeeId) {
+        // 오늘 날짜의 시작과 끝 계산
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
 
-        return attendanceRepository.findByEmployeeIdAndLoginTimeBetween(employeeId, startOfDay, endOfDay)
-                .orElse(null);
+        // 데이터 조회
+        Optional<Attendance> todayAttendance = attendanceRepository.findTodayAttendance(employeeId, startOfDay, endOfDay);
+        return todayAttendance.orElse(null);
     }
 
+    public Attendance markLogout(Long attendanceId) {
+        Attendance attendance = attendanceRepository.findById(attendanceId)
+                .orElseThrow(() -> new RuntimeException("Attendance record not found."));
+        attendance.setLogoutTime(LocalDateTime.now());
+        return attendanceRepository.save(attendance);
+    }
 }

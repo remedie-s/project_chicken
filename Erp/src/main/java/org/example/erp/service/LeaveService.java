@@ -56,5 +56,11 @@ public class LeaveService {
     public void cancelLeave(Long leaveId) {
         leaveRepository.deleteById(leaveId);
     }
+    public List<Leave> findMonthlyLeave(Long employeeId, int year, int month) {
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        return leaveRepository.findByEmployeeIdAndStartDateBetween(employeeId, startOfMonth, endOfMonth);
+    }
 
 }
