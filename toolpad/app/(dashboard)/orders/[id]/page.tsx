@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import {orderDetail} from "@/app/api/api";
 import {OrdersDto} from "@/app/types/datatype";
+import {useParams} from "next/navigation";
 
 /**
  *     id: number;
@@ -27,11 +28,11 @@ import {OrdersDto} from "@/app/types/datatype";
 
 
 export default function OrdersDetailPage() {
+    const { orderId } = useParams(); // Next.js의 useParams를 사용하여 productId 가져오기
     const [order, setOrder] = useState<OrdersDto | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
-    const { orderId } = router.query;
 
     useEffect(() => {
         if (!orderId) return; // orderId가 없으면 실행하지 않음
