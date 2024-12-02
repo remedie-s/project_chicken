@@ -147,16 +147,41 @@ export interface Partner {
     contactEnd: string;       // 협력 마무리일 (ISO 문자열)
 }
 export interface Attendance {
-    date: string;
-    status: string;
+
+    id: number;
+    loginTime: string;
+    logoutTime: string | null; // 로그아웃하지 않았을 수도 있으므로 null 가능
+    leaveCompany: boolean;    // 추가된 필드
+
+    employee: {
+        id: number;
+        name: string;
+        email: string;
+        // 기타 필요한 필드들 추가
+    };
+    date?: string; // 날짜
+    status?: string; // 출석 상태 ("Present" 또는 "Leave")
 }
 
 export interface Leave {
+    id: number;
     date: string;
-    status: string;
+    reason: string | null; // 휴가 사유
 }
 
 export interface AttendanceLeaveData {
     attendance: Attendance[];
     leaves: Leave[];
 }
+// 출근/퇴근 및 휴가 상태만 필요한 경우
+export interface SimpleAttendance {
+    date: string; // 날짜
+    status: string; // 출석 상태 ("Present" 또는 "Leave")
+}
+
+// 단순화된 AttendanceLeaveData
+export interface SimpleAttendanceLeaveData {
+    attendance: SimpleAttendance[];
+    leaves: SimpleAttendance[];
+}
+

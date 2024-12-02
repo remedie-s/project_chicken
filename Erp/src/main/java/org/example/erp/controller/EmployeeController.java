@@ -98,7 +98,11 @@ public class EmployeeController {
             return ResponseEntity.badRequest().body("Employee not found.");
         }
 
-        attendanceService.markLogin(employee.getId());
+
+        Attendance attendance = attendanceService.markLogin(employee.getId());
+        if(attendance==null){
+            return ResponseEntity.badRequest().body("오늘 이미 로그인 기록이 있습니다.");
+        }
         log.info("Attendance marked for login: {}", employee.getEmail());
         return ResponseEntity.ok("Attendance login successful.");
     }
@@ -179,10 +183,15 @@ public class EmployeeController {
 
         // 근태 기록 조회
         List<Attendance> attendanceList = attendanceService.findMonthlyAttendance(employeeId, year, month);
+        for (Attendance attendance : attendanceList) {
+            log.info(attendance.getLoginTime().toString());
+            log.info(attendance.getLogoutTime().toString());
 
+        }
+        log.info(attendanceList.toString());
         // 휴가 기록 조회
         List<Leave> leaveList = leaveService.findMonthlyLeave(employeeId, year, month);
-
+        log.info(leaveList.toString());
         // 결과 반환
         return ResponseEntity.ok(Map.of(
                 "attendance", attendanceList,
