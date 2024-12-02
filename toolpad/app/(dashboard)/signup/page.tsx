@@ -5,6 +5,8 @@ import { Box, Button, Grid, TextField, Typography, MenuItem } from '@mui/materia
 import { signup } from '@/app/api/api';
 import {signupData} from "@/app/types/datatype";
 
+import { useRouter } from 'next/navigation'; // next/router가 아님!
+
 /**
  * 회원가입
  * 회원가입이라고 텍스트,
@@ -32,6 +34,8 @@ export default function SignupPage(): JSX.Element {
         hireDate: '',
     });
 
+    const router = useRouter();
+
     // 입력 필드 변경 핸들러
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
@@ -45,8 +49,12 @@ export default function SignupPage(): JSX.Element {
     const handleSubmit = async () => {
         try {
             await signup(formData);
-            alert('회원가입이 성공적으로 완료되었습니다.');
+            alert('회원가입이 성공적으로 완료되었습니다. 3초후 로그인페이지로 이동합니다.');
             handleReset();
+            // 3초 후 메인 페이지로 이동
+            setTimeout(() => {
+                router.push('/login');
+            }, 3000);
         } catch (error: any) {
             alert(`회원가입 실패: ${error}`);
         }

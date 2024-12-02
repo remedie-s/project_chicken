@@ -15,6 +15,16 @@ const api = axios.create({
     baseURL:API_URL, // Spring Boot 서버의 URL
 })
 // 요청 인터셉터 추가
+api.interceptors.request.use((config) => {
+    const token = sessionStorage.getItem('accessToken'); // 세션 스토리지에서 토큰 가져오기
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`; // Authorization 헤더에 토큰 추가
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+// 요청 인터셉터 추가
 api.interceptors.response.use(
     response => response, // 정상 응답은 그대로 반환
     async (error) => {
@@ -28,8 +38,7 @@ api.interceptors.response.use(
 
             // 리프레시 토큰이 없거나 만료된 경우, 다시 로그인 화면으로 리디렉션
             if (!refreshToken) {
-                // 사용자에게 로그인 화면을 표시하는 로직 추가
-                window.location.href = "/login"; // 예시로 로그인 화면으로 리디렉션
+                window.location.href = "/login"; // 로그인 화면으로 리디렉션
                 return Promise.reject(error);
             }
 
@@ -38,14 +47,26 @@ api.interceptors.response.use(
                 const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
                 const { accessToken } = response.data;
 
-                // 새로운 액세스 토큰을 세션 스토리지에 저장하고 원래 요청 재시도
+                // 새로운 액세스 토큰을 세션 스토리지에 저장
                 sessionStorage.setItem('accessToken', accessToken);
+
+                // 원래 요청에 새로운 액세스 토큰을 헤더에 추가
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+
+                // 원래 요청을 재시도
                 return api(originalRequest);
             } catch (refreshError) {
                 // 리프레시 토큰이 만료되거나 잘못된 경우 로그아웃 처리
-                window.location.href = "/login"; // 예시로 로그인 화면으로 리디렉션
+                window.location.href = "/login"; // 로그인 화면으로 리디렉션
                 return Promise.reject(refreshError);
+            }
+        }
+
+        // 액세스 토큰이 만료되지 않았을 경우
+        if (error.response.status !== 401) {
+            const accessToken = sessionStorage.getItem('accessToken'); // 세션에서 액세스 토큰 가져오기
+            if (accessToken) {
+                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
             }
         }
 
@@ -307,21 +328,30 @@ export const markAttendanceLogout = async () => {
     }
 };
 export const getMonthlyAttendanceAndLeave = async (
-    employeeId: number,
     year: number,
     month: number
 ) => {
     try {
-        const response = await axios.get(`${API_URL}/attendance-leave/${employeeId}/${year}/${month}`, {
+        const response = await api.post(`${API_URL}/employee/getAttLea/${year}/${month}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
         });
-        console.log('Monthly Attendance and Leave Data:', response.data);
-        return response.data; // 성공 시 데이터 반환
+        return response.data;
     } catch (error: any) {
-        console.error('Failed to fetch monthly attendance and leave:', error.response?.data || error.message);
-        throw error.response?.data || error.message; // 실패 시 에러 반환
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const getMonthlyAttendance = async (year:any,month:any) => {
+    try {
+        const response = await api.post(`${API_URL}/employee/attendance/${year}/${month}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 퇴근 체크 완료 메시지 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
     }
 };
 

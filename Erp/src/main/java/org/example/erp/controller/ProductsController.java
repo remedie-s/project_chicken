@@ -21,13 +21,14 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 public class ProductsController {
     private final ProductsService productsService;
 
     // 물품 등록
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductsDto productsDto ) {
+        log.info("createProduct: {}", productsDto.getName());
         this.productsService.registerProduct(productsDto);
 
         return ResponseEntity.ok(productsDto);
@@ -82,5 +83,6 @@ public class ProductsController {
         }
         return ResponseEntity.badRequest().body("Product not found");
     }
+
 }
 

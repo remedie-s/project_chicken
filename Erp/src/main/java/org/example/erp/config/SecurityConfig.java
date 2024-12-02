@@ -32,8 +32,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/product/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider());
 
@@ -46,9 +48,9 @@ public class SecurityConfig {
                 "http://localhost:3000", // Next.js 클라이언트
                 "http://localhost:8080", // 추가 허용 포트
                 "http://localhost:8081",  // 추가 허용 포트
-                "http://192.168.0.8:3000",
-                "http://192.168.0.8:8080",
-                "http://192.168.0.8:8081"
+                "http://192.168.0.11:3000",
+                "http://192.168.0.11:8080",
+                "http://192.168.0.11:8081"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

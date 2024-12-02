@@ -19,6 +19,11 @@ const NAVIGATION: Navigation = [
     icon: <ShoppingCartIcon />,
   },
   {
+    segment: 'signup',
+    title: '회원 가입',
+    icon: <ShoppingCartIcon />,
+  },
+  {
     segment: 'attendance',
     title: '출근/퇴근',
     icon: <ShoppingCartIcon />,
