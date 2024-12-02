@@ -14,9 +14,9 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:3000", // Next.js URL
                         "http://localhost:8080", // 추가 허용 포트
                         "http://localhost:8081",  // 추가 허용 포트
-                        "http://192.168.0.8:3000",
-                        "http://192.168.0.8:8080",
-                        "http://192.168.0.8:8081"
+                        "http://192.168.0.11:3000",
+                        "http://192.168.0.11:8080",
+                        "http://192.168.0.11:8081"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메소드
                 .allowedHeaders("*")

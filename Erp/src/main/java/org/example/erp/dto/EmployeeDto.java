@@ -1,6 +1,7 @@
 package org.example.erp.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.erp.entity.Attendance;
@@ -45,10 +46,8 @@ public class EmployeeDto {
     private Long salary;
 
     private Long incentive;
-
-    private LocalDateTime hireDate;
-
-    private LocalDateTime resignationDate;
+    private LocalDate hireDate;
+    private LocalDate resignationDate;
 
     private double annualLeave;
 
