@@ -22,9 +22,27 @@ public class AttendanceService {
     private final EmployeeRepository employeeRepository;
 
     public Attendance markLogin(Long employeeId) {
+        // 오늘 날짜의 시작 시간과 끝 시간 계산
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay(); // 오늘의 00:00:00
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX); // 오늘의 23:59:59
+
+        // 오늘 로그인 기록이 있는지 확인
+        boolean alreadyLoggedIn = attendanceRepository.existsByEmployeeIdAndLoginTimeBetween(
+                employeeId, startOfDay, endOfDay
+        );
+
+        if (alreadyLoggedIn) {
+            return null;
+        }
+
+        // 새 출근 기록 생성
         Attendance attendance = new Attendance();
-        attendance.setEmployee(this.employeeRepository.findById(employeeId).get());
+        attendance.setEmployee(this.employeeRepository.findById(employeeId).orElseThrow(
+                () -> new IllegalArgumentException("해당 직원이 존재하지 않습니다.")
+        ));
         attendance.setLoginTime(LocalDateTime.now());
+
         return attendanceRepository.save(attendance);
     }
 

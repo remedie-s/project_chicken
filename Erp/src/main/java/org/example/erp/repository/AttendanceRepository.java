@@ -19,5 +19,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     @Query("SELECT a FROM Attendance a WHERE a.employee.id = :employeeId AND a.loginTime BETWEEN :startOfDay AND :endOfDay")
     Optional<Attendance> findTodayAttendance(Long employeeId, LocalDateTime startOfDay, LocalDateTime endOfDay);
+
+    boolean existsByEmployeeIdAndLoginTimeBetween(Long employeeId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }
 
