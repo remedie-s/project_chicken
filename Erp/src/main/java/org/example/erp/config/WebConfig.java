@@ -11,9 +11,11 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**") // API 경로
                 .allowedOrigins(
                         "http://localhost:3000", // Next.js URL
+                        "http://localhost:3001", // Erp 클라이언트
                         "http://localhost:8080", // 추가 허용 포트
                         "http://localhost:8081",  // 추가 허용 포트
                         "http://192.168.0.11:3000",
+                        "http://192.168.0.11:3001", // Erp 클라이언트
                         "http://192.168.0.11:8080",
                         "http://192.168.0.11:8081"
                 )
