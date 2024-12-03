@@ -188,11 +188,11 @@ services:
     networks:
       - app-network
 
-  shopFront:
+  shopfront:
     build:
       context: ./frontend  # Dockerfile이 위치한 경로
       dockerfile: Dockerfile  # Dockerfile 파일명 (기본적으로 Dockerfile이므로 생략 가능)
-    container_name: shopFront
+    container_name: shopfront
     ports:
       - "3000:3000"
     volumes:
@@ -202,16 +202,16 @@ services:
     networks:
       - app-network
 
-  erpFront:
+  erpfront:
     build:
-      context: ./toolpad  # Dockerfile이 위치한 경로
+      context: ./erpfornt/my-next-app  # Dockerfile이 위치한 경로
       dockerfile: Dockerfile  # Dockerfile 파일명 (기본적으로 Dockerfile이므로 생략 가능)
-    container_name: erpFront
+    container_name: erpfront
     ports:
       - "3001:3001"
     volumes:
-      - ./toolpad:/app  # 로컬 소스 마운트
-      - /app/node_modules  # node_modules 공유
+      - ./erpfornt/my-next-app:/src  # 로컬 소스 마운트
+      - /node_modules  # node_modules 공유
     working_dir: /app
     networks:
       - app-network
