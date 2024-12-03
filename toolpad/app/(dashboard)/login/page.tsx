@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation'; // next/router가 아님!
+
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { login } from '@/app/api/api';
 import {loginData} from "@/app/types/datatype";
@@ -46,7 +47,7 @@ export default function LoginPage(): JSX.Element {
 
             // 3초 후 메인 페이지로 이동
             setTimeout(() => {
-                router.push('/dashboard');
+                router.push('/');
             }, 3000);
         } catch (error: any) {
             setErrorMessage(error.message || '로그인 실패: 이메일 또는 비밀번호를 확인하세요.');

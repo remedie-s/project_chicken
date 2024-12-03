@@ -50,9 +50,9 @@ public class Employee implements UserDetails {
     // 인센티브
     private Long incentive;
     // 고용일
-    private LocalDateTime hireDate;
+    private LocalDate hireDate;
     // 사퇴일
-    private LocalDateTime resignationDate;
+    private LocalDate resignationDate;
     // 연가 남아있는 날짜
     private double annualLeave;
     // 근무 평점(100점 만점)

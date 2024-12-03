@@ -79,6 +79,17 @@ public class EmployeeController {
         List<Attendance> attendances = attendanceService.getAttendanceByEmployee(employeeId);
         return ResponseEntity.ok(attendances);
     }
+    @PostMapping("/attendance")
+    public ResponseEntity<?> getAttendance(@AuthenticationPrincipal Employee employee) {
+        log.info("근태 기록 조회 요청: Employee ID={}", employee.getId());
+        List<Attendance> attendanceList = attendanceService.getAttendanceByEmployee( employee.getId());
+        // 휴가 기록 조회
+        List<Leave> leaveList = leaveService.findMonthlyLeave(employee.getId(), 2024, 12);
+        return ResponseEntity.ok(Map.of(
+                "attendance", attendanceList,
+                "leaves", leaveList
+        ));
+    }
 
     @PostMapping("/attendance/login")
     public ResponseEntity<String> markAttendanceLogin(@AuthenticationPrincipal Employee employee) {
@@ -87,7 +98,11 @@ public class EmployeeController {
             return ResponseEntity.badRequest().body("Employee not found.");
         }
 
-        attendanceService.markLogin(employee.getId());
+
+        Attendance attendance = attendanceService.markLogin(employee.getId());
+        if(attendance==null){
+            return ResponseEntity.badRequest().body("오늘 이미 로그인 기록이 있습니다.");
+        }
         log.info("Attendance marked for login: {}", employee.getEmail());
         return ResponseEntity.ok("Attendance login successful.");
     }
@@ -157,25 +172,33 @@ public class EmployeeController {
         }
         return ResponseEntity.ok("Remaining annual leave: " + employeeDto.getAnnualLeave());
     }
-    @GetMapping("/attendance-leave/{employeeId}/{year}/{month}")
+    @PostMapping("/getAttLea/{year}/{month}")
     public ResponseEntity<?> getMonthlyAttendanceAndLeave(
-            @PathVariable Long employeeId,
             @PathVariable int year,
-            @PathVariable int month) {
+            @PathVariable int month,
+            @AuthenticationPrincipal Employee employee) {
+        Long employeeId = employee.getId();
 
         log.info("근태 및 휴가 기록 조회 요청: Employee ID={}, Year={}, Month={}", employeeId, year, month);
 
         // 근태 기록 조회
         List<Attendance> attendanceList = attendanceService.findMonthlyAttendance(employeeId, year, month);
+        for (Attendance attendance : attendanceList) {
+            log.info(attendance.getLoginTime().toString());
+            log.info(attendance.getLogoutTime().toString());
 
+        }
+        log.info(attendanceList.toString());
         // 휴가 기록 조회
         List<Leave> leaveList = leaveService.findMonthlyLeave(employeeId, year, month);
-
+        log.info(leaveList.toString());
         // 결과 반환
         return ResponseEntity.ok(Map.of(
                 "attendance", attendanceList,
                 "leaves", leaveList
         ));
     }
+
+
 
 }

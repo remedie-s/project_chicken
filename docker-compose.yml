@@ -45,7 +45,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       # 호스트 머신의 IP나 '0.0.0.0'으로 모든 외부 접근 허용
       #KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://host.docker.internal:9092  # localhost -> host.docker.internal
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://192.168.0.8:9092  # localhost -> host.docker.internal
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://192.168.0.11:9092  # localhost -> host.docker.internal
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
@@ -70,7 +70,7 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       #KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:29093,EXTERNAL://host.docker.internal:9093  # localhost -> host.docker.internal
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:29093,EXTERNAL://192.168.0.8:9093  # localhost -> host.docker.internal
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:29093,EXTERNAL://192.168.0.11:9093  # localhost -> host.docker.internal
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:29093,EXTERNAL://0.0.0.0:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
@@ -95,7 +95,7 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       #KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:29094,EXTERNAL://host.docker.internal:9094  # localhost -> host.docker.internal
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:29094,EXTERNAL://192.168.0.8:9094  # localhost -> host.docker.internal
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:29094,EXTERNAL://192.168.0.11:9094  # localhost -> host.docker.internal
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:29094,EXTERNAL://0.0.0.0:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
@@ -188,15 +188,29 @@ services:
     networks:
       - app-network
 
-  nextjs:
+  shopFront:
     build:
       context: ./frontend  # Dockerfile이 위치한 경로
       dockerfile: Dockerfile  # Dockerfile 파일명 (기본적으로 Dockerfile이므로 생략 가능)
-    container_name: nextjs
+    container_name: shopFront
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app  # 로컬 소스 마운트
+      - /app/node_modules  # node_modules 공유
+    working_dir: /app
+    networks:
+      - app-network
+
+  erpFront:
+    build:
+      context: ./toolpad  # Dockerfile이 위치한 경로
+      dockerfile: Dockerfile  # Dockerfile 파일명 (기본적으로 Dockerfile이므로 생략 가능)
+    container_name: erpFront
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./toolpad:/app  # 로컬 소스 마운트
       - /app/node_modules  # node_modules 공유
     working_dir: /app
     networks:
