@@ -13,6 +13,7 @@ const AttendancePage = () => {
     const [attendanceData, setAttendanceData] = useState<SimpleAttendanceLeaveData | null>(null);
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
     const [loading, setLoading] = useState(true);
+    const [states, setStates] = useState(0);
 
     useEffect(() => {
         const fetchAttendanceData = async () => {
@@ -31,13 +32,13 @@ const AttendancePage = () => {
         };
 
         fetchAttendanceData();
-    }, [currentDate]);
+    }, [currentDate, states]);
 
     const processAttendanceData = (data: AttendanceLeaveData): SimpleAttendanceLeaveData => {
         return {
             attendance: data.attendance.map((att) => ({
                 date: new Date(att.loginTime).toLocaleDateString('en-CA'),
-                status: att.leaveCompany ? "Leave" : "Present",
+                status: att.leaveCompany ? "퇴근" : "출근중",  // leaveCompany가 true면 '퇴근', false면 '출근중'
             })),
             leaves: data.leaves.map((leave) => ({
                 date: leave.startDate,
@@ -54,15 +55,26 @@ const AttendancePage = () => {
         }
     };
 
-    const getDayData = (date: Date): string | null => {
+    const getDayData = (date: Date): string | React.ReactNode | null => {
         if (!attendanceData) return null;
 
         const dateString = date.toLocaleDateString('en-CA');
         const attendance = attendanceData.attendance.find((att) => att.date === dateString);
         const leave = attendanceData.leaves.find((leave) => leave.date === dateString);
 
-        if (attendance) return `Attendance: ${attendance.status}`;
-        if (leave) return 'Leave: Approved';
+        // 출근중일 경우 초록색 원, 퇴근일 경우 회색 원 표시
+        if (attendance) {
+            if (attendance.status === "출근중") {
+                return <div style={{ backgroundColor: 'green', borderRadius: '50%', width: '15px', height: '15px', margin: '0 auto' }} />;
+            } else if (attendance.status === "퇴근") {
+                return <div style={{ backgroundColor: 'gray', borderRadius: '50%', width: '15px', height: '15px', margin: '0 auto' }} />;
+            }
+        }
+
+        // 휴가인 경우
+        if (leave) {
+            return <div style={{ backgroundColor: 'yellow', borderRadius: '50%', width: '15px', height: '15px', margin: '0 auto' }} />;
+        }
 
         return null;
     };
@@ -70,6 +82,7 @@ const AttendancePage = () => {
     const handleWorkChange = async () => {
         try {
             const response = await markAttendanceLogin();
+            setStates(1);
             console.log('출근 체크 완료:', response);
         } catch (error) {
             console.error('출근 처리 실패:', error);
@@ -79,6 +92,7 @@ const AttendancePage = () => {
     const handleOutChange = async () => {
         try {
             const response = await markAttendanceLogout();
+            setStates(2);
             console.log('퇴근 체크 완료:', response);
         } catch (error) {
             console.error('퇴근 처리 실패:', error);
@@ -103,12 +117,7 @@ const AttendancePage = () => {
                     locale="ko-KR"
                     tileContent={({ date, view }) => {
                         if (view === 'month') {
-                            const dayData = getDayData(date);
-                            return dayData ? (
-                                <div style={{ fontSize: '0.75rem', textAlign: 'center' }}>
-                                    {dayData}
-                                </div>
-                            ) : null;
+                            return getDayData(date);  // 날짜에 맞는 상태 아이콘/색상 반환
                         }
                         return null;
                     }}

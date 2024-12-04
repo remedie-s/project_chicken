@@ -22,5 +22,6 @@ public class AttendanceDto {
     private LocalDateTime loginTime;
     private LocalDateTime logoutTime;
     private boolean leaveCompany;
+    private String status;
     private Employee employee;
 }

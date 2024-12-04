@@ -47,7 +47,10 @@ export default function LoginPage(): JSX.Element {
 
             // 3초 후 메인 페이지로 이동
             setTimeout(() => {
-                router.push('/');
+                console.log('Navigating to main page...');
+                if (typeof window !== 'undefined') {
+                    router.push('/loginsuccess');
+                }
             }, 3000);
         } catch (error: any) {
             setErrorMessage(error.message || '로그인 실패: 이메일 또는 비밀번호를 확인하세요.');

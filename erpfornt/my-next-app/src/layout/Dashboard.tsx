@@ -17,9 +17,9 @@ import {
 } from "@mui/icons-material";
 
 // Page Components
-import LoginPage from "@/pages/login/login";
-import LogoutPage from "@/pages/login/logout";
-import SignupPage from "@/pages/login/signup";
+import LoginPage from "@/pages/login";
+import LogoutPage from "../pages/logout";
+import SignupPage from "../pages/signup";
 import AttendancePage from "@/pages/attendance/index";
 import ProductCreatePage from "@/pages/products/create";
 import LeavePage from "@/pages/leave/index";
@@ -30,6 +30,7 @@ import type { DemoProps, IPage } from "@/api/datatype";
 import type { Navigation, Router } from "@toolpad/core";
 import ProductList from "@/pages/products/productList";
 import Leave from "@/pages/leave/index";
+import Notice from "@/pages/notice";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -111,10 +112,11 @@ function DemoPageContent({ pathname, session }: IPage) {
             return <ProductList />;
         case "/leave":
             return <LeavePage />;
-        case "/attendance":
-            return <AttendancePage />;
+
         case "/orders":
             return <OrdersPage />;
+        case "/dashboard":
+            return <Notice />;
         default:
             return (
                 <Box sx={{ py: 4, textAlign: "center" }}>
@@ -165,7 +167,7 @@ export default function DashboardLayoutBasic(props: DemoProps) {
 
     React.useEffect(() => {
         if (typeof window !== "undefined" && !session) {
-            router.navigate("/login/login");
+            router.navigate("/login");
         }
     }, [router, session]);
 

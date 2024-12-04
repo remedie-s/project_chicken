@@ -26,6 +26,7 @@ public class Attendance {
     private LocalDateTime logoutTime;
     // 휴가 여부 (leave 예약어라 에러남)
     private boolean leaveCompany;
+
     // 고용자 테이블과 연결
     @ManyToOne
     private Employee employee;
