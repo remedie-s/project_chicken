@@ -3,6 +3,7 @@ import {
     logout
 } from "@/api/api";
 import { useEffect } from "react";
+import {router} from "next/client";
 
 const deleteSession = () => {
     console.log("세션을 클리어합니다.")
@@ -17,7 +18,12 @@ const LogoutPage =  ()=>{
                 console.log("로그아웃 요청을 합니다.")
                 await logout();
                 deleteSession();
-                Router.push("/");
+                setTimeout(() => {
+                    console.log('Navigating to main page...');
+                    if (typeof window !== 'undefined') {
+                        router.push('/loginsuccess');
+                    }
+                }, 3000);
 
             }
             catch(error:any){

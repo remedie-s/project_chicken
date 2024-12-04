@@ -1,28 +1,12 @@
-import ResponsiveGrid from "@/layout/ResponsiveGrid";
-import Dashboard from "../layout/Dashboard";
-import { AppProvider, PageContainer } from "@toolpad/core";
-import { Box, Typography } from "@mui/material";
+import { useRouter } from 'next/navigation';
+import {useEffect} from "react";
+const pure = ()=>{
+    const router = useRouter();
 
-const Main = () => {
-    return (
-        <div>
-            <Dashboard>
-                <ResponsiveGrid>
-                    <Box>
-                        <br />
-                        <Typography
-                            variant="h4"
-                            sx={{ fontFamily: "Open Sans, sans-serif" }}
-                        >
-                            ERP 사이트 입니다
-                        </Typography>
-                    </Box>
+    useEffect(() => {
+        router.push('/main');
+    }, [router]);
 
-
-                </ResponsiveGrid>
-            </Dashboard>
-        </div>
-    );
-};
-
-export default Main;
+    return null; // 화면에 아무것도 표시하지 않음
+}
+export default pure;

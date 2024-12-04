@@ -1,10 +1,9 @@
-'use client';
 import React, { useState } from 'react';
 import { Button, TextField, Box, Grid, Typography } from '@mui/material';
 import { productReg } from '@/api/api';
 import { productRegData } from '@/api/datatype';
 
-function Create(): JSX.Element {
+function Index(): JSX.Element {
     const [formData, setFormData] = useState<productRegData>({
         name: '',
         description: '',
@@ -20,8 +19,8 @@ function Create(): JSX.Element {
         cost: 0,
         partnerId: 0,
     });
-    const [loading, setLoading] = useState(false); // 로딩 상태 관리
-    const [error, setError] = useState<string | null>(null); // 오류 상태 관리
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -130,7 +129,60 @@ function Create(): JSX.Element {
                         onChange={handleChange}
                     />
                 </Grid>
-                {/* 필요한 추가 필드 */}
+                <Grid item xs={12}>
+                    <TextField
+                        label="주요 상품 번호"
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        name="mainItemNumber"
+                        value={formData.mainItemNumber}
+                        onChange={handleChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="이벤트"
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        name="event"
+                        value={formData.event}
+                        onChange={handleChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="브랜드"
+                        variant="outlined"
+                        fullWidth
+                        name="brand"
+                        value={formData.brand}
+                        onChange={handleChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="비용"
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        name="cost"
+                        value={formData.cost}
+                        onChange={handleChange}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="파트너 ID"
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        name="partnerId"
+                        value={formData.partnerId}
+                        onChange={handleChange}
+                    />
+                </Grid>
             </Grid>
             <Box sx={{ marginTop: 2 }}>
                 <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>
@@ -148,4 +200,4 @@ function Create(): JSX.Element {
     );
 }
 
-export default Create;
+export default Index;

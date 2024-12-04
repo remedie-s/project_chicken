@@ -40,7 +40,7 @@ const columns: GridColDef<productData>[] = [
     { field: 'brand', headerName: 'Brand', width: 150 },
 ];
 
-export default function ProductList(): JSX.Element {
+export default function Index(): JSX.Element {
     const [rows, setRows] = React.useState<productData[]>([]);
 
     // 데이터 가져오기
