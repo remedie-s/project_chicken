@@ -103,11 +103,18 @@ export const login = async (loginUserData:loginData)=>{
 
 export const logout = async ()=> {
     try {
-        const response = await api.get(`${API_URL}/auth/logout`, {
+        const refreshToken = sessionStorage.getItem("refreshToken"); // 세션 스토리지에서 리프레시 토큰 가져오기
+        if (!refreshToken) throw new Error("Refresh token is missing");
+        const response = await api.post(`${API_URL}/auth/logout`, {refreshToken},{
             headers: {
                 'Content-Type': 'application/json',
             },
         });
+        // 로그아웃 성공 시 세션 스토리지 비우기
+        sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("refreshToken");
+        sessionStorage.removeItem("email");
+        sessionStorage.removeItem("name");
         return response.data; // 성공시
     } catch (error: any) {
         throw error.response.data; // 실패시

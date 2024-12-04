@@ -1,11 +1,10 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { Box, Typography } from '@mui/material';
 import { getMonthlyAttendanceAndLeave, markAttendanceLogin, markAttendanceLogout } from "../../api/api";
 import { AttendanceLeaveData, SimpleAttendanceLeaveData } from "../../api/datatype";
-import { Button } from "@mui/base";
+import { Button } from "@mui/material"; // @mui/material에서 Button 가져오기
+
 import 'react-calendar/dist/Calendar.css';
 
 const AttendancePage = () => {
@@ -35,15 +34,29 @@ const AttendancePage = () => {
     }, [currentDate, states]);
 
     const processAttendanceData = (data: AttendanceLeaveData): SimpleAttendanceLeaveData => {
+        const expandedLeaves = data.leaves.flatMap((leave) => {
+            const start = new Date(leave.startDate);
+            const end = new Date(leave.endDate);
+            const dates = [];
+
+            for (let date = start; date <= end; date.setDate(date.getDate() + 1)) {
+                dates.push({
+                    date: new Date(date).toLocaleDateString('en-CA'),
+                    status: "Leave",
+                });
+            }
+
+            return dates;
+        });
+
         return {
             attendance: data.attendance.map((att) => ({
                 date: new Date(att.loginTime).toLocaleDateString('en-CA'),
-                status: att.leaveCompany ? "퇴근" : "출근중",  // leaveCompany가 true면 '퇴근', false면 '출근중'
+                loginTime: att.loginTime,
+                logoutTime: att.logoutTime,
+                status: att.leaveCompany ? "퇴근" : "출근중",
             })),
-            leaves: data.leaves.map((leave) => ({
-                date: leave.startDate,
-                status: "Leave",
-            })),
+            leaves: expandedLeaves,
         };
     };
 
@@ -62,7 +75,6 @@ const AttendancePage = () => {
         const attendance = attendanceData.attendance.find((att) => att.date === dateString);
         const leave = attendanceData.leaves.find((leave) => leave.date === dateString);
 
-        // 출근중일 경우 초록색 원, 퇴근일 경우 회색 원 표시
         if (attendance) {
             if (attendance.status === "출근중") {
                 return <div style={{ backgroundColor: 'green', borderRadius: '50%', width: '15px', height: '15px', margin: '0 auto' }} />;
@@ -71,12 +83,35 @@ const AttendancePage = () => {
             }
         }
 
-        // 휴가인 경우
         if (leave) {
             return <div style={{ backgroundColor: 'yellow', borderRadius: '50%', width: '15px', height: '15px', margin: '0 auto' }} />;
         }
 
         return null;
+    };
+
+    const getSelectedDayInfo = () => {
+        if (!selectedDate || !attendanceData) return null;
+
+        const dateString = selectedDate.toLocaleDateString('en-CA');
+        const attendance = attendanceData.attendance.find((att) => att.date === dateString);
+
+        if (!attendance) return "No attendance data available for this date.";
+
+        const loginTime = attendance.loginTime
+            ? new Date(attendance.loginTime).toLocaleTimeString('ko-KR')
+            : "출근 기록 없음";
+
+        const logoutTime = attendance.logoutTime
+            ? new Date(attendance.logoutTime).toLocaleTimeString('ko-KR')
+            : "퇴근 기록 없음";
+
+        return (
+            <>
+                <Typography>출근 시간: {loginTime}</Typography>
+                <Typography>퇴근 시간: {logoutTime}</Typography>
+            </>
+        );
     };
 
     const handleWorkChange = async () => {
@@ -117,7 +152,7 @@ const AttendancePage = () => {
                     locale="ko-KR"
                     tileContent={({ date, view }) => {
                         if (view === 'month') {
-                            return getDayData(date);  // 날짜에 맞는 상태 아이콘/색상 반환
+                            return getDayData(date);
                         }
                         return null;
                     }}
@@ -132,11 +167,15 @@ const AttendancePage = () => {
                             ? selectedDate.toLocaleDateString()
                             : 'No date selected'}
                     </Typography>
+
+                    <Box mt={2}>
+                        {getSelectedDayInfo()}
+                    </Box>
                 </Box>
             </Box>
             <Box>
-                <Button onClick={handleWorkChange}>출근</Button>
-                <Button onClick={handleOutChange}>퇴근</Button>
+                <Button variant="contained" onClick={handleWorkChange}>출근</Button>
+                <Button variant="contained" onClick={handleOutChange}>퇴근</Button>
             </Box>
         </div>
     );
