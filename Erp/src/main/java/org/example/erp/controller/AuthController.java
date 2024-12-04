@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.EmployeeDto;
 
+import org.example.erp.dto.TokenRequestDto;
 import org.example.erp.dto.TokenResponseDto;
 import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
@@ -82,7 +83,9 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, username,this.employeeService.findByEmail(username).getName()));
     }
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody String refreshToken) {
+    public ResponseEntity<String> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+        String refreshToken = tokenRequestDto.getRefreshToken();
+
         // 리프레시 토큰 검증
         if (!jwtUtil.validateRefreshToken(refreshToken)) {
             return ResponseEntity.badRequest().body("Invalid refresh token.");

@@ -21,14 +21,14 @@ import LoginPage from "@/pages/login";
 import LogoutPage from "../pages/logout";
 import SignupPage from "../pages/signup";
 import AttendancePage from "@/pages/attendance/index";
-import ProductCreatePage from "@/pages/products/create";
+import ProductCreatePage from "../pages/products/create";
 import LeavePage from "@/pages/leave/index";
 import OrdersPage from "@/pages/orders/index";
 
 // 타입 정의
 import type { DemoProps, IPage } from "@/api/datatype";
 import type { Navigation, Router } from "@toolpad/core";
-import ProductList from "@/pages/products/productList";
+import Index from "@/pages/products";
 import Leave from "@/pages/leave/index";
 import Notice from "@/pages/notice";
 
@@ -64,7 +64,7 @@ function useSession() {
 function SidebarFooter({ mini }: SidebarFooterProps) {
     return (
         <Typography variant="caption" sx={{ m: 1, whiteSpace: "nowrap", fontSize: "1.0em" }}>
-            {mini ? "© MUI" : `© ${new Date().getFullYear()} Made with love by Jaehee Kim`}
+            {mini ? "© MUI" : `© ${new Date().getFullYear()} Made with love by 4C Creator`}
         </Typography>
     );
 }
@@ -109,7 +109,7 @@ function DemoPageContent({ pathname, session }: IPage) {
         case "/productCreate":
             return <ProductCreatePage />;
         case "/products":
-            return <ProductList />;
+            return <Index />;
         case "/leave":
             return <LeavePage />;
 
