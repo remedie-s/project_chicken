@@ -167,9 +167,18 @@ export interface Attendance {
 export interface Leave {
 
     id: number;
+    reason: string;
     startDate: string;
     endDate: string;
-    reason: string;// 휴가 사유
+    employee: Employee; // employee 속성 추가
+}
+export interface Employee {
+    id: number;
+    name: string;
+    email: string;
+    annualLeave:number;
+    authorities: string[];
+    // 다른 직원 정보도 필요에 따라 추가할 수 있습니다.
 }
 
 export interface AttendanceLeaveData {
@@ -178,14 +187,17 @@ export interface AttendanceLeaveData {
 }
 // 출근/퇴근 및 휴가 상태만 필요한 경우
 export interface SimpleAttendance {
-    date: string; // 날짜
-    status: string; // 출석 상태 ("Present" 또는 "Leave")
+    date: string;
+    loginTime: string| null; // null 허용;
+    logoutTime: string | null; // null 허용
+    status: string;
 }
+
 
 // 단순화된 AttendanceLeaveData
 export interface SimpleAttendanceLeaveData {
     attendance: SimpleAttendance[];
-    leaves: SimpleAttendance[];
+    leaves: { date: string; status: string }[];
 }
 export interface DemoProps {
     /**

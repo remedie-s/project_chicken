@@ -4,7 +4,7 @@ import { Button, TextField, Box, Grid, Typography } from '@mui/material';
 import { productReg } from '@/api/api';
 import { productRegData } from '@/api/datatype';
 
-function Create(): JSX.Element {
+function Index(): JSX.Element {
     const [formData, setFormData] = useState<productRegData>({
         name: '',
         description: '',
@@ -148,4 +148,4 @@ function Create(): JSX.Element {
     );
 }
 
-export default Create;
+export default Index;
