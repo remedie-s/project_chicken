@@ -2,6 +2,7 @@ package org.example.erp.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.erp.dto.AttendanceDto;
 import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
 import org.example.erp.repository.AttendanceRepository;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,6 +43,7 @@ public class AttendanceService {
         attendance.setEmployee(this.employeeRepository.findById(employeeId).orElseThrow(
                 () -> new IllegalArgumentException("해당 직원이 존재하지 않습니다.")
         ));
+        attendance.setLeaveCompany(false);
         attendance.setLoginTime(LocalDateTime.now());
 
         return attendanceRepository.save(attendance);
@@ -52,12 +55,20 @@ public class AttendanceService {
         return attendanceRepository.findByEmployeeId(employeeId);
     }
 
-    public List<Attendance> findMonthlyAttendance(Long employeeId, int year, int month) {
+    public List<AttendanceDto> findMonthlyAttendance(Long employeeId, int year, int month) {
         LocalDateTime startOfMonth = LocalDate.of(year, month, 1).atStartOfDay();
         LocalDateTime endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.toLocalDate().lengthOfMonth())
                 .with(LocalTime.MAX);
 
-        return attendanceRepository.findByEmployeeIdAndLoginTimeBetween(employeeId, startOfMonth, endOfMonth);
+        List<Attendance> attendanceList = attendanceRepository.findByEmployeeIdAndLoginTimeBetween(employeeId, startOfMonth, endOfMonth);
+        return attendanceList.stream().map(att -> {
+            AttendanceDto dto = new AttendanceDto();
+            dto.setLoginTime(att.getLoginTime());
+            dto.setLogoutTime(att.getLogoutTime());
+            dto.setStatus(att.getLogoutTime() == null ? "Present (Not logged out)" : "Completed");
+            dto.setLeaveCompany(att.isLeaveCompany());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     public Attendance findTodayAttendance(Long employeeId) {
@@ -74,6 +85,7 @@ public class AttendanceService {
         Attendance attendance = attendanceRepository.findById(attendanceId)
                 .orElseThrow(() -> new RuntimeException("Attendance record not found."));
         attendance.setLogoutTime(LocalDateTime.now());
+        attendance.setLeaveCompany(true);
         return attendanceRepository.save(attendance);
     }
 }

@@ -3,6 +3,7 @@ package org.example.erp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.erp.dto.AttendanceDto;
 import org.example.erp.dto.EmployeeDto;
 import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
@@ -15,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -128,19 +130,20 @@ public class EmployeeController {
 
     @PostMapping("/leave/request")
     public ResponseEntity<String> requestLeave(
-            @RequestParam Long employeeId,
             @RequestParam String reason,
             @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
-
+            @RequestParam LocalDate endDate,
+            @AuthenticationPrincipal Employee employee) {
+        Long employeeId = employee.getId();
         leaveService.requestLeave(employeeId, reason, startDate, endDate);
         log.info("Leave requested for Employee ID: {} | Reason: {} | Start: {} | End: {}",
                 employeeId, reason, startDate, endDate);
         return ResponseEntity.ok("Leave requested successfully.");
     }
     // 특정 직원의 휴가 조회
-    @GetMapping("/leave/{employeeId}")
-    public ResponseEntity<?> getEmployeeLeaves(@PathVariable Long employeeId) {
+    @GetMapping("/leave")
+    public ResponseEntity<?> getEmployeeLeaves(@AuthenticationPrincipal Employee employee) {
+        Long employeeId = employee.getId();
         log.info("휴가 조회 요청: Employee ID={}", employeeId);
         List<Leave> leaves = leaveService.getLeavesByEmployee(employeeId);
         return ResponseEntity.ok(leaves);
@@ -182,12 +185,8 @@ public class EmployeeController {
         log.info("근태 및 휴가 기록 조회 요청: Employee ID={}, Year={}, Month={}", employeeId, year, month);
 
         // 근태 기록 조회
-        List<Attendance> attendanceList = attendanceService.findMonthlyAttendance(employeeId, year, month);
-        for (Attendance attendance : attendanceList) {
-            log.info(attendance.getLoginTime().toString());
-            log.info(attendance.getLogoutTime().toString());
+        List<AttendanceDto> attendanceList = attendanceService.findMonthlyAttendance(employeeId, year, month);
 
-        }
         log.info(attendanceList.toString());
         // 휴가 기록 조회
         List<Leave> leaveList = leaveService.findMonthlyLeave(employeeId, year, month);

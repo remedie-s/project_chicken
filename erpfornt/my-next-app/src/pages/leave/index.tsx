@@ -11,13 +11,12 @@ const LeavePage: React.FC = () => {
     const [reason, setReason] = useState<string>('');
     const [remainingLeaves, setRemainingLeaves] = useState<number>(0);
     const [leaveList, setLeaveList] = useState<Leave[]>([]);  // 기본값을 빈 배열로 설정
-    const employeeId = 1; // Replace with dynamic employee ID
 
     // 직원의 남은 연차일 및 휴가 목록 불러오기
     useEffect(() => {
         const fetchLeaves = async () => {
             try {
-                const leaves = await getEmployeeLeaves(employeeId);
+                const leaves = await getEmployeeLeaves();
                 setRemainingLeaves(leaves.remaining); // 남은 연차일
                 setLeaveList(leaves.list || []); // 휴가 목록, 기본값 빈 배열로 설정
             } catch (error) {
@@ -26,7 +25,7 @@ const LeavePage: React.FC = () => {
         };
 
         fetchLeaves();
-    }, [employeeId]);
+    }, []);
 
     // 휴가 요청
     const handleRequestLeave = async () => {
@@ -36,13 +35,13 @@ const LeavePage: React.FC = () => {
         }
 
         try {
-            await requestLeave(employeeId, reason, selectedDate.toISOString().split('T')[0], endDate);
+            await requestLeave(reason, selectedDate.toISOString().split('T')[0], endDate);
             alert('휴가 요청이 성공적으로 제출되었습니다.');
             setReason('');
             setSelectedDate(null);
             setEndDate('');
             // 휴가 목록 갱신
-            const leaves = await getEmployeeLeaves(employeeId);
+            const leaves = await getEmployeeLeaves();
             setLeaveList(leaves.list || []); // 기본값 빈 배열로 설정
         } catch (error) {
             alert(`휴가 요청 실패: ${error}`);
@@ -50,12 +49,12 @@ const LeavePage: React.FC = () => {
     };
 
     // 휴가 취소
-    const handleCancelLeave = async (leaveId: number) => {
+    const handleCancelLeave = async (id:number) => {
         try {
-            await cancelLeave(leaveId);
+            await cancelLeave(id);
             alert('휴가가 성공적으로 취소되었습니다.');
             // 휴가 목록 갱신
-            const leaves = await getEmployeeLeaves(employeeId);
+            const leaves = await getEmployeeLeaves();
             setLeaveList(leaves.list || []); // 기본값 빈 배열로 설정
         } catch (error) {
             alert(`휴가 취소 실패: ${error}`);

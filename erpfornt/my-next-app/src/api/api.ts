@@ -356,7 +356,6 @@ export const getMonthlyAttendance = async (year:any,month:any) => {
 };
 
 export const requestLeave = async (
-    employeeId: number,
     reason: string,
     startDate: string,
     endDate: string
@@ -366,7 +365,7 @@ export const requestLeave = async (
             `${API_URL}/employee/leave/request`,
             null,
             {
-                params: { employeeId, reason, startDate, endDate },
+                params: { reason, startDate, endDate },
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -377,9 +376,9 @@ export const requestLeave = async (
         throw error.response.data; // 실패 시 에러 반환
     }
 };
-export const getEmployeeLeaves = async (employeeId: number) => {
+export const getEmployeeLeaves = async () => {
     try {
-        const response = await api.get(`${API_URL}/employee/leave/${employeeId}`, {
+        const response = await api.get(`${API_URL}/employee/leave`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -390,7 +389,7 @@ export const getEmployeeLeaves = async (employeeId: number) => {
     }
 };
 
-export const cancelLeave = async (leaveId: number) => {
+export const cancelLeave = async (leaveId:number) => {
     try {
         const response = await api.delete(`${API_URL}/employee/leave/cancel/${leaveId}`, {
             headers: {
