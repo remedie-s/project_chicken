@@ -82,12 +82,12 @@ export default function FinancesCreate(): JSX.Element {
     return (
         <Box sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>
-                신규 거래처 등록
+                신규 재산등록
             </Typography>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
-                        label="거래처 이름"
+                        label="재산 이름"
                         name="name"
                         value={fianceData.name}
                         onChange={handleChange}

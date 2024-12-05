@@ -55,8 +55,8 @@ export type productData = {
 }
 export type modifyOrderData = {
     id: number;
-    invoice:string;
-    status: string;
+    invoice?:string;
+    status?: string;
 
 }
 export type EmployeeDto = {
@@ -103,7 +103,7 @@ export type PartnerDto={
     contactEnd: string;
 }
 export type OrdersDto={
-    id?: number;
+    id: number;
     quantity: number;          // 주문 수량
     price: number;             // 주문 시 원가격
     discount: number;          // 주문 시 할인 가격
@@ -117,6 +117,7 @@ export type OrdersDto={
     productId: number;         // 상품 ID
 
 }
+
 export type ProductDto={
     id?: number;                  // 상품 ID
     name: string;                // 상품명
