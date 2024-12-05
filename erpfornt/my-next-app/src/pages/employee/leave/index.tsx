@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { requestLeave, getEmployeeLeaves, cancelLeave } from "../../api/api";
-import { Leave } from "../../api/datatype";
+import { requestLeave, getEmployeeLeaves, cancelLeave } from "../../../api/api";
+import { Leave } from "../../../api/datatype";
 
 const LeavePage: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);

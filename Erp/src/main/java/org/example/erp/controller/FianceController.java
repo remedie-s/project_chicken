@@ -25,6 +25,7 @@ import java.util.Map;
 public class FianceController {
     private final FianceService fianceService;
 
+
     // 모든 주문 로드해서 총 판매액, 할인액, 결과액, 원가 추출 메소드
     @GetMapping("/all")
     public ResponseEntity<?> getAll(@AuthenticationPrincipal Employee employee) {
