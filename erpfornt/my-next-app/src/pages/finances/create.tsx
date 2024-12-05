@@ -23,7 +23,7 @@ import {FianceDto} from "../../api/datatype";
 
 
 
-export default function Create(): JSX.Element {
+export default function FinancesCreate(): JSX.Element {
     const [fianceData, setFianceData] = useState<FianceDto>({
         id: null,
         name: '',
