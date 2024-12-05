@@ -32,7 +32,14 @@ import Index from "@/pages/products";
 import Leave from "@/pages/employee/leave/index";
 import Notice from "@/pages/notice";
 import FinancesCreate from "@/pages/finances/create";
-import FinancePage from "@/pages/finances";
+import FinancePage from "@/pages/finances/QuarterlySummaryPage";
+import OrderSummaryPage from "@/pages/finances/QuarterlySummaryPage";
+import QuarterlySummaryPage from "@/pages/finances/QuarterlySummaryPage";
+import AnnualSummaryPage from "@/pages/finances/AnnualSummaryPage";
+import OrderTable from "@/pages/orders/quarter";
+import InnerPage from "@/pages/finances/innerPage";
+import OrdersUsersPage from "@/pages/orders/users";
+import OrdersProductPage from "@/pages/orders/product";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -116,12 +123,23 @@ function DemoPageContent({ pathname, session }: IPage) {
             return <Index />;
         case "/orders":
             return <OrdersPage />;
+
+        case "/orders/product":
+            return <OrdersProductPage />;
+        case "/orders/users":
+            return <OrdersUsersPage />;
+        case "/orders/quarter":
+            return <OrderTable />;
         case "/dashboard":
             return <Notice />;
         case "/finances/create":
             return <FinancesCreate />;
-        case "/finances/index":
-            return <FinancePage />;
+        case "/finances/innerPage":
+            return <InnerPage />;
+        case "/finances/AnnualSummaryPage":
+            return <AnnualSummaryPage />;
+        case "/finances/QuarterlySummaryPage":
+            return <QuarterlySummaryPage />;
         case "/":
             return <Notice />;
         default:
@@ -203,6 +221,11 @@ export default function DashboardLayoutBasic(props: DemoProps) {
                     title: "유저별 주문",
                     icon: <ShoppingBag />,
                 },
+                {
+                    segment: "quarter",
+                    title: "쿼터별 주문",
+                    icon: <ShoppingBag />,
+                },
             ]
         },
         // ...(userGrade === "0" ? [{ segment: "ordersAdmin", title: "주문관리", icon: <ShoppingBag /> }] : []),
@@ -233,8 +256,18 @@ export default function DashboardLayoutBasic(props: DemoProps) {
                     icon: <ShoppingBag />,
                 },
                 {
-                    segment: "index",
-                    title: "재산관리",
+                    segment: "innerPage",
+                    title: "재산 목록",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "AnnualSummaryPage",
+                    title: "연간 주문 관리",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "QuarterlySummaryPage",
+                    title: "분기별 주문 관리",
                     icon: <ShoppingBag />,
                 },
             ]
