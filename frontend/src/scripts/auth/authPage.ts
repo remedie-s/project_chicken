@@ -1,15 +1,15 @@
 const cookie = require("cookie");
 
-// 사용자 인증 확인 (페이지 기준)
-export default function authPage () {
-    if (typeof window !== 'undefined') { // 브라우저 환경 확인
-        const cookies = document.cookie ? cookie.parse(document.cookie) : {};
-        const token = cookies.accessToken;
+import authApi from "@/scripts/auth/authApi";
 
-        if (!token) {
-            alert("로그인이 필요한 페이지입니다");
-            // 이전 페이지로 리디렉트
-            window.location.href = "/user/login" ;
-        }
+async function authPage() {
+    try {
+        const response = await authApi.get("/auth/check");
+        return response.status === 200;
+    } catch (error) {
+        return false;
     }
-};
+}
+
+export default authPage;
+

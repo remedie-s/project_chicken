@@ -7,7 +7,6 @@ import org.example.erp.dto.EmployeeDto;
 import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
 import org.example.erp.entity.Leave;
-import org.example.erp.repository.EmployeeRepository;
 import org.example.erp.service.AttendanceService;
 import org.example.erp.service.EmployeeService;
 import org.example.erp.service.LeaveService;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -72,35 +72,45 @@ public class EmployeeController {
 
 
     //근태 관련
+    // 직원 근태 기록 조회
+    @GetMapping("/attendance/{employeeId}")
+    public ResponseEntity<?> getAttendanceByEmployee(@PathVariable Long employeeId) {
+        log.info("근태 기록 조회 요청: Employee ID={}", employeeId);
+        List<Attendance> attendances = attendanceService.getAttendanceByEmployee(employeeId);
+        return ResponseEntity.ok(attendances);
+    }
 
     @PostMapping("/attendance/login")
-    public ResponseEntity<String> markAttendanceLogin(@RequestBody String email) {
-        Employee employee = employeeService.findByEmail(email);
+    public ResponseEntity<String> markAttendanceLogin(@AuthenticationPrincipal Employee employee) {
+
         if (employee == null) {
             return ResponseEntity.badRequest().body("Employee not found.");
         }
 
         attendanceService.markLogin(employee.getId());
-        log.info("Attendance marked for login: {}", email);
+        log.info("Attendance marked for login: {}", employee.getEmail());
         return ResponseEntity.ok("Attendance login successful.");
     }
 
     @PostMapping("/attendance/logout")
-    public ResponseEntity<String> markAttendanceLogout(@RequestBody String email) {
-        Employee employee = employeeService.findByEmail(email);
+    public ResponseEntity<String> markAttendanceLogout(@AuthenticationPrincipal Employee employee) {
+
         if (employee == null) {
             return ResponseEntity.badRequest().body("Employee not found.");
         }
 
+        // 오늘 출석 기록 가져오기
         Attendance todayAttendance = attendanceService.findTodayAttendance(employee.getId());
         if (todayAttendance == null) {
             return ResponseEntity.badRequest().body("No login record found for today.");
         }
 
+        // 로그아웃 기록 업데이트
         attendanceService.markLogout(todayAttendance.getId());
-        log.info("Attendance marked for logout: {}", email);
+        log.info("Attendance marked for logout: {}", employee.getEmail());
         return ResponseEntity.ok("Attendance logout successful.");
     }
+
     @PostMapping("/leave/request")
     public ResponseEntity<String> requestLeave(
             @RequestParam Long employeeId,
@@ -146,6 +156,26 @@ public class EmployeeController {
             return ResponseEntity.badRequest().body("Employee not found.");
         }
         return ResponseEntity.ok("Remaining annual leave: " + employeeDto.getAnnualLeave());
+    }
+    @GetMapping("/attendance-leave/{employeeId}/{year}/{month}")
+    public ResponseEntity<?> getMonthlyAttendanceAndLeave(
+            @PathVariable Long employeeId,
+            @PathVariable int year,
+            @PathVariable int month) {
+
+        log.info("근태 및 휴가 기록 조회 요청: Employee ID={}, Year={}, Month={}", employeeId, year, month);
+
+        // 근태 기록 조회
+        List<Attendance> attendanceList = attendanceService.findMonthlyAttendance(employeeId, year, month);
+
+        // 휴가 기록 조회
+        List<Leave> leaveList = leaveService.findMonthlyLeave(employeeId, year, month);
+
+        // 결과 반환
+        return ResponseEntity.ok(Map.of(
+                "attendance", attendanceList,
+                "leaves", leaveList
+        ));
     }
 
 }

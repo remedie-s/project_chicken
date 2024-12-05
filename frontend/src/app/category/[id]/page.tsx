@@ -4,7 +4,7 @@ import {Box} from "@mui/material";
 import {useEffect, useState} from "react";
 import {ProductsDto} from "@/types/productType";
 import * as React from "react";
-import LoadingScreen from "@/components/LoadingScreen"
+import LoadingScreen from "@/components/layout/LoadingScreen"
 
 export default function page() {
 

@@ -4,7 +4,7 @@ import {Box} from "@mui/material";
 
 export default function Footer() {
     return (
-        <footer style={{margin: 0,padding: 0}}>
+        <footer style={{margin: 0, padding: 0, width: "100%"}}>
             <Box sx={{
                 backgroundColor: "#FFDF00",
                 display: "flex",
@@ -18,10 +18,10 @@ export default function Footer() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    flexBasis: { xs: '100%', sm: '40%' },
-                    textAlign: { xs: 'center', sm: 'left' }
+                    flexBasis: {xs: '100%', sm: '40%'},
+                    textAlign: {xs: 'center', sm: 'left'}
                 }}>
-                    <h1 style={{ fontSize: '1.5rem', margin: 0 }}>4C Creators</h1>
+                    <h1 style={{fontSize: '1.5rem', margin: 0}}>4C Creators</h1>
                 </Box>
                 <Box sx={{
                     width: "20%",

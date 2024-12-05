@@ -38,10 +38,10 @@ export default function Navbar() {
                         전체 카테고리
                     </Box>
                     <Button color="inherit" onClick={() => router.push("/")}>홈</Button>
-                    <Button color="inherit" onClick={() => router.push("/")}>신상품</Button>
-                    <Button color="inherit" onClick={() => router.push("/")}>이벤트 상품</Button>
-                    <Button color="inherit" onClick={() => router.push("/")}>공지사항</Button>
-                    <Button color="inherit" onClick={() => router.push("/")}>고객센터</Button>
+                    <Button color="inherit" onClick={() => router.push("/product/new")}>신상품</Button>
+                    <Button color="inherit" onClick={() => router.push("/product/event")}>이벤트 상품</Button>
+                    <Button color="inherit" onClick={() => router.push("/notice")}>공지사항</Button>
+                    <Button color="inherit" onClick={() => router.push("/service")}>고객센터</Button>
                 </Toolbar>
             </AppBar>
             <Menu

@@ -4,6 +4,7 @@ import {useTable, useSortBy, usePagination, Column, TableState, TableInstance, R
 import {Grid, Button, Typography, Card, CardContent, CardMedia, Box, Grid2} from '@mui/material';
 import {ProductsDto} from '@/types/productType';
 import {useRouter} from "next/navigation";
+import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 
 // React Table State 타입 확장
 interface TableStateWithPagination<T extends object> extends Partial<TableState<T>> {
@@ -81,7 +82,8 @@ export default function ProductList({ products }: productsType) {
         {
             columns,
             data: sortedProducts,
-            initialState: {pageIndex: 0, pageSize: 4} as TableStateWithPagination<ProductsDto>,
+            // 첫 페이지 번호, 페이지마다 몇 개 나올지
+            initialState: {pageIndex: 0, pageSize: 5} as TableStateWithPagination<ProductsDto>,
         },
         useSortBy,
         usePagination
@@ -114,6 +116,8 @@ export default function ProductList({ products }: productsType) {
             <Button onClick={toggleSellSortOrder} sx={{color: "#000000"}}>
                 {sellSortOrder === "asc" ? "판매량순 ▼" : "판매량순 ▲"}
             </Button>
+            {/*상품 리스트 출력*/}
+            <Box>
             <Grid2 container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
                 {page.map((row) => {
                     prepareRow(row);
@@ -133,17 +137,26 @@ export default function ProductList({ products }: productsType) {
                                 />
                                 <CardContent>
                                     <Typography variant="h6">{row.original.name}</Typography>
+                                    {row.original.stock>0?
                                     <Typography variant="body2" color="text.secondary">
                                         ₩{row.original.price} - {row.original.sellCount} 판매됨
+                                        <br/>
+                                        현재 가격 : ₩{gradeDiscountPrice(row.original.price)}
                                     </Typography>
+                                        :
+                                        <Typography>
+                                            재고 부족
+                                        </Typography>
+                                    }
                                 </CardContent>
                             </Card>
                         </Grid2>
                     );
                 })}
             </Grid2>
-
+            </Box>
             {/* 페이지 네비게이션 버튼 */}
+            <Box>
             <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                 {'<<'}
             </Button>
@@ -161,6 +174,7 @@ export default function ProductList({ products }: productsType) {
                 <br/>
                 {`총 ${pageOptions.length} 페이지`}
             </Typography>
+            </Box>
         </Box>
     );
 };

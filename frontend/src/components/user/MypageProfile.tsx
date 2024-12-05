@@ -1,56 +1,79 @@
+
+"use client"
 import {Box, Button, Card, CardContent, Typography} from "@mui/material";
 import axios from "axios";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import PasswordChangeScreen from "@/components/user/PasswordChangeScreen";
+import authPage from "@/scripts/auth/authPage";
+import authApi from "@/scripts/auth/authApi";
+import type {OrderDto} from "@/types/orderType";
+import type {UsersDto} from "@/types/userType"
+import dayjs from "dayjs";
+import UserDeleteButton from "@/components/user/UserDeleteButton";
 
 
-
-export default function MypageProfile(){
-    const dummy = {
-        name: "유저이름",
-        email: "이메일",
-        createdAt: "가입일",
-        gender: "남",
-        address: "한가람",
-        birthDate: "생일",
-        userGrade: 1,   // 없음, 브론즈, 실버, 골드, 플래티넘
-        totalPurchaseCount: 10,     // 총 주문 수량
-        totalPurchasePrice: 100000,  // 총 주문 금액
-        passwordQuestion: "가장 좋아하는 책의 이름은 무엇인가요?",
-        passwordAnswer: "책",
-        password: "암호"
-    }
+export default function MypageProfile() {
     const [passwordChange, setPasswordChange] = useState(false);
+    const [userDetail, setUserDetail] = useState<UsersDto | null>(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await authApi.get<UsersDto | null>("/users/detail");
+                if (res.status === 200) setUserDetail(res.data);
+            } catch (error) {
+                console.error('API 요청 오류:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const gradeText = [
+        "BASIC", "SILVER", "GOLD", "VIP"
+    ]
 
 
     return (
-        <Box sx={{width: "80%"}}>
+        <Box sx={{width: "100%"}}>
             <Card>
-                <CardContent>
-                <Typography sx={{fontSize: 15}} >
-                    이름 : {dummy.name}
-                </Typography>
-                <Typography sx={{fontSize: 15}} >
-                    이메일 : {dummy.email}
-                </Typography>
-                <Typography sx={{fontSize: 15}} >
-                    가입일 : {dummy.createdAt}
-                </Typography>
-                <Typography sx={{fontSize: 15}} >
-                    주소 : {dummy.address}
-                </Typography>
-            {passwordChange?
-                <PasswordChangeScreen passwordQuestion={dummy.passwordQuestion}
-                                      passwordAnswer={dummy.passwordAnswer}
-                                      setPasswordChange={setPasswordChange}/>
-                :
-                <Button
-                onClick={()=>setPasswordChange(true)}
-                variant="contained"
-                sx={{backgroundColor: "#FFA000"}}>
-                비밀번호 변경 요청
-                </Button>}
-                </CardContent>
+                {userDetail ?
+                    <CardContent>
+                        <Typography sx={{fontSize: 15}}>
+                            이름 : {userDetail.name}
+                        </Typography>
+                        <Typography sx={{fontSize: 15}}>
+                            이메일 : {userDetail.email}
+                        </Typography>
+                        <Typography sx={{fontSize: 15}}>
+                            가입일 : {dayjs(userDetail.createdAt).format('YYYY-MM-DD')}
+                        </Typography>
+                        <Typography sx={{fontSize: 15}}>
+                            주소 : {userDetail.address}
+                        </Typography>
+                        <Typography sx={{fontSize: 15}}>
+                            회원등급 : {gradeText[userDetail.userGrade]}
+                        </Typography>
+                        {passwordChange ?
+                            <PasswordChangeScreen passwordQuestion={userDetail.passwordQuestion}
+                                                  passwordAnswer={userDetail.passwordAnswer}
+                                                  setPasswordChange={setPasswordChange}
+                                                  email={userDetail.email}
+                            />
+                            :
+                            <Button
+                                onClick={() => setPasswordChange(true)}
+                                variant="contained"
+                                sx={{backgroundColor: "#FFA000"}}>
+                                비밀번호 변경 요청
+                            </Button>}
+                        <UserDeleteButton/>
+                    </CardContent>
+                    :
+                    <CardContent>
+                        사용자 정보를 불러오지 못 했습니다.
+                    </CardContent>
+                }
             </Card>
         </Box>
     )

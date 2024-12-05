@@ -32,6 +32,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/products/list/**").permitAll()
+                        .requestMatchers("/api/products/detail/**").permitAll()
+                        .requestMatchers("/api/product/reviews/list/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용

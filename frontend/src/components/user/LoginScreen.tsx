@@ -41,6 +41,12 @@ export default function LoginScreen(){
                     secure: false,
                     sameSite: true  // CSRF 방지
                 })
+                document.cookie = cookie.serialize("userGrade",res.data.userGrade, {
+                    path: '/',  // 쿠키 저장 경로
+                    httpOnly: false,
+                    secure: false,
+                    sameSite: true  // CSRF 방지
+                })
                 // 쿠키 설정 확인
                 if (document.cookie.includes("userName=" + res.data.name)) {
                     // 쿠키 설정 확인됐으면 홈으로
@@ -54,7 +60,9 @@ export default function LoginScreen(){
             if(axios.isAxiosError(e)) {
                 console.error("오류 상태 코드", e.response?.status);
                 console.error("오류 메세지", e.response?.data);
+                alert("로그인에 실패했습니다. 이메일과 비밀번호를 다시 확인해주세요.")
             } else { console.error("오류", (e as Error).message);}
+            alert("로그인에 실패했습니다. 이메일과 비밀번호를 다시 확인해주세요.")
         }
     }
 
@@ -87,6 +95,7 @@ export default function LoginScreen(){
                         fullWidth
                         id="password"
                         label="비밀번호"
+                        type="password"
                         name="password"
                         onChange={(e)=>setPassword(e.target.value)}
                     />

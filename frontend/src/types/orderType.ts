@@ -12,5 +12,11 @@ export type OrderDto = {
     available: boolean,
     invoice: number,
     address: string,
+    // productsDto: ProductsDto
     products: ProductsDto
 };
+
+export type OrderRequestType = {
+    productsDto: ProductsDto,
+    quantity: number
+}
