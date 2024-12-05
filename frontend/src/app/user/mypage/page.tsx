@@ -10,44 +10,16 @@ import MypageQuestion from "@/components/user/MypageQuestion";
 import axios from "axios";
 import authApi from "@/scripts/auth/authApi"
 import type {OrderDto} from "@/types/orderType"
+import {usePathname, useRouter} from "next/navigation";
 
-export default function mypage() {
-    const [mypageContent, setMypageContent] = useState(1);
-    const [userOrders, setUserOrders] = useState<OrderDto[]|null>(null);
+// 현재는 의미 없어서 라우팅 처리
+export default function myPage() {
+    const router = useRouter();
 
     useEffect(() => {
-        authPage();
-        const fetchData = async () => {
-            try {
-                const res = await authApi.get<OrderDto[]|null>("/orders/list");
-                setUserOrders(res.data);
-            } catch (error) {
-                console.error('API 요청 오류:', error);
-            }
-        };
+        // /mypage 경로에 접근하면 /mypage/order로 리디렉션
+        router.replace('/user/mypage/order');
+    }, [router]);
 
-        fetchData();
-    }, []);
-
-    const renderContent = () => {
-        switch (mypageContent) {
-            case 1:
-                return <MypageOrder orders={userOrders}/>;
-            case 2:
-                return <MypageProfile/>;
-            case 3:
-                return <MypageQuestion/>;
-            default:
-                return <MypageOrder orders={userOrders}/>;
-        }
-    };
-
-    return (
-        <Box sx={{display: 'flex', flexDirection: 'row', flexGrow: 1}}>
-            <MypageSide setMypageContent={setMypageContent}/>
-            <Box sx={{margin: 3}}>
-            {renderContent()}
-            </Box>
-        </Box>
-    )
+    return null;
 }

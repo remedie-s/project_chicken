@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,18 +38,71 @@ public class ProductsService {
     private final ProductsSearchRepository productsSearchRepository;
     private final KafkaMessage kafkaMessage;
 
-    // 물품 전체 목록
-    public List<Products> allList(){
-        return productsRepository.findAll();
+    // productsDto로 변경
+    public ProductsDto productsToDto(Products products) {
+        ProductsDto productsDto = new ProductsDto();
+        productsDto.setId(products.getId());
+        productsDto.setPrice(products.getPrice());
+        productsDto.setStock(products.getStock());
+        productsDto.setCreatedAt(productsDto.getCreatedAt());
+        productsDto.setDescription(products.getDescription());
+        productsDto.setImageUrl(products.getImageUrl());
+        productsDto.setName(products.getName());
+        productsDto.setSellCount(products.getSellCount());
+        return productsDto;
     }
+
+    // List<prdocuts>를 List<ProductsDto>로 전환
+    public List<ProductsDto> productListToDtoList(List<Products> productsList) {
+        List<ProductsDto> productsDtoList = new ArrayList<>();
+        for (Products product : productsList) {
+            productsDtoList.add(productsToDto(product));
+        }
+        return productsDtoList;
+    }
+
+    // 물품 전체 목록
+    public List<Products> allList() {
+        return productsRepository.findAllByOrderByIdDesc();
+    }
+
+    // 물품 전체 목록 Dto
+    public List<ProductsDto> allListDto() {
+        return productListToDtoList(allList());
+    }
+
+    // 최근 일주일 물품 목록
+    public List<ProductsDto> newListDto() {
+        // 기준 날짜 현재에서 일주 전으로 세팅
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        // 일주일 자료 갖고 오기
+        List<Products> recentProducts = productsRepository.findByCreatedAtAfterOrderByIdDesc(oneWeekAgo);
+        return productListToDtoList(recentProducts);
+    }
+
+    // 이벤트 0(이벤트X) 아닌 물품 목록
+    public List<ProductsDto> eventListDto() {
+        List<Products> recentProducts = this.productsRepository.findByEventNotOrderByIdDesc(0);
+        return productListToDtoList(recentProducts);
+    }
+
     // 물품 상세 페이지
-    public ProductsDto productsDetail(Long productId) {
-        Optional<Products> byId = this.productsRepository.findById(productId);
-        if(byId.isPresent()){
-            return ProductsDto.productsEntityToDto( byId.get());
+    public ProductsDto productsDetailDto(Long productId) {
+        Optional<Products> oProducts = this.productsRepository.findById(productId);
+        if (oProducts.isPresent()) {
+            return ProductsDto.productsEntityToDto(oProducts.get());
         }
         return null;
     }
+
+    public List<ProductsDto> productsDtoList(List<Long> productIds){
+        List<ProductsDto> productsDtoList = new ArrayList<>();
+        for (Long productId : productIds) {
+            productsDtoList.add(productsDetailDto(productId));
+        }
+        return productsDtoList;
+    }
+
 
     /**
      * 키워드 기반 검색
@@ -180,17 +234,17 @@ public class ProductsService {
             switch (productMessage.getAction()) {
                 case "register":
                     registerProductToElasticsearch(productMessage.toEntity());
-                    log.info("{} 물품이 등록되어 엘라스틱 서치에 색인합니다",productMessage.getId());
+                    log.info("{} 물품이 등록되어 엘라스틱 서치에 색인합니다", productMessage.getId());
                     break;
 
                 case "update":
                     updateProductInElasticsearch(productMessage.toEntity());
-                    log.info("{} 물품이 갱신되어 엘라스틱 서치에 색인을 갱신합니다",productMessage.getId());
+                    log.info("{} 물품이 갱신되어 엘라스틱 서치에 색인을 갱신합니다", productMessage.getId());
                     break;
 
                 case "delete":
                     deleteProductFromElasticsearch(productMessage.toEntity());
-                    log.info("{} 물품이 삭제되어 엘라스틱 서치에 색인을 삭제합니다",productMessage.getId());
+                    log.info("{} 물품이 삭제되어 엘라스틱 서치에 색인을 삭제합니다", productMessage.getId());
                     break;
 
                 default:
@@ -286,84 +340,4 @@ public class ProductsService {
     }
 
 
-
-    //물품 리뷰 리스트 (물품 상세페이지)
-    public List<ProductReviews> reviewsList(Long productId) {
-        List<ProductReviews> byProductsId = this.productReviewsRepository.findByProducts_id(productId);
-        if(byProductsId.isEmpty()) {
-            byProductsId.add(new ProductReviews());
-        }
-        return byProductsId;
-    }
-
-    //물품 리뷰 작성 로직
-    public boolean createReview(ProductReviewsDto productReviewsDto,Users users) {
-        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
-        if (byId.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
-        }
-        Products product = byId.get();
-        ProductReviews review = new ProductReviews();
-        review.setProducts(product);
-        review.setUsers(users);
-        review.setCreatedAt(LocalDateTime.now());
-        review.setContent(productReviewsDto.getContent());
-        review.setRating(productReviewsDto.getRating());
-        this.productReviewsRepository.save(review);
-        log.info("{}번 물품에 대한 리뷰가 등록되었습니다.", productReviewsDto.getProductId());
-        // 리뷰 평점이 3.0 보다 낮으면 메시지 발송
-        if(review.getRating()<=3.0){
-            this.kafkaMessage.sendKafkaProductReviewMsg(review, "review");
-        }
-        return true;
-    }
-
-    //물품 리뷰 변경 로직
-    public boolean modifyReview(ProductReviewsDto productReviewsDto,Long reviewId) {
-        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
-        if (byId.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
-        }
-        Products product = byId.get();
-        Optional<ProductReviews> review = this.productReviewsRepository.findById(reviewId);
-        if (review.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
-        }
-        ProductReviews reviews = review.get();
-        reviews.setRating(productReviewsDto.getRating());
-        reviews.setContent(productReviewsDto.getContent());
-        log.info("{}번 물품에 대한 리뷰가 수정되었습니다.", reviewId);
-        this.productReviewsRepository.save(reviews);
-        // 리뷰 평점이 3.0 보다 낮으면 메시지 발송
-        if(reviews.getRating()<=3.0){
-            this.kafkaMessage.sendKafkaProductReviewMsg(reviews, "review");
-        }
-        return true;
-    }
-
-    //물품 리뷰 삭제 로직
-    public boolean deleteReview(ProductReviewsDto productReviewsDto,Long reviewId) {
-        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
-        if (byId.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
-        }
-        Optional<ProductReviews> review = this.productReviewsRepository.findById(reviewId);
-        if (review.isEmpty()) {
-            log.warn("Product with ID {} not found",reviewId);
-            return false;
-        }
-        this.productReviewsRepository.delete(review.get());
-        return true;
-    }
-
-
-
-
-
-
-    
 }

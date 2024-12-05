@@ -1,8 +1,8 @@
 
 import type {ProductsDto} from "@/types/productType";
 
-export type CartType = {
+export type CartsDto = {
     id: number,
     quantity: number,
-    products: ProductsDto
+    productsDto: ProductsDto
 }

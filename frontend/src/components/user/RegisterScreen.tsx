@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {useRouter} from "next/navigation";
 
 export default function RegisterScreen(){
     const [passwordQ, setPasswordQ] = useState("");
@@ -26,6 +27,7 @@ export default function RegisterScreen(){
     const [birthday,setBirthday] = useState(dayjs());
     const [address, setAddress] = useState("");
     const [phone, setPhone] = useState("");
+    const router = useRouter();
 
 
     const questionChange = (e:SelectChangeEvent) => {
@@ -116,7 +118,10 @@ export default function RegisterScreen(){
         try {
             const res = await axios.post("http://localhost:8080/api/auth/register", send);
             if (res.status !== 200) { console.log("가입실패" + res.data); }
-            else { console.log("회원가입 성공: ", res.data); }
+            else {
+                alert("성공적으로 가입되었습니다.")
+                router.push("/user/login")
+            }
         } catch (e: unknown) {
             if(axios.isAxiosError(e)) {
                 console.error("오류 상태 코드", e.response?.status);

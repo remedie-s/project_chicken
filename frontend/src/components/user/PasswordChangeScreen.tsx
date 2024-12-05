@@ -10,9 +10,10 @@ type passwordQA = {
     passwordQuestion: string,
     passwordAnswer: string
     setPasswordChange: (content: boolean) => void;
+    email: string
 }
 
-export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer, setPasswordChange}:passwordQA){
+export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer, setPasswordChange, email}:passwordQA){
     const [qacheck, setQacheck] = useState(false);
     const [answer, setAnswer] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -25,10 +26,13 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
         else setQacheck(true);
     }
     const passwordChangeHandler = async () => {
-        const res = await authApi.get<OrderDto[]|null>("/user/passwordchange");
-        if (res.status!==200) { alert("오류 발생으로 가입에 실패하였습니다.");}
-        else { alert("성공적으로 가입됐습니다. 로그인해주세요.");}
-        router.push("/");
+        const data = {
+            email: email,
+            password: newPassword
+        }
+        const res = await authApi.post("/users/passwordchange", data);
+        if (res.status!==200) { alert("비밀번호 변경에 실패했습니다.");}
+        else { alert("비밀번호 변경에 성공했습니다."); setPasswordChange(false);}
         return;
     }
 
@@ -48,7 +52,7 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <Button
-                        onClick={qacheckHandler}>
+                        onClick={passwordChangeHandler}>
                         확인
                     </Button>
                     <Button

@@ -1,52 +1,61 @@
-// import {Paper} from "@mui/material";
-// import {DataGrid} from "@mui/x-data-grid";
-//
-// export default function NoticeList() {
-//     const paginationModel = { page: 0, pageSize: 5 };
-//     const columns: GridColDef[] = [
-//         { field: 'id', headerName: 'ID', width: 70 },
-//         { field: 'firstName', headerName: 'First name', width: 130 },
-//         { field: 'lastName', headerName: 'Last name', width: 130 },
-//         {
-//             field: 'age',
-//             headerName: 'Age',
-//             type: 'number',
-//             width: 90,
-//         },
-//         {
-//             field: 'fullName',
-//             headerName: 'Full name',
-//             description: 'This column has a value getter and is not sortable.',
-//             sortable: false,
-//             width: 160,
-//             valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-//         },
-//     ];
-//
-//     const rows = [
-//         { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-//         { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-//         { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-//         { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-//         { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-//         { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-//         { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-//         { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-//         { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-//     ];
-//
-//
-//
-//     return (
-//         <Paper sx={{ height: 400, width: '100%' }}>
-//             <DataGrid
-//                 rows={rows}
-//                 columns={columns}
-//                 initialState={{ pagination: { paginationModel } }}
-//                 pageSizeOptions={[5, 10]}
-//                 checkboxSelection
-//                 sx={{ border: 0 }}
-//             />
-//         </Paper>
-//     );
-// }
+
+"use client"
+import {Box, Button} from "@mui/material";
+
+import {Paper} from "@mui/material";
+import {DataGrid, GridColDef, GridEventListener} from '@mui/x-data-grid';
+import {QuestionDto} from "@/types/questionType";
+import {useEffect, useState} from "react";
+import authApi from "@/scripts/auth/authApi";
+import {useRouter} from "next/navigation";
+import authErrorLogout from "@/scripts/auth/authErrorLogout";
+
+
+// TODO 대충 형태만 붙여넣기한 상태, 값 수정 필요
+export default function NoticeList() {
+    const router = useRouter();
+    const paginationModel = {page: 0, pageSize: 5};
+    // 데이터 그리드 컬럼 설정
+    const columns: GridColDef[] = [
+        {field: "title", headerName: "제목", width: 300},
+        {field: "createTime", headerName: "작성일", width: 150},
+    ];
+    const [questionList,setQuestionList] = useState<QuestionDto[]|null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await authApi.get<QuestionDto[]|null>("/notice/list");
+                setQuestionList(res.data);
+            } catch (error) {
+                console.error('API 요청 오류:', error);
+                authErrorLogout();
+            }
+        };
+        fetchData();
+    }, []);
+
+    const handleCellClick: GridEventListener<"cellClick"> =
+        (question) => {
+            const questionId = question.id;
+            router.push(`/user/mypage/qa/${questionId}`); };
+
+    return (
+        <Box sx={{ width: "100%"}}>
+            <Button onClick={()=>router.push("/user/mypage/qa/create")}>문의 작성</Button>
+            <Paper sx={{height: 400, width: '100%'}}>
+                <DataGrid
+                    rows={questionList||[]}
+                    columns={columns}
+                    initialState={{pagination: {paginationModel}}}
+                    pageSizeOptions={[5, 10]}
+                    sx={{border: 0}}
+                    localeText={{
+                        noRowsLabel: "아직 작성하신 문의가 없습니다.",
+                    }}
+                    onCellClick={handleCellClick} // 셀 클릭 핸들러
+                />
+            </Paper>
+        </Box>
+    );
+}

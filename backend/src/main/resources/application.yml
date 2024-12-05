@@ -2,7 +2,7 @@ spring:
   application:
     name: backend
   elasticsearch:
-    uris: http://192.168.0.8:9200  # Elasticsearch 서버 주소
+    uris: http://192.168.0.11:9200  # Elasticsearch 서버 주소
     #uris: http://localhost:9200  # Elasticsearch 서버 주소
     connection-timeout: 10s       # 연결 타임아웃 설정
     socket-timeout: 30s          # 소켓 타임아웃 설정
@@ -10,20 +10,20 @@ spring:
       enabled: true
   kafka:
     consumer:
-      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      bootstrap-servers: 192.168.0.11:9092  # Kafka 서버 주소
       #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       group-id: backend-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
     producer:
-      bootstrap-servers: 192.168.0.8:9092  # Kafka 서버 주소
+      bootstrap-servers: 192.168.0.11:9092  # Kafka 서버 주소
       #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       asks: 1
   datasource:
-    url: jdbc:mysql://192.168.0.8:3306/project_db  # MySQL 서버 주소
+    url: jdbc:mysql://192.168.0.11:3306/project_db  # MySQL 서버 주소
     #url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소
     username: root
     password: 1q2w3e4r

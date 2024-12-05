@@ -1,48 +1,71 @@
-import {Box} from "@mui/material";
+
+"use client"
+import {Box, Button} from "@mui/material";
 
 import {Paper} from "@mui/material";
-import {DataGrid, GridColDef} from '@mui/x-data-grid';
+import {DataGrid, GridColDef, GridEventListener} from '@mui/x-data-grid';
 import {QuestionDto} from "@/types/questionType";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import authPage from "@/scripts/auth/authPage";
+import authApi from "@/scripts/auth/authApi";
+import {useRouter} from "next/navigation";
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import authErrorLogout from "@/scripts/auth/authErrorLogout";
 
 export default function MypageQuestion() {
+    const router = useRouter();
     const paginationModel = {page: 0, pageSize: 5};
+    // 데이터 그리드 컬럼 설정
     const columns: GridColDef[] = [
-        {field: 'title', headerName: '문의명', width: 300},
-        {field: 'createTime', headerName: '작성일', width: 150}
+        {field: "title", headerName: "문의명", width: 300},
+        {field: "createTime", headerName: "작성일", width: 150},
+        {
+            field: "answerCheck",
+            headerName: "답변 여부",
+            width: 100,
+            renderCell: (question) => (
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                {question.value ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+                </Box>
+                )
+        }
     ];
-    const [questionList,setQuestionList] = useState<QuestionDto[]|null>();
+    const [questionList,setQuestionList] = useState<QuestionDto[]|null>(null);
 
-    const dummyQuestion = [
-        {id: 1, title: "title", createTime: '2024-11-24'},
-        {id: 2, title: 'Lannister', createTime: '2024-11-20'},
-        {id: 3, title: 'Lannister', createTime: '2024-10-10'},
-        {id: 4, title: 'Stark', createTime: '2024-12-10'},
-        {id: 5, title: 'Targaryen', createTime: '2024-11-11'},
-        {id: 6, title: 'Melisandre', createTime: "2024-11-23"},
-        {id: 7, title: 'Clifford', createTime: "2024-10-05"},
-        {id: 8, title: 'Frances', createTime: "2024-09-10"},
-        {id: 9, title: 'Roxie', createTime: '2024-09-20'},
-    ];
-    // TODO 차후 주소 수정
-    // useEffect(async () => {
-    //     const res = await axios.post<QuestionDto[]>("http://localhost:8080");
-    //     if(res.status!==200) alert("문의 정보 불러오기에 실패했습니다.")
-    //     setQuestionList(res.data);
-    // }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await authApi.get<QuestionDto[]|null>("/questions/list");
+                setQuestionList(res.data);
+            } catch (error) {
+                console.error('API 요청 오류:', error);
+                authErrorLogout();
+            }
+        };
+        fetchData();
+    }, []);
 
+    const handleCellClick: GridEventListener<"cellClick"> =
+        (question) => {
+        const questionId = question.id;
+        router.push(`/user/mypage/qa/${questionId}`); };
 
     return (
         <Box sx={{ width: "100%"}}>
-        <Paper sx={{height: 400, width: '100%'}}>
+            <Button onClick={()=>router.push("/user/mypage/qa/create")}>문의 작성</Button>
+            <Paper sx={{height: 400, width: '100%'}}>
             <DataGrid
-                rows={dummyQuestion}
+                rows={questionList||[]}
                 columns={columns}
                 initialState={{pagination: {paginationModel}}}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
                 sx={{border: 0}}
+                localeText={{
+                    noRowsLabel: "아직 작성하신 문의가 없습니다.",
+                }}
+                onCellClick={handleCellClick} // 셀 클릭 핸들러
             />
         </Paper>
         </Box>

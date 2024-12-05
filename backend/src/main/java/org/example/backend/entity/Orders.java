@@ -26,7 +26,7 @@ public class Orders {
     private Long payPrice;
     // 주문일자
     private LocalDateTime createdAt;
-    // 숨김여부(기본 false)
+    // 숨김여부(기본 true)
     private boolean available;
     // 배송번호(운송장번호)
     private Long invoice;

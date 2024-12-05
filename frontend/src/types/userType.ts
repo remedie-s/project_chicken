@@ -4,7 +4,7 @@ export type UsersDto = {
     id: number,
     name: string,
     email: string,
-    password: string,
+    password: string|null,
     createdAt: Date,
     gender: string,
     address: string,
@@ -21,5 +21,11 @@ export type TokenResponseDto = {
     accessToken: string,
     refreshToken: string,
     email: string,
-    name: string
+    name: string,
+    userGrade: number
+}
+
+export type UserPasswordChange = {
+    passwordQuestion: string,
+    passwordAnswer: string
 }
