@@ -53,6 +53,18 @@ export type productData = {
     cost: number;
     partnerId: number; // Partner는 별도의 타입으로 정의해야 합니다.
 }
+export type modifyProductData = {
+    id: number;
+    name?: string;
+    description?: string;
+    price?: number;
+    imageUrl?: string;
+    stock?: number;
+    mainItemNumber?: number;
+    event?: number;
+    cost?: number;
+    partnerId?: number;
+}
 export type modifyOrderData = {
     id: number;
     invoice?:string;
