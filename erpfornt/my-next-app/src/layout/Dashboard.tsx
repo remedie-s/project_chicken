@@ -17,20 +17,33 @@ import {
 } from "@mui/icons-material";
 
 // Page Components
-import LoginPage from "@/pages/login";
-import LogoutPage from "../pages/logout";
-import SignupPage from "../pages/signup";
-import AttendancePage from "@/pages/attendance/index";
+import LoginPage from "../pages/employee/login";
+import LogoutPage from "../pages/employee/logout";
+import SignupPage from "../pages/employee/signup";
+import AttendancePage from "@/pages/employee/attendance/index";
 import ProductCreatePage from "../pages/products/create";
-import LeavePage from "@/pages/leave/index";
+import LeavePage from "@/pages/employee/leave/index";
 import OrdersPage from "@/pages/orders/index";
 
 // 타입 정의
 import type { DemoProps, IPage } from "@/api/datatype";
 import type { Navigation, Router } from "@toolpad/core";
 import Index from "@/pages/products";
-import Leave from "@/pages/leave/index";
+import Leave from "@/pages/employee/leave/index";
 import Notice from "@/pages/notice";
+import FinancesCreate from "@/pages/finances/create";
+import FinancePage from "@/pages/finances/QuarterlySummaryPage";
+import OrderSummaryPage from "@/pages/finances/QuarterlySummaryPage";
+import QuarterlySummaryPage from "@/pages/finances/QuarterlySummaryPage";
+import AnnualSummaryPage from "@/pages/finances/AnnualSummaryPage";
+import OrderTable from "@/pages/orders/quarter";
+import InnerPage from "@/pages/finances/innerPage";
+import OrdersUsersPage from "@/pages/orders/users";
+import OrdersProductPage from "@/pages/orders/product";
+import ProductDetailPage from "@/pages/products/detail";
+import ProductEditPage from "@/pages/products/edit/[id]";
+import PartnerIndex from "@/pages/partner";
+import PartnerCreate from "@/pages/partner/create";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -97,25 +110,51 @@ function UserAccountAndCart() {
 
 // DemoPageContent Component
 function DemoPageContent({ pathname, session }: IPage) {
-    switch (pathname) {
-        case "/login":
-            return <LoginPage />;
-        case "/logout":
-            return <LogoutPage />;
-        case "/signup":
-            return <SignupPage />;
-        case "/attendance":
-            return <AttendancePage />;
-        case "/productCreate":
-            return <ProductCreatePage />;
-        case "/products":
-            return <Index />;
-        case "/leave":
-            return <LeavePage />;
 
+    switch (pathname) {
+        // @ts-ignore
+        case pathname.startsWith("/products/edit"):
+            return <ProductEditPage />;
+        case "/employee/login":
+            return <LoginPage />;
+        case "/employee/logout":
+            return <LogoutPage />;
+        case "/employee/signup":
+            return <SignupPage />;
+        case "/employee/leave":
+            return <LeavePage />;
+        case "/employee/attendance":
+            return <AttendancePage />;
+        case "/products/productCreate":
+            return <ProductCreatePage />;
+        case "/products/index":
+            return <Index />;
+        case "/products/detail":
+            return <ProductDetailPage />;
         case "/orders":
             return <OrdersPage />;
+        case "/partner/create":
+            return <PartnerCreate />;
+        case "/partner/index":
+            return <PartnerIndex />;
+        case "/orders/product":
+            return <OrdersProductPage />;
+        case "/orders/users":
+            return <OrdersUsersPage />;
+        case "/orders/quarter":
+            return <OrderTable />;
         case "/dashboard":
+            return <Notice />;
+        case "/finances/create":
+            return <FinancesCreate />;
+        case "/finances/innerPage":
+            return <InnerPage />;
+        case "/finances/AnnualSummaryPage":
+            return <AnnualSummaryPage />;
+        case "/finances/QuarterlySummaryPage":
+            return <QuarterlySummaryPage />;
+
+        case "/":
             return <Notice />;
         default:
             return (
@@ -149,20 +188,101 @@ export default function DashboardLayoutBasic(props: DemoProps) {
     }, []);
 
     const NAVIGATION: Navigation = [
-        { kind: "header", title: "로그인 정보" },
-        { segment: "signup", title: "회원 가입", icon: <LockOpen /> },
-        { segment: "login", title: "로그인", icon: <Login /> },
-        { segment: "logout", title: "로그아웃", icon: <Logout /> },
-        { segment: "attendance", title: "출퇴근처리", icon: <Logout /> },
-        { segment: "leave", title: "휴가", icon: <Logout /> },
+        { kind: "header", title: "사원 정보" },
+        { segment: "employee", title: "사원", icon: <LockOpen />,
+            children: [{ segment: "signup", title: "회원 가입", icon: <LockOpen /> },
+                { segment: "login", title: "로그인", icon: <Login /> },
+                { segment: "logout", title: "로그아웃", icon: <Logout /> },
+                { segment: "attendance", title: "출퇴근처리", icon: <Logout /> },
+                { segment: "leave", title: "휴가", icon: <Logout /> },
+        ]
+        },
+
         { kind: "divider" },
-        { kind: "header", title: "판매 물품" },
-        ...(userGrade !== "99" ? [{ segment: "productCreate", title: "물품등록", icon: <Input /> }] : []),
-        { segment: "products", title: "판매 물품", icon: <Store /> },
+        { kind: "header", title: "물품관리" },
+        { segment: "products", title: "물품관리", icon: <Store /> ,
+            children: [
+                ...(userGrade !== "99" ? [{ segment: "productCreate", title: "물품등록", icon: <Input /> }] : []),//권한에따라 바꾸게
+                {
+                    segment: "index",
+                    title: "물품 목록",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "detail",
+                    title: "상세 물품",
+                    icon: <ShoppingBag />,// 물품 변경 및 삭제기능 추가
+                },
+            ]
+        },
         { kind: "divider" },
         { kind: "header", title: "주문관리" },
-        { segment: "orders", title: "주문", icon: <ShoppingBag /> },
-        ...(userGrade === "0" ? [{ segment: "ordersAdmin", title: "주문관리", icon: <ShoppingBag /> }] : []),
+        { segment: "orders", title: "전체주문", icon: <ShoppingBag /> },
+        { segment: "orders", title: "특정주문", icon: <ShoppingBag />,
+            children: [
+
+                {
+                    segment: "product",
+                    title: "물품별 주문",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "users",
+                    title: "유저별 주문",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "quarter",
+                    title: "쿼터별 주문",
+                    icon: <ShoppingBag />,
+                },
+            ]
+        },
+        // ...(userGrade === "0" ? [{ segment: "ordersAdmin", title: "주문관리", icon: <ShoppingBag /> }] : []),
+
+        { kind: "divider" },
+        { kind: "header", title: "거래처" },
+        { segment: "partner", title: "거래처 관리", icon: <ShoppingBag />,
+            children: [
+                {
+                    segment: "create",
+                    title: "거래처등록",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "index",
+                    title: "거래처관리",
+                    icon: <ShoppingBag />,
+                },
+                ]
+        },
+        { kind: "divider" },
+        { kind: "header", title: "재산관리" },
+        { segment: "finances", title: "재산관리", icon: <ShoppingBag />,
+            children: [
+                {
+                    segment: "create",
+                    title: "재산 등록",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "innerPage",
+                    title: "재산 목록",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "AnnualSummaryPage",
+                    title: "연간 주문 관리",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "QuarterlySummaryPage",
+                    title: "분기별 주문 관리",
+                    icon: <ShoppingBag />,
+                },
+            ]
+        },
+
     ];
 
     React.useEffect(() => {

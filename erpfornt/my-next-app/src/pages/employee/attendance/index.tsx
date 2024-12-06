@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import { Box, Typography } from '@mui/material';
-import { getMonthlyAttendanceAndLeave, markAttendanceLogin, markAttendanceLogout } from "../../api/api";
-import { AttendanceLeaveData, SimpleAttendanceLeaveData } from "../../api/datatype";
+import { getMonthlyAttendanceAndLeave, markAttendanceLogin, markAttendanceLogout } from "../../../api/api";
+import { AttendanceLeaveData, SimpleAttendanceLeaveData } from "../../../api/datatype";
 import { Button } from "@mui/material"; // @mui/material에서 Button 가져오기
 
 import 'react-calendar/dist/Calendar.css';
@@ -142,7 +142,7 @@ const AttendancePage = () => {
         <div>
             <Box>
                 <Typography variant="h6" gutterBottom>
-                    Attendance and Leave Calendar
+                    출퇴근 기록부
                 </Typography>
 
                 <Calendar
@@ -160,12 +160,12 @@ const AttendancePage = () => {
 
                 <Box>
                     <Typography variant="subtitle1" mt={2}>
-                        Selected Date:
+                        선택한 날짜:
                     </Typography>
                     <Typography variant="body1">
                         {selectedDate instanceof Date
                             ? selectedDate.toLocaleDateString()
-                            : 'No date selected'}
+                            : '아직 날짜가 선택되지 않았습니다.'}
                     </Typography>
 
                     <Box mt={2}>

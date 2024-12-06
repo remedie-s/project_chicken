@@ -1,35 +1,17 @@
-'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridRenderEditCellParams } from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import {orderListUser, orderModify, orderDelete, orderList} from "@/api/api";
-import { modifyOrderData, OrdersDto } from "@/api/datatype";
-/**
- * 주문 관리 페이지
- * 주문 리스트 나와야함
- *     id: number;
- *     quantity: number;          // 주문 수량
- *     price: number;             // 주문 시 원가격
- *     discount: number;          // 주문 시 할인 가격
- *     payPrice: number;          // 주문 시 실제 최종 가격
- *     createdAt: string;         // 주문 일자 (ISO 문자열)
- *     available: boolean;        // 숨김 여부
- *     invoice: number;           // 배송 번호 (운송장 번호)
- *     address: string;           // 배송지
- *     status: string;            // 주문 상태
- *     userId: number;            // 사용자 ID
- *     productId: number;         // 상품 ID
- *
- * @constructor
- */
+import { orderListUser, orderModify, orderDelete } from "@/api/api";
+import {modifyOrderData, OrdersDto} from "@/api/datatype";
 
-
-const OrdersPage = () => {
+const OrdersUsersPage = () => {
+    const [inputId, setInputId] = React.useState<string>(''); // 사용자 입력 ID 상태
     const [userOrders, setUserOrders] = React.useState<OrdersDto[]>([]); // 주문 데이터 상태
     const [loading, setLoading] = React.useState<boolean>(false); // 로딩 상태
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null); // 에러 메시지 상태
@@ -101,24 +83,22 @@ const OrdersPage = () => {
         },
     ];
 
-    // 초기 데이터 로드
-    React.useEffect(() => {
-        const fetchOrders = async () => {
-            setLoading(true);
-            setErrorMessage(null);
-            try {
-                const fetchedOrders = await orderList(); // userId를 0으로 설정해 전체 주문 가져오기
-                setUserOrders(fetchedOrders);
-            } catch (err: any) {
-                setUserOrders([]);
-                setErrorMessage(err.message || 'Failed to fetch orders.');
-            } finally {
-                setLoading(false);
-            }
-        };
+    // 데이터 검색 핸들러
+    const handleSearch = async () => {
+        if (!inputId) return;
 
-        fetchOrders();
-    }, []);
+        setLoading(true);
+        setErrorMessage(null);
+        try {
+            const fetchedOrders = await orderListUser(Number(inputId));
+            setUserOrders(fetchedOrders);
+        } catch (err: any) {
+            setUserOrders([]);
+            setErrorMessage(err.message || 'Failed to fetch orders.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // 저장 핸들러
     const handleSave = async (row: modifyOrderData) => {
@@ -135,7 +115,6 @@ const OrdersPage = () => {
         }
     };
 
-    // 삭제 핸들러
     const handleDelete = async (orderId: number) => {
         try {
             await orderDelete(orderId);
@@ -151,8 +130,22 @@ const OrdersPage = () => {
     return (
         <Box sx={{ height: 600, width: '100%' }}>
             <Typography variant="h4" sx={{ mb: 2 }}>
-                All Orders
+                Search Orders by User ID
             </Typography>
+
+            {/* 입력 필드와 검색 버튼 */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                <TextField
+                    label="User ID"
+                    variant="outlined"
+                    value={inputId}
+                    onChange={(e) => setInputId(e.target.value)}
+                    disabled={loading}
+                />
+                <Button variant="contained" onClick={handleSearch} disabled={loading || !inputId}>
+                    {loading ? <CircularProgress size={24} /> : 'Search'}
+                </Button>
+            </Box>
 
             {/* 에러 메시지 */}
             {errorMessage && (
@@ -184,11 +177,11 @@ const OrdersPage = () => {
                 </Box>
             ) : (
                 <Typography variant="h6" align="center">
-                    No orders found.
+                    Enter a User ID to search for orders.
                 </Typography>
             )}
         </Box>
     );
 };
 
-export default OrdersPage;
+export default OrdersUsersPage;
