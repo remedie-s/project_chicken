@@ -38,6 +38,7 @@ public class ProductsDto {
     // 이벤트 번호(로직 시 이벤트 번호에 따라 이벤트 작동여부? 이벤트 테이블 생성? 추후 고려해야함)
     private Integer event;
     private Partner partner;
+    private PartnerDto partnerDto;
 
     public static ProductsDto productsEntityToDto(Products entity) {
         ProductsDto dto = new ProductsDto();
@@ -52,7 +53,12 @@ public class ProductsDto {
         dto.setCategory(entity.getCategory());
         dto.setMainItemNumber(entity.getMainItemNumber());
         dto.setEvent(entity.getEvent());
-        dto.setPartner(entity.getPartner()); // Partner 객체 매핑
+        // 파트너 정보가 있는 경우에만 설정
+        if (entity.getPartner() != null) {
+            dto.setPartnerDto(PartnerDto.partnerToDto(entity.getPartner()));
+        } else {
+            dto.setPartnerDto(null); // 파트너 정보가 없으면 null로 설정
+        }
         return dto;
     }
     public static Products productsDtoToEntity(ProductsDto dto) {

@@ -18,13 +18,14 @@ public class CartsDto {
     private Products products;
     private Long userId;
     private Long productId;
+    private ProductsDto productsDto;
 
     public static CartsDto cartsToDto(Carts carts) {
         CartsDto cartsDto = new CartsDto();
         cartsDto.setId(carts.getId());
         cartsDto.setQuantity(carts.getQuantity());
         cartsDto.setUsers(carts.getUsers());
-        cartsDto.setProducts(carts.getProducts());
+        cartsDto.setProductsDto(ProductsDto.productsEntityToDto(carts.getProducts()));
         return cartsDto;
     }
 

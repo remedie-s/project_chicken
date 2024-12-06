@@ -16,13 +16,14 @@ import java.util.List;
 @AllArgsConstructor
 public class QuestionsDto {
     private Long id;
-    // 답변 주제
+    // 문의 제목
     private String title;
-    // 답변 내용
+    // 문의 내용
     private String content;
+    private boolean answerCheck;
     // 작성일
     private LocalDateTime createTime;
     private Users users;
-
-
+    private List<AnswersDto> answers;
+    private Long userId;
 }
