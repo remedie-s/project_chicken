@@ -26,5 +26,6 @@ public class ProductReviewsDto {
     private Long productId;
     private Users users;
     private Products products;
-
+    private UsersDto usersDto;
+    private ProductsDto productsDto;
 }

@@ -4,6 +4,7 @@ package org.example.backend.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.backend.entity.Partner;
 import org.example.backend.entity.Products;
 
 import java.time.LocalDateTime;
@@ -36,5 +37,20 @@ public class PartnerDto {
     private LocalDateTime contactStart;
     // 협력 마무리일
     private LocalDateTime contactEnd;
+    public static PartnerDto partnerToDto(Partner partner) {
+        PartnerDto partnerDto = new PartnerDto();
+        partnerDto.setId(partner.getId());
+        partnerDto.setName(partner.getName());
+        partnerDto.setEmail(partner.getEmail());
+        partnerDto.setManagerName(partner.getManagerName());
+        partnerDto.setPhone(partner.getPhone());
+        partnerDto.setAddress(partner.getAddress());
+        partnerDto.setWebsite(partner.getWebsite());
+        partnerDto.setDescription(partner.getDescription());
+        partnerDto.setOutstanding(partner.getOutstanding());
+        partnerDto.setContactStart(partner.getContactStart());
+        partnerDto.setContactEnd(partner.getContactEnd());
+        return partnerDto;
+    }
 
 }
