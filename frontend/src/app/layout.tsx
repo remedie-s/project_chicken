@@ -38,7 +38,8 @@ export default function layout({children}: layoutChildren) {
     return (
         <html lang="ko">
         <head></head>
-        <body><Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <body>
+        <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Box sx={{ flex: "1" }}>
                 {/* 상단 검색창, 로그인 등 */}
                 <Header userName={userName} />

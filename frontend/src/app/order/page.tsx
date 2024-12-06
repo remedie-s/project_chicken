@@ -19,18 +19,9 @@ type orderProduct = {
 
 export default function odrerPage() {
     const [orderRequest, setOrderRequest] = useState<OrderRequestType[]>()
-    const { user, loading } = useAuth();
+    const {user, loading} = useAuth();
     const router = useRouter();
 
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push("/login");
-        }
-    }, [loading, user, router]);
-
-    if (loading) {
-        return <LoadingScreen/>;
-    }
 
 
     useEffect(() => {
@@ -51,6 +42,17 @@ export default function odrerPage() {
             router.push("/");
         }
     }, []);
+
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [loading, user, router]);
+
+    if (loading) {
+        return <LoadingScreen/>;
+    }
 
 
     if (!orderRequest) {
