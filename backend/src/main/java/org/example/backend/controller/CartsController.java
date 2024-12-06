@@ -29,22 +29,21 @@ public class CartsController {
         List<CartsDto> carts = this.cartsService.getCarts(users);
         return ResponseEntity.ok(carts);
     }
-
     // 카트 물품 변경 메소드 0이하 안됨
-    @PostMapping("/modify/{cartId}")
+    @PostMapping("/modify/{cartsId}")
     public ResponseEntity<?> modifyCart(@AuthenticationPrincipal Users users,
-                                        @PathVariable Long cartId,@Valid @RequestBody CartsDto cartsDto){
-        if(this.cartsService.modifyCarts(users, cartsDto)){
-            return ResponseEntity.ok(cartsDto);
+                                        @PathVariable Long cartsId,@RequestBody Long quantity){
+        if(this.cartsService.modifyCarts(users, cartsId, quantity)){
+            return ResponseEntity.ok(this.cartsService.getCarts(users));
         }else {
             return ResponseEntity.status(500).body("카트 변경 오류입니다.");
         }
     }
     
     // 카트 삭제 메소드
-    @PostMapping("/delete/{cartId}")
-    public ResponseEntity<?> deleteCart(@PathVariable Long cartId, @AuthenticationPrincipal Users users){
-        if(this.cartsService.deleteCarts(cartId)){
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteCart(@RequestBody List<Long> cartIds, @AuthenticationPrincipal Users users){
+        if(this.cartsService.deleteCarts(cartIds)){
             List<CartsDto> carts = this.cartsService.getCarts(users);
             return ResponseEntity.ok(carts);
         }
@@ -61,8 +60,14 @@ public class CartsController {
         }
         return ResponseEntity.status(500).body("주문 등록 오류입니다.");
     }
-
-
-
-
+    // 카트 물품 추가
+    @PostMapping("/add")
+    public ResponseEntity<?> addCart(@AuthenticationPrincipal Users users,
+                                     @Valid @RequestBody CartsDto cartsDto){
+        if(this.cartsService.addCarts(users,cartsDto)){
+            return ResponseEntity.ok(cartsDto);
+        }else {
+            return ResponseEntity.status(500).body("장바구니 정보 생성 실패");
+        }
+    }
 }

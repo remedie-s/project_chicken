@@ -30,16 +30,6 @@ public class OrderController {
         List<OrdersDto> ordersDtos = this.orderService.ordersListHide(users);
         return ResponseEntity.ok(ordersDtos);
     }
-
-    @PostMapping("/hide/{orderId}")
-    public ResponseEntity<?> hide(@AuthenticationPrincipal Users users,
-                                  @PathVariable Long orderId) {
-        if(this.orderService.hideOrder(users, orderId)){
-            List<OrdersDto> ordersDtos = this.orderService.ordersList(users);
-            return ResponseEntity.ok(ordersDtos);
-        }
-        return ResponseEntity.status(500).body("주문 숨기기 변경 오류입니다.");
-    }
     @PostMapping("/refund/{orderId}")
     public ResponseEntity<?> refund(@PathVariable Long orderId, @AuthenticationPrincipal Users users) {
         Orders orders =this.orderService.findById(orderId);
@@ -55,7 +45,23 @@ public class OrderController {
         }
         return ResponseEntity.status(500).body("비어있는 주문 입니다.");
     }
-
-
+    // 물건 주문
+    @PostMapping("/add")
+    public ResponseEntity<?> addOrder(@AuthenticationPrincipal Users users, @RequestBody OrdersDto[] ordersDtos) {
+        if(this.orderService.orderAdd(users, ordersDtos)){
+            return ResponseEntity.ok("주문 완료");
+        }
+        return ResponseEntity.status(500).body("주문 처리가 실패했습니다.");
+    }
+    // 주문 삭제(숨기기)
+    @PostMapping("/hide")
+    public ResponseEntity<?> hide(@AuthenticationPrincipal Users users,
+                                  @RequestBody List<Long> orderIds) {
+        if(this.orderService.orderChangeAvailable(users, orderIds)){
+            List<OrdersDto> ordersDtos = this.orderService.ordersList(users);
+            return ResponseEntity.ok(ordersDtos);
+        }
+        return ResponseEntity.status(500).body("주문 숨기기 변경 오류입니다.");
+    }
 
 }

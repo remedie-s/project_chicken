@@ -47,13 +47,13 @@ public class CartsService {
 
 
     // 카트 물품 변경 메소드(0이하는 안됨), 0일시 삭제?
-    public boolean modifyCarts(Users users, CartsDto cartsDto) {
-        Optional<Carts> byId = this.cartsRepository.findById(cartsDto.getId());
+    public boolean modifyCarts(Users users, Long cartsId, Long quantity) {
+        Optional<Carts> byId = this.cartsRepository.findById(cartsId);
         if(byId.isPresent()) {
             Carts carts = byId.get();
-            carts.setQuantity(cartsDto.getQuantity());
+            carts.setQuantity(quantity);
             this.cartsRepository.save(carts);
-            log.info("Modify carts by id: {}", cartsDto.getId());
+            log.info("Modify carts by id: {}", cartsId);
             return true;
         }
         log.error("카트 변경 실패");
@@ -61,17 +61,16 @@ public class CartsService {
     }
     
     // 카트 삭제 메소드
-    public boolean deleteCarts(Long cartId) {
-        Optional<Carts> byId = this.cartsRepository.findById(cartId);
-        if(byId.isPresent()) {
-            Carts carts = byId.get();
-            cartsRepository.delete(carts);
-            log.info("Delete carts by id: {}", cartId);
+    public boolean deleteCarts(List<Long> cartIds) {
+        try {
+            for (Long cartId : cartIds) {
+                deleteCartOne(cartId);
+            }
             return true;
+        } catch (Exception e) {
+            // 로그 추가 등 예외 처리
+            return false;
         }
-        log.error("카트가 없어요");
-        return false;
-
     }
     // 카트에서 주문 하기 메소드(엘라스틱 서치 색인도 변경 필요)
     // TODO (엘라스틱 서치 색인도 변경 필요)
@@ -123,6 +122,45 @@ public class CartsService {
         return false;
     }
 
+    // 카트 추가
+    public boolean addCarts(Users users, CartsDto cartsDto) {
+        Products product = getOnePoruct(cartsDto.getProductId());
+        if (product==null) return false;
+        Optional<Carts> oCarts = this.cartsRepository.findByUsersAndProducts(users, product);
+        if(oCarts.isPresent()) {
+            Carts carts = oCarts.get();
+            carts.setQuantity(carts.getQuantity() + cartsDto.getQuantity());
+        this.cartsRepository.save(carts);
+        log.info("Add carts by id: {}", cartsDto.getId());
+        return true;
+        }
+        Carts carts = new Carts();
+        carts.setProducts(product);
+        carts.setUsers(users);
+        carts.setQuantity(cartsDto.getQuantity());
+        this.cartsRepository.save(carts);
+        log.info("Add carts by id: {}", cartsDto.getId());
+        return true;
+    }
+    // 물건 하나 정보 획득
+    public Products getOnePoruct(Long productId) {
+        Optional<Products> oProducts = this.productsRepository.findById(productId);
+        if (oProducts.isPresent()) {
+            return oProducts.get();
+        } else return null;
+    }
+    // 카트 하나 삭제 메소드
+    public boolean deleteCartOne(Long cartId) {
+        Optional<Carts> oCart = this.cartsRepository.findById(cartId);
+        if(oCart.isPresent()) {
+            Carts cart = oCart.get();
+            cartsRepository.delete(cart);
+            log.info("Delete carts by id: {}", cartId);
+            return true;
+        }
+        log.error("존재하지 않는 카트");
+        return false;
+    }
     
 
 

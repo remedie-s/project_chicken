@@ -12,10 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,12 +40,12 @@ public class AuthController {
         // 이메일로 사용자 조회
         Users login = usersService.findByEmail(usersDto.getEmail());
         if (login == null) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("User not found.", null, null, null, null));
+            return ResponseEntity.badRequest().body(new TokenResponseDto("User not found.", null, null, null, null,null));
         }
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(usersDto.getPassword(), login.getPassword())) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid email or password.", null, null, null, null));
+            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid email or password.", null, null, null, null, null));
         }
 
         // 토큰 생성
@@ -61,26 +58,43 @@ public class AuthController {
         jwtUtil.authenticateUser(login);
 
         // 성공적으로 로그인한 사용자 정보와 토큰 반환
-        return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName()));
+        return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName(), login.getUserGrade()));
     }
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponseDto> refresh(@RequestBody String refreshToken) {
+    public ResponseEntity<TokenResponseDto> refresh(@RequestHeader("Authorization") String refreshToken) {
         // 리프레시 토큰 검증
+        if (!refreshToken.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.", null, null, null, null, null));
+        }
+        refreshToken = refreshToken.substring(7);
         if (!jwtUtil.validateRefreshToken(refreshToken)) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null));
+            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null, null));
         }
 
         // 토큰에서 사용자 정보 추출
         String username = jwtUtil.extractUsername(refreshToken);
         if (username == null || usersService.findByEmail(username) == null) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null));
+            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null, null));
         }
 
         // 새로운 액세스 토큰 발급
         String newAccessToken = jwtUtil.generateToken(username);
-
-        return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, username,this.usersService.findByEmail(username).getName()));
+        return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, username,this.usersService.findByEmail(username).getName(), this.usersService.findByEmail(username).getUserGrade()));
     }
 
+    // 비밀번호 변경
+    @PostMapping("/passwordchange")
+    public ResponseEntity passwordChange(@RequestBody UsersDto usersDto) {
+        if (this.usersService.passwordChange(usersDto)) {return ResponseEntity.ok("비밀번호 변경 성공");}
+        return ResponseEntity.status(500).body("비밀번호 변경에 실패");
+    }
+    // 비밀번호 질답 획득
+    @GetMapping("/passwordqa")
+    public ResponseEntity<?> passwordqa(String email) {
+        UsersDto usersDto = this.usersService.getPasswordQa(email);
+        if (usersDto == null) {
+            return ResponseEntity.status(500).body("유저 정보를 찾지 못 했습니다.");}
+        return ResponseEntity.ok(usersDto);
+    }
 
 }
