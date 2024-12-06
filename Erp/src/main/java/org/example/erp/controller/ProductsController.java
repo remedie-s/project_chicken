@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.ProductsDto;
 import org.example.erp.entity.Employee;
+import org.example.erp.entity.ProductReviews;
 import org.example.erp.service.ProductsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -83,6 +84,27 @@ public class ProductsController {
         }
         return ResponseEntity.badRequest().body("Product not found");
     }
+
+    // 물품 리뷰 리스트 조회
+    @GetMapping("/review/{productId}")
+    public ResponseEntity<?> getReview(@PathVariable Long productId) {
+        List<ProductReviews> reviews = this.productsService.reviews(productId);
+        if (reviews != null) {
+            return ResponseEntity.ok(reviews);
+        }
+        reviews.add(0, new ProductReviews());
+        return ResponseEntity.ok(reviews);
+    }
+    // 물품 리뷰 리스트 삭제
+    @DeleteMapping("/review/{id}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long id) {
+        if(this.productsService.reviewDelete(id)){
+            return ResponseEntity.ok("Review deleted successfully");
+        }
+        return ResponseEntity.badRequest().body("Review delete failed");
+    }
+
+
 
 }
 

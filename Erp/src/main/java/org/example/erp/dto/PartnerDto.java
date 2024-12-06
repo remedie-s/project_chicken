@@ -6,6 +6,7 @@ import lombok.*;
 import org.example.erp.entity.Partner;
 import org.example.erp.entity.Products;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,9 +37,9 @@ public class PartnerDto {
     // 미수금
     private Long outstanding;
     // 협력 시작일
-    private LocalDateTime contactStart;
+    private LocalDate contactStart;
     // 협력 마무리일
-    private LocalDateTime contactEnd;
+    private LocalDate contactEnd;
 
     // Partner -> PartnerDto 변환
     public static PartnerDto toDto(Partner partner) {
