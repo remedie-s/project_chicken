@@ -13,6 +13,6 @@ public class TokenResponseDto {
     private String refreshToken;
     private String email;
     private String name;
-
+    private Integer userGrade;
 
 }

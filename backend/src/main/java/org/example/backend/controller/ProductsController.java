@@ -36,9 +36,20 @@ public class ProductsController {
     //TODO Discount 할인 정책 적용시 어디서, 어떻게 적용할것인지
     
     // 물품 목록
-    @GetMapping("/all")
-    public ResponseEntity<List<Products>> getAllProducts() {
-        return ResponseEntity.ok(this.productsService.allList());
+    @GetMapping("/list/all")
+    public ResponseEntity<List<ProductsDto>> getAllProducts() {
+        return ResponseEntity.ok(this.productsService.allListDto());
+    }
+
+    // 최근 일주일 물품 목록
+    @GetMapping("/list/new")
+    public ResponseEntity<List<ProductsDto>> getNewProducts() {
+        return ResponseEntity.ok(this.productsService.newListDto());
+    }
+    // 이벤트 물품 목록 (현재는 이벤트 분류 없이 이벤트 상품 다 불러옴)
+    @GetMapping("/list/event")
+    public ResponseEntity<List<ProductsDto>> getEventProducts() {
+        return ResponseEntity.ok(this.productsService.eventListDto());
     }
 
     // TODO Elastic 물품 검색
@@ -48,7 +59,7 @@ public class ProductsController {
     // 물품 상세페이지
     @GetMapping("/detail/{productId}")
     public ResponseEntity<ProductsDto> getProductById(@PathVariable Long productId) {
-           return ResponseEntity.ok(this.productsService.productsDetail(productId));
+           return ResponseEntity.ok(this.productsService.productsDetailDto(productId));
     }
 
     // 물품 카트 등록
@@ -103,91 +114,14 @@ public class ProductsController {
         }
         return ResponseEntity.status(500).body("주문 등록 오류입니다.");
     }
-
-    // 물품 리뷰리스트
-    @GetMapping("/reviewList")
-    public ResponseEntity<List<ProductReviews>> reviewsList(Long productId) {
-        List<ProductReviews> productReviews = this.productsService.reviewsList(productId);
-        return ResponseEntity.ok(productReviews);
+    // 물품 여러개 정보 조회(주문 등)
+    @GetMapping("/views")
+    public ResponseEntity<?> productList(@RequestBody List<Long> productIds,
+                                         @AuthenticationPrincipal Users users) {
+        List<ProductsDto> productsDtoList = this.productsService.productsDtoList(productIds);
+        if(productsDtoList==null){
+            return ResponseEntity.status(500).body("잘못된 요청입니다.");}
+        return ResponseEntity.ok(productsDtoList);
     }
-
-    // 물품 리뷰 등록
-    @PostMapping("/review/create")
-    public ResponseEntity<?> createReview(@Valid @RequestBody 
-                                              ProductReviewsDto productReviewsDto,
-                                              @AuthenticationPrincipal Users users) {
-        // 로그인한 유저와 요청한 유저가 다를 경우
-        if(productReviewsDto.getUserId()!=users.getId()){
-            log.error("로그인한 유저와 요청 유저가 다릅니다.");
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)  // 403 Forbidden 상태 코드
-                    .body("로그인한 유저와 요청 유저가 다릅니다.");  // 오류 메시지
-        }
-
-        // 리뷰 생성 실패 시
-        if (!this.productsService.createReview(productReviewsDto, users)) {
-            log.error("리뷰 생성에 실패했습니다.");
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)  // 500 Internal Server Error 상태 코드
-                    .body("리뷰 생성에 실패했습니다.");  // 오류 메시지
-        }
-
-        // 리뷰 리스트 반환
-        List<ProductReviews> productReviews = this.productsService.reviewsList(productReviewsDto.getProductId());
-        return ResponseEntity.ok(productReviews);
-    }
-    
-    // 물품 리뷰 변경
-    @PostMapping("/review/modify/{reviewId}")
-    public ResponseEntity<?> modifyReview(@PathVariable Long reviewId,
-                                          @Valid @RequestBody
-                                          ProductReviewsDto productReviewsDto,
-                                          @AuthenticationPrincipal Users users) {
-        // 로그인한 유저와 요청한 유저가 다를 경우
-        if(productReviewsDto.getUserId()!=users.getId()){
-            log.error("로그인한 유저와 요청 유저가 다릅니다.");
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)  // 403 Forbidden 상태 코드
-                    .body("로그인한 유저와 요청 유저가 다릅니다.");  // 오류 메시지
-        }
-        // 리뷰 변경 실패 시
-        if (!this.productsService.modifyReview(productReviewsDto, reviewId)) {
-            log.error("리뷰 생성에 실패했습니다.");
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)  // 500 Internal Server Error 상태 코드
-                    .body("리뷰 생성에 실패했습니다.");  // 오류 메시지
-        }
-
-        // 리뷰 리스트 반환
-        List<ProductReviews> productReviews = this.productsService.reviewsList(productReviewsDto.getProductId());
-        return ResponseEntity.ok(productReviews);
-    }
-    
-    // 물품 리뷰 삭제
-    @PostMapping("/review/delete/{reviewId}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId,
-                                          @Valid @RequestBody
-                                          ProductReviewsDto productReviewsDto,
-                                          @AuthenticationPrincipal Users users) {
-        // 로그인한 유저와 요청한 유저가 다를 경우
-        if(productReviewsDto.getUserId()!=users.getId()){
-            log.error("로그인한 유저와 요청 유저가 다릅니다.");
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)  // 403 Forbidden 상태 코드
-                    .body("로그인한 유저와 요청 유저가 다릅니다.");  // 오류 메시지
-        }
-        // 리뷰 변경 실패 시
-        if (!this.productsService.deleteReview(productReviewsDto, reviewId)) {
-            log.error("리뷰 생성에 실패했습니다.");
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)  // 500 Internal Server Error 상태 코드
-                    .body("리뷰 생성에 실패했습니다.");  // 오류 메시지
-        }
-
-        // 리뷰 리스트 반환
-        List<ProductReviews> productReviews = this.productsService.reviewsList(productReviewsDto.getProductId());
-        return ResponseEntity.ok(productReviews);
-    }
-
 
 }

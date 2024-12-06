@@ -2,6 +2,7 @@ package org.example.backend.dto;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.backend.entity.Carts;
 import org.example.backend.entity.Orders;
 import org.example.backend.entity.Products;
 import org.example.backend.entity.Users;
@@ -37,6 +38,7 @@ public class OrdersDto {
     private Long productId;
     private Users users;
     private Products products;
+    private ProductsDto productsDto;
 
     public OrdersDto(Long id, Long quantity, Long price, Long discount, Long payPrice, LocalDateTime createdAt, boolean available, Long invoice, String address, String status, Users users, Products products) {
         this.id = id;
@@ -51,6 +53,24 @@ public class OrdersDto {
         this.status = status;
         this.users = users;
         this.products = products;
+    }
+
+
+    public static OrdersDto ordersToDto(Orders orders) {
+        OrdersDto ordersDto = new OrdersDto();
+        ordersDto.setId(orders.getId());
+        ordersDto.setQuantity(orders.getQuantity());
+        ordersDto.setPrice(orders.getPrice());
+        ordersDto.setDiscount(orders.getDiscount());
+        ordersDto.setPayPrice(orders.getPayPrice());
+        ordersDto.setCreatedAt(orders.getCreatedAt());
+        ordersDto.setAvailable(orders.isAvailable());
+        ordersDto.setInvoice(orders.getInvoice());
+        ordersDto.setAddress(orders.getAddress());
+        ordersDto.setStatus(orders.getStatus());
+        ordersDto.setUsers(orders.getUsers());
+        ordersDto.setProductsDto(ProductsDto.productsEntityToDto(orders.getProducts()));
+        return ordersDto;
     }
 
     // DTO -> 엔티티 변환 메소드
