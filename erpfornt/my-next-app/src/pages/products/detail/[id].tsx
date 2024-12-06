@@ -52,6 +52,11 @@ const ProductDetailPage = (): JSX.Element => {
         }
     };
 
+    // 홈으로 이동
+    const handleGoHome = () => {
+        router.push("/");
+    };
+
     return (
         <Box sx={{ p: 3 }}>
             {/* 입력 필드와 버튼 */}
@@ -110,6 +115,13 @@ const ProductDetailPage = (): JSX.Element => {
                     )}
                 </Box>
             )}
+
+            {/* 홈으로 가기 버튼 */}
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                <Button variant="contained" color="secondary" onClick={handleGoHome}>
+                    Go to Home
+                </Button>
+            </Box>
         </Box>
     );
 };

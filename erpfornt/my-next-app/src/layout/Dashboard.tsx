@@ -40,6 +40,8 @@ import OrderTable from "@/pages/orders/quarter";
 import InnerPage from "@/pages/finances/innerPage";
 import OrdersUsersPage from "@/pages/orders/users";
 import OrdersProductPage from "@/pages/orders/product";
+import ProductDetailPage from "@/pages/products/detail";
+import ProductEditPage from "@/pages/products/edit/[id]";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -106,7 +108,11 @@ function UserAccountAndCart() {
 
 // DemoPageContent Component
 function DemoPageContent({ pathname, session }: IPage) {
+
     switch (pathname) {
+        // @ts-ignore
+        case pathname.startsWith("/products/edit"):
+            return <ProductEditPage />;
         case "/employee/login":
             return <LoginPage />;
         case "/employee/logout":
@@ -121,8 +127,12 @@ function DemoPageContent({ pathname, session }: IPage) {
             return <ProductCreatePage />;
         case "/products/index":
             return <Index />;
+        case "/products/detail":
+            return <ProductDetailPage />;
+
         case "/orders":
             return <OrdersPage />;
+
 
         case "/orders/product":
             return <OrdersProductPage />;
@@ -140,6 +150,7 @@ function DemoPageContent({ pathname, session }: IPage) {
             return <AnnualSummaryPage />;
         case "/finances/QuarterlySummaryPage":
             return <QuarterlySummaryPage />;
+
         case "/":
             return <Notice />;
         default:
@@ -206,11 +217,7 @@ export default function DashboardLayoutBasic(props: DemoProps) {
         { segment: "orders", title: "전체주문", icon: <ShoppingBag /> },
         { segment: "orders", title: "특정주문", icon: <ShoppingBag />,
             children: [
-                {
-                    segment: "detail",
-                    title: "상세 주문",
-                    icon: <ShoppingBag />,
-                },
+
                 {
                     segment: "product",
                     title: "물품별 주문",
