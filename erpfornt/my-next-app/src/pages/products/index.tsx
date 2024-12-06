@@ -1,32 +1,10 @@
 'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import axios from 'axios';
-import {productData} from "@/api/datatype";
-import {productList} from "@/api/api";
-
-/**
- *     id?: number|null;
- *     name: string;
- *     description: string;
- *     price: number;
- *     createdAt: string; // LocalDateTime은 ISO 8601 형식의 문자열로 변환할 수 있습니다.
- *     imageUrl: string;
- *     stock: number;
- *     sellCount: number;
- *     category: string;
- *     mainItemNumber: number;
- *     event: number;
- *     brand: string;
- *     cost: number;
- *     partnerId: number; // Partner는 별도의 타입으로 정의해야 합니다.
- *
- *
- * @constructor
- */
-
-
+import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
+import { useRouter } from 'next/router'; // Next.js 라우터 사용
+import { productData } from "@/api/datatype";
+import { productList } from "@/api/api";
 
 // 컬럼 정의
 const columns: GridColDef<productData>[] = [
@@ -42,6 +20,7 @@ const columns: GridColDef<productData>[] = [
 
 export default function Index(): JSX.Element {
     const [rows, setRows] = React.useState<productData[]>([]);
+    const router = useRouter(); // Next.js 라우터
 
     // 데이터 가져오기
     React.useEffect(() => {
@@ -56,6 +35,14 @@ export default function Index(): JSX.Element {
 
         fetchProducts();
     }, []);
+
+    // 행 클릭 핸들러
+    const handleRowClick: GridEventListener<'rowClick'> = (params) => {
+        const { id } = params.row; // 클릭한 행의 ID 가져오기
+        if (id) {
+            router.push(`/products/detail/${id}`); // 상세 페이지로 이동
+        }
+    };
 
     return (
         <Box sx={{ height: 400, width: '100%' }}>
@@ -73,6 +60,7 @@ export default function Index(): JSX.Element {
                 pageSizeOptions={[5]}
                 checkboxSelection
                 disableRowSelectionOnClick
+                onRowClick={handleRowClick} // 행 클릭 이벤트 연결
             />
         </Box>
     );

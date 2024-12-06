@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,9 +37,9 @@ public class Partner {
     // 미수금
     private Long outstanding;
     // 협력 시작일
-    private LocalDateTime contactStart;
+    private LocalDate contactStart;
     // 협력 마무리일
-    private LocalDateTime contactEnd;
+    private LocalDate contactEnd;
     
     // 물품과 연결(주)
     @JsonIgnore

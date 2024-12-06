@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; // next/router가 아님!
 
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
-import { login } from "../../api/api" ;
-import {loginData} from "../../api/datatype";
+import { login } from "../../../api/api" ;
+import {loginData} from "../../../api/datatype";
 
 /**
  * 로그인이라고 텍스트, 로그인 아이디 입력창, 패스워드 입력창, 로그인 버튼, 회원가입 버튼

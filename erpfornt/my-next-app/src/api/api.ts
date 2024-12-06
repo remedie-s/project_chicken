@@ -3,7 +3,7 @@ import {
     EmployeeDto,
     FianceDto,
     loginData,
-    modifyOrderData,
+    modifyOrderData, modifyProductData,
     PartnerDto,
     productRegData,
     signupData
@@ -145,7 +145,7 @@ export const productList = async ()=>{
     }
 }
 export const productListCate = async (category:string)=>{
-    try{const response = await api.get(`${API_URL}/product/category/${category}`,{
+    try{const response = await api.get(`${API_URL}/products/category/${category}`,{
         headers :{
             'Content-Type' :'application/json',
         },
@@ -156,7 +156,7 @@ export const productListCate = async (category:string)=>{
     }
 }
 export const productListEvent = async (event:number)=>{
-    try{const response = await api.get(`${API_URL}/product/event/${event}`,{
+    try{const response = await api.get(`${API_URL}/products/event/${event}`,{
         headers :{
             'Content-Type' :'application/json',
         },
@@ -169,7 +169,7 @@ export const productListEvent = async (event:number)=>{
 
 
 export const productDetail = async (productId:number)=>{
-    try{const response = await api.get(`${API_URL}/product/${productId}`,{
+    try{const response = await api.get(`${API_URL}/products/${productId}`,{
         headers :{
             'Content-Type' :'application/json',
         },
@@ -179,6 +179,40 @@ export const productDetail = async (productId:number)=>{
         throw error.response.data; // 실패시
     }
 }
+export const productModify = async (modifyProduct:modifyProductData)=>{
+    try{const response = await api.put(`${API_URL}/products/${modifyProduct.id}`,modifyProduct,{
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+export const productReview = async (productId:number)=>{
+    try{const response = await api.get(`${API_URL}/products/review/${productId}`,{
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+export const productReviewDelete = async (reviewId:number)=>{
+    try{const response = await api.get(`${API_URL}/products/review/${reviewId}`,{
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+
 
 export const orderList = async ()=>{
     try{const response = await api.get(`${API_URL}/order/all`,{
