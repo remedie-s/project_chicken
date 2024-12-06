@@ -5,7 +5,7 @@ import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { createPartner } from '@/api/api';
 
 // 파트너 등록 페이지 컴포넌트
-function Create(): JSX.Element {
+function PartnerCreate(): JSX.Element {
     const [partnerData, setPartnerData] = useState({
         name: '',
         email: '',
@@ -112,4 +112,4 @@ function Create(): JSX.Element {
     );
 }
 
-export default Create;
+export default PartnerCreate;

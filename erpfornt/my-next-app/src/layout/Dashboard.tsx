@@ -42,6 +42,8 @@ import OrdersUsersPage from "@/pages/orders/users";
 import OrdersProductPage from "@/pages/orders/product";
 import ProductDetailPage from "@/pages/products/detail";
 import ProductEditPage from "@/pages/products/edit/[id]";
+import PartnerIndex from "@/pages/partner";
+import PartnerCreate from "@/pages/partner/create";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -129,11 +131,12 @@ function DemoPageContent({ pathname, session }: IPage) {
             return <Index />;
         case "/products/detail":
             return <ProductDetailPage />;
-
         case "/orders":
             return <OrdersPage />;
-
-
+        case "/partner/create":
+            return <PartnerCreate />;
+        case "/partner/index":
+            return <PartnerIndex />;
         case "/orders/product":
             return <OrdersProductPage />;
         case "/orders/users":
