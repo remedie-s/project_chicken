@@ -53,4 +53,15 @@ public class QuestionsController {
         }
         return ResponseEntity.ok(questionsDto);
     }
+    // 문의 수정
+    @PostMapping("/modify/{id}")
+    public ResponseEntity<?> questionModify(@AuthenticationPrincipal Users users,
+                                            @PathVariable Long id,
+                                            @RequestBody @Valid QuestionsDto questionsDto
+    ){
+        if(this.questionsService.modifyQuestions(users, id, questionsDto)){
+            return ResponseEntity.ok("문의 수정 성공");
+        }
+        return ResponseEntity.status(500).body("문의 수정 오류입니다.");
+    }
 }

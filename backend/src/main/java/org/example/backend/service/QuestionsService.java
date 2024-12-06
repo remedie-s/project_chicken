@@ -31,6 +31,7 @@ public class QuestionsService {
         questionsDto.setTitle(questions.getTitle());
         questionsDto.setContent(questions.getContent());
         questionsDto.setCreateTime(questions.getCreateTime());
+        questionsDto.setUserId(questionsDto.getUserId());
         if(this.answerRepository.findByQuestions(questions).isEmpty()){
             questionsDto.setAnswerCheck(false);
         } else {
@@ -88,6 +89,18 @@ public class QuestionsService {
     //TODO KAFKA 작성 완료시 카프카로 메시지 보내기
 
     // 질문 변경
+    public boolean modifyQuestions(Users users, Long questionsId, QuestionsDto questionsDto) {
+      Questions questions = findQuestion(questionsId);
+        if (questionUserCheck(users, questions)) {
+            // 사용자가 작성한 글이 아니면 flase 반환
+            return false;
+        }
+        if(questions==null) {return false;};
+        questions.setTitle(questionsDto.getTitle());
+        questions.setContent(questionsDto.getContent());
+        this.questionsRepository.save(questions);
+        return true;
+    };
     
     // 질문 삭제
     public boolean deleteQuestions(Users users, Long questionsId) {

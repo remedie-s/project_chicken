@@ -26,14 +26,21 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
         else setQacheck(true);
     }
     const passwordChangeHandler = async () => {
+        if(!passwordCheck()) {return;}
         const data = {
             email: email,
             password: newPassword
         }
-        const res = await authApi.post("/users/passwordchange", data);
+        const res = await axios.post("http://localhost:8080/api/auth/passwordchange", data);
         if (res.status!==200) { alert("비밀번호 변경에 실패했습니다.");}
         else { alert("비밀번호 변경에 성공했습니다."); setPasswordChange(false);}
         return;
+    }
+    const passwordCheck = () => {
+        if(newPassword===null||newPassword.trim().length===0) {alert("변경할 비밀번호를 입력해주세요.");return false;}
+        if(confirmPassword===null||confirmPassword.trim().length===0) {alert("비밀번호 확인을 입력해주세요.");return false;}
+        if(confirmPassword!==newPassword) {alert("비밀번호 확인이 일치하지 않습니다.");return false;}
+        return true;
     }
 
 
@@ -42,11 +49,13 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
             {qacheck?
                 <Box>
                     <TextField
+                        type="password"
                         label="변경할 비밀번호"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <TextField
+                        type="password"
                         label="비밀번호 확인"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -57,7 +66,7 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
                     </Button>
                     <Button
                         onClick={() => setPasswordChange(false)}>
-                        변경 취소
+                        비밀번호 변경 취소
                     </Button>
                 </Box>
                 :

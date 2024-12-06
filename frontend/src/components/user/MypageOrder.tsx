@@ -7,7 +7,7 @@ import type {ProductsDto} from "@/types/productType";
 import {useEffect, useState} from "react";
 import {OrderDto} from "@/types/orderType"
 import {string} from "prop-types";
-import authPage from "@/scripts/auth/authPage";
+import useAuth from "@/scripts/auth/useAuth";
 import authApi from "@/scripts/auth/authApi";
 import {useRouter} from "next/navigation";
 

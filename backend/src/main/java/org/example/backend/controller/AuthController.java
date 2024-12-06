@@ -82,5 +82,19 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, username,this.usersService.findByEmail(username).getName(), this.usersService.findByEmail(username).getUserGrade()));
     }
 
+    // 비밀번호 변경
+    @PostMapping("/passwordchange")
+    public ResponseEntity passwordChange(@RequestBody UsersDto usersDto) {
+        if (this.usersService.passwordChange(usersDto)) {return ResponseEntity.ok("비밀번호 변경 성공");}
+        return ResponseEntity.status(500).body("비밀번호 변경에 실패");
+    }
+    // 비밀번호 질답 획득
+    @GetMapping("/passwordqa")
+    public ResponseEntity<?> passwordqa(String email) {
+        UsersDto usersDto = this.usersService.getPasswordQa(email);
+        if (usersDto == null) {
+            return ResponseEntity.status(500).body("유저 정보를 찾지 못 했습니다.");}
+        return ResponseEntity.ok(usersDto);
+    }
 
 }

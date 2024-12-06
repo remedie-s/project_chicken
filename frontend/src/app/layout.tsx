@@ -8,6 +8,7 @@ import React, {ReactNode} from 'react'
 import Navbar from "@/components/layout/Navbar";
 import '@/styles/globals.css';
 import {useRouter} from "next/navigation";
+import LoadingScreen from "@/components/layout/LoadingScreen";
 const cookie = require("cookie");
 
 type layoutChildren = {
@@ -31,12 +32,7 @@ export default function layout({children}: layoutChildren) {
 
     if (loading) {
         return (
-            <html lang="ko">
-            <head></head>
-            <body>
-            <div>로딩 중...</div>
-            </body>
-            </html>)
+            <LoadingScreen/>)
     }
 
     return (
