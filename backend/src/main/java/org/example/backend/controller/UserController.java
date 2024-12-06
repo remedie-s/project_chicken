@@ -37,12 +37,6 @@ public class UserController {
             return ResponseEntity.status(500).body("유저 정보를 찾지 못 했습니다.");}
         return ResponseEntity.ok(usersDto);
     }
-    // 비밀번호 변경
-    @PostMapping("/passwordchange")
-    public ResponseEntity passwordChange(@RequestBody UsersDto usersDto) {
-        if (this.usersService.passwordChange(usersDto)) {return ResponseEntity.ok("비밀번호 변경 성공");}
-        return ResponseEntity.status(500).body("비밀번호 변경에 실패");
-    }
     // 유저 탈퇴
     @PostMapping("/delete")
     public ResponseEntity delete(@AuthenticationPrincipal Users users) {

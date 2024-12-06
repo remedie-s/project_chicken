@@ -7,5 +7,6 @@ export type QuestionDto = {
     content: string,
     createTime: Date,
     answerCheck: boolean,
-    answers: AnswersDto[]|null
+    answers: AnswersDto[]|null,
+    userId: number
 }

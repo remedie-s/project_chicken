@@ -7,7 +7,7 @@ import {DataGrid, GridColDef, GridEventListener} from '@mui/x-data-grid';
 import {QuestionDto} from "@/types/questionType";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import authPage from "@/scripts/auth/authPage";
+import useAuth from "@/scripts/auth/useAuth";
 import authApi from "@/scripts/auth/authApi";
 import {useRouter} from "next/navigation";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';

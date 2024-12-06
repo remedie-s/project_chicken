@@ -1,9 +1,20 @@
-import {Box} from "@mui/material";
+import {Box, CircularProgress, Typography} from "@mui/material";
 
-export default function LoadingScreen(){
+export default function LoadingScreen () {
     return (
-        <Box>
-            로딩 중
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh'
+            }}
+        >
+            <CircularProgress />
+            <Typography variant="h6" sx={{ mt: 2 }}>
+                로딩 중
+            </Typography>
         </Box>
-    )
-}
+    );
+};

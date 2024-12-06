@@ -4,7 +4,7 @@ import {Box, Button, Card, CardContent, Typography} from "@mui/material";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import PasswordChangeScreen from "@/components/user/PasswordChangeScreen";
-import authPage from "@/scripts/auth/authPage";
+import useAuth from "@/scripts/auth/useAuth";
 import authApi from "@/scripts/auth/authApi";
 import type {OrderDto} from "@/types/orderType";
 import type {UsersDto} from "@/types/userType"

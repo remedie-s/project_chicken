@@ -25,4 +25,5 @@ public class QuestionsDto {
     private LocalDateTime createTime;
     private Users users;
     private List<AnswersDto> answers;
+    private Long userId;
 }

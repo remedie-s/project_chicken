@@ -1,6 +1,6 @@
 "use client"
 
-import authPage from "@/scripts/auth/authPage";
+import useAuth from "@/scripts/auth/useAuth";
 import {useEffect, useState} from "react";
 import {Box} from "@mui/material";
 import MypageSide from "@/components/user/MypageSide";

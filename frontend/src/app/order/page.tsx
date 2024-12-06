@@ -10,6 +10,7 @@ import {ProductsDto} from "@/types/productType";
 import {useRouter} from "next/navigation";
 import LoadingScreen from "@/components/layout/LoadingScreen";
 import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
+import useAuth from "@/scripts/auth/useAuth";
 
 type orderProduct = {
     productId:number,
@@ -18,7 +19,18 @@ type orderProduct = {
 
 export default function odrerPage() {
     const [orderRequest, setOrderRequest] = useState<OrderRequestType[]>()
+    const { user, loading } = useAuth();
     const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [loading, user, router]);
+
+    if (loading) {
+        return <LoadingScreen/>;
+    }
 
 
     useEffect(() => {

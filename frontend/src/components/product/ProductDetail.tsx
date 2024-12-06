@@ -17,13 +17,14 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import axios from "axios";
 import {useRouter} from "next/navigation";
 import Warranty from "@/components/product/Warranty";
-import authPage from "@/scripts/auth/authPage";
+import useAuth from "@/scripts/auth/useAuth";
 import authApi from "@/scripts/auth/authApi";
 import type {ProductsDto} from "@/types/productType";
 import {ProductReviewsDto} from "@/types/productReviewType";
 import ReviewOne from "@/components/review/ReviewOne";
 import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 import {OrderRequestType} from "@/types/orderType";
+import ReviewCreate from "@/components/review/ReviewCreate";
 
 const cookie = require("cookie");
 
@@ -188,6 +189,7 @@ export default function ProductDetail({productId}: { productId: string }) {
                         <Typography id="review" variant="h5">
                             리뷰
                         </Typography>
+                        <ReviewCreate/>
                         {productReviews ?
                             (productReviews.map(
                                 (productReview, index) =>
