@@ -24,6 +24,7 @@ import AttendancePage from "@/pages/employee/attendance/index";
 import ProductCreatePage from "../pages/products/create";
 import LeavePage from "@/pages/employee/leave/index";
 import OrdersPage from "@/pages/orders/index";
+import UserAdminPage from "@/pages/admin/userList";
 
 // 타입 정의
 import type { DemoProps, IPage } from "@/api/datatype";
@@ -44,6 +45,8 @@ import ProductDetailPage from "@/pages/products/detail";
 import ProductEditPage from "@/pages/products/edit/[id]";
 import PartnerIndex from "@/pages/partner";
 import PartnerCreate from "@/pages/partner/create";
+import EmployeeAdminPage from "@/pages/admin/empList";
+import EmployeePage from "@/pages/employee/list";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -125,6 +128,8 @@ function DemoPageContent({ pathname, session }: IPage) {
             return <LeavePage />;
         case "/employee/attendance":
             return <AttendancePage />;
+        case "/employee/list":
+            return <EmployeePage />;
         case "/products/productCreate":
             return <ProductCreatePage />;
         case "/products/index":
@@ -153,6 +158,10 @@ function DemoPageContent({ pathname, session }: IPage) {
             return <AnnualSummaryPage />;
         case "/finances/QuarterlySummaryPage":
             return <QuarterlySummaryPage />;
+        case "/admin/empList":
+            return <EmployeeAdminPage />;
+            case "/admin/userList":
+            return <UserAdminPage />;
 
         case "/":
             return <Notice />;
@@ -195,6 +204,7 @@ export default function DashboardLayoutBasic(props: DemoProps) {
                 { segment: "logout", title: "로그아웃", icon: <Logout /> },
                 { segment: "attendance", title: "출퇴근처리", icon: <Logout /> },
                 { segment: "leave", title: "휴가", icon: <Logout /> },
+                { segment: "list", title: "직원리스트", icon: <Logout /> },
         ]
         },
 
@@ -278,6 +288,22 @@ export default function DashboardLayoutBasic(props: DemoProps) {
                 {
                     segment: "QuarterlySummaryPage",
                     title: "분기별 주문 관리",
+                    icon: <ShoppingBag />,
+                },
+            ]
+        },
+        { kind: "divider" },
+        { kind: "header", title: "관리자" },
+        { segment: "admin", title: "관리자 관리", icon: <ShoppingBag />,
+            children: [
+                {
+                    segment: "empList",
+                    title: "직원 관리",
+                    icon: <ShoppingBag />,
+                },
+                {
+                    segment: "userList",
+                    title: "유저 관리",
                     icon: <ShoppingBag />,
                 },
             ]

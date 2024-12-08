@@ -6,7 +6,7 @@ import {
     modifyOrderData, modifyProductData,
     PartnerDto,
     productRegData,
-    signupData
+    signupData, UsersDto
 } from "./datatype";
 
 const API_URL =  'http://localhost:8081/api'; // spring boot ERP 페이지
@@ -296,9 +296,10 @@ export const getEmployeeList = async () => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
+
 export const getEmployeeListByEX = async () => {
     try {
-        const response = await api.get(`${API_URL}/employee/list/ex`, {
+        const response = await api.get(`${API_URL}/employee/list/admin`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -320,9 +321,33 @@ export const getEmployeeDetail = async (id: number) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
+export const getEmployeeDetailAdmin = async (id: number) => {
+    try {
+        const response = await api.get(`${API_URL}/employee/admin/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 직원 상세 정보 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
 export const modifyEmployee = async (id: number, employeeData: EmployeeDto) => {//TODO
     try {
-        const response = await api.post(`${API_URL}/employee/modify/${id}`, employeeData, {
+        const response = await api.put(`${API_URL}/employee/modify/${id}`, employeeData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 변경된 직원 데이터 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const deleteEmployee = async (id: number) => {//TODO
+    try {
+        const response = await api.delete(`${API_URL}/employee/delete/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -462,6 +487,45 @@ export const getAnnualLeave = async (employeeId: number) => {
             },
         });
         return response.data; // 성공 시 연차 정보 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+
+// 유저 관리 메소드
+export const getUserList = async () => {
+    try {
+        const response = await api.get(`${API_URL}/user/list`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 직원 리스트 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+
+export const modifyUser = async (usersDto: UsersDto) => {//TODO
+    try {
+        const response = await api.put(`${API_URL}/user/modify}`, usersDto, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 변경된 직원 데이터 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const deleteUser = async (id: number) => {//TODO
+    try {
+        const response = await api.delete(`${API_URL}/employee/delete/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 변경된 직원 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패 시 에러 반환
     }
