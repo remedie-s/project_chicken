@@ -1,58 +1,44 @@
 package org.example.erp.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.*;
-import org.example.erp.entity.Attendance;
 import org.example.erp.entity.Employee;
+import org.example.erp.entity.Role;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 직원 관리시 사용하는 DTO
+ * 직원 관리 시 사용하는 DTO
  */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-
 @AllArgsConstructor
 public class EmployeeDto {
 
     private Long id;
-
     private String password;
-
-
     private String name;
-
     private String email;
-
     private String gender;
-
     private String address;
-
     private LocalDate birthDate;
-
     private String phoneNumber;
-
     private String department;
-
     private String position;
-
     private Long salary;
-
     private Long incentive;
     private LocalDate hireDate;
     private LocalDate resignationDate;
-
     private double annualLeave;
-
     private Integer rating;
 
+    private List<Role> roles; // 역할 정보 추가
+
+    /**
+     * Entity -> DTO 변환
+     */
     public static EmployeeDto toDto(Employee employee) {
         if (employee == null) {
             return null;
@@ -60,7 +46,7 @@ public class EmployeeDto {
 
         return new EmployeeDto(
                 employee.getId(),
-                employee.getPassword(),
+                null, // Password는 DTO 변환 시 제외 (보안상 이유)
                 employee.getName(),
                 employee.getEmail(),
                 employee.getGender(),
@@ -74,11 +60,14 @@ public class EmployeeDto {
                 employee.getHireDate(),
                 employee.getResignationDate(),
                 employee.getAnnualLeave(),
-                employee.getRating()
+                employee.getRating(),
+                employee.getRoles() // Role 정보를 추가
         );
-
     }
-    // DTO to Entity
+
+    /**
+     * DTO -> Entity 변환
+     */
     public static Employee toEntity(EmployeeDto employeeDto) {
         if (employeeDto == null) {
             return null;
@@ -101,8 +90,8 @@ public class EmployeeDto {
         employee.setResignationDate(employeeDto.getResignationDate());
         employee.setAnnualLeave(employeeDto.getAnnualLeave());
         employee.setRating(employeeDto.getRating());
+        employee.setRoles(employeeDto.getRoles()); // Role 정보를 추가
 
         return employee;
     }
-
 }
