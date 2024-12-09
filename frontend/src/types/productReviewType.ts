@@ -9,5 +9,6 @@ export type ProductReviewsDto = {
     // 리뷰 작성일
     createdAt: Date,
     usersDto: UsersDto,
-    productsDto: ProductsDto
+    productsDto: ProductsDto,
+    productId: number
 }

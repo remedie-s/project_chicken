@@ -32,9 +32,9 @@ import java.util.Map;
 public class ProductsController {
     private final ProductsService productsService;
     private final UsersService usersService;
-    
+
     //TODO Discount 할인 정책 적용시 어디서, 어떻게 적용할것인지
-    
+
     // 물품 목록
     @GetMapping("/list/all")
     public ResponseEntity<List<ProductsDto>> getAllProducts() {
@@ -46,6 +46,7 @@ public class ProductsController {
     public ResponseEntity<List<ProductsDto>> getNewProducts() {
         return ResponseEntity.ok(this.productsService.newListDto());
     }
+
     // 이벤트 물품 목록 (현재는 이벤트 분류 없이 이벤트 상품 다 불러옴)
     @GetMapping("/list/event")
     public ResponseEntity<List<ProductsDto>> getEventProducts() {
@@ -55,17 +56,24 @@ public class ProductsController {
     // TODO Elastic 물품 검색
 
 
-
     // 물품 상세페이지
     @GetMapping("/detail/{productId}")
-    public ResponseEntity<ProductsDto> getProductById(@PathVariable Long productId) {
-           return ResponseEntity.ok(this.productsService.productsDetailDto(productId));
+    public ResponseEntity<ProductsDto> getProductById(
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(this.productsService.productsDetailDto(productId));
+    }
+
+    // 물품 상세페이지
+    @GetMapping("/detail/{productId}/user")
+    public ResponseEntity<ProductsDto> getProductByIdAndUser(@AuthenticationPrincipal Users users,
+                                                             @PathVariable Long productId) {
+        return ResponseEntity.ok(this.productsService.productsDetailAndUser(productId, users));
     }
 
     // 물품 카트 등록
     @PostMapping("/cart")
     public ResponseEntity<?> productToCart(@RequestBody @Valid CartsDto cartsDto
-                                           ) {
+    ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 인증 정보가 null이거나 사용자 정보가 없는 경우
@@ -88,7 +96,7 @@ public class ProductsController {
         log.info("User found: {}", users.getId());
 
         Map<String, Object> responseBody = new HashMap<>();
-        if(this.productsService.moveToCart(cartsDto, users)){
+        if (this.productsService.moveToCart(cartsDto, users)) {
             responseBody.put("success", true);
             responseBody.put("userId", users.getId());
             responseBody.put("productId", cartsDto.getId());
@@ -101,12 +109,12 @@ public class ProductsController {
     @PostMapping("/buy")
     public ResponseEntity<?> productToBuy(@RequestBody @Valid OrdersDto ordersDto,
                                           @AuthenticationPrincipal Users users) {
-        if(ordersDto.getUserId()!=users.getId()){
+        if (ordersDto.getUserId() != users.getId()) {
             log.error("로그인한 유저와 요청 유저가 다릅니다.");
             return ResponseEntity.status(500).body("로그인한 유저와 요청 유저가 다릅니다.");
         }
         Map<String, Object> responseBody = new HashMap<>();
-        if(this.productsService.buyInstance(ordersDto, users)){
+        if (this.productsService.buyInstance(ordersDto, users)) {
             responseBody.put("success", true);
             responseBody.put("userId", users.getId());
             responseBody.put("productId", ordersDto.getId());
@@ -114,13 +122,15 @@ public class ProductsController {
         }
         return ResponseEntity.status(500).body("주문 등록 오류입니다.");
     }
+
     // 물품 여러개 정보 조회(주문 등)
     @GetMapping("/views")
     public ResponseEntity<?> productList(@RequestBody List<Long> productIds,
                                          @AuthenticationPrincipal Users users) {
         List<ProductsDto> productsDtoList = this.productsService.productsDtoList(productIds);
-        if(productsDtoList==null){
-            return ResponseEntity.status(500).body("잘못된 요청입니다.");}
+        if (productsDtoList == null) {
+            return ResponseEntity.status(500).body("잘못된 요청입니다.");
+        }
         return ResponseEntity.ok(productsDtoList);
     }
 

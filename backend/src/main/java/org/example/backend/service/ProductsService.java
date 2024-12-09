@@ -94,6 +94,18 @@ public class ProductsService {
         }
         return null;
     }
+    public ProductsDto productsDetailAndUser(Long productId, Users users) {
+        ProductsDto productsDto = productsDetailDto(productId);
+        if(productsDto==null) { return null;}
+        Orders orders = this.ordersRepository.findFirstByUsers_IdAndProducts_Id(users.getId(), productId);
+        if(orders==null) {
+            productsDto.setBoughtUser(false);
+            return productsDto;
+        } else {
+            productsDto.setBoughtUser(true);
+            return productsDto;
+        }
+    }
 
     public List<ProductsDto> productsDtoList(List<Long> productIds){
         List<ProductsDto> productsDtoList = new ArrayList<>();
