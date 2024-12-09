@@ -42,7 +42,7 @@ public class EmployeeService {
         employee.setIncentive(employeeDto.getIncentive());
         employee.setHireDate(employeeDto.getHireDate());
         employee.setResignationDate(employeeDto.getResignationDate());
-        employee.setAnnualLeave(employeeDto.getAnnualLeave());
+        employee.setAnnualLeave(15);
         employee.setRating(employeeDto.getRating());
 
         // 역할 설정
@@ -178,7 +178,9 @@ public class EmployeeService {
         }
     }
 
-    private Employee findByEmail(String email) {
+    public Employee findByEmail(String email) {
         return employeeRepository.findByEmail(email).orElse(null);
     }
+
+
 }
