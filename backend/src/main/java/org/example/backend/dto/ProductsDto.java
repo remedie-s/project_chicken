@@ -39,6 +39,7 @@ public class ProductsDto {
     private Integer event;
     private Partner partner;
     private PartnerDto partnerDto;
+    private boolean boughtUser;
 
     public static ProductsDto productsEntityToDto(Products entity) {
         ProductsDto dto = new ProductsDto();

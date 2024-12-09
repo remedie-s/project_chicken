@@ -10,6 +10,7 @@ export type ProductsDto = {
     stock: number,
     sellCount: number,
     category: string,
-    mainItemNumber: number
+    mainItemNumber: number,
+    boughtUser: boolean
 };
 

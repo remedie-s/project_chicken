@@ -1,14 +1,10 @@
 "use client"
 
 import {
-    AppBar,
     Box,
     Button,
-    Card,
-    CardContent,
-    CardMedia,
-    Grid2, Paper,
-    Slide, TextField,
+    Paper,
+    TextField,
     Toolbar,
     Typography,
     useScrollTrigger
@@ -21,34 +17,36 @@ import useAuth from "@/scripts/auth/useAuth";
 import authApi from "@/scripts/auth/authApi";
 import type {ProductsDto} from "@/types/productType";
 import {ProductReviewsDto} from "@/types/productReviewType";
-import ReviewOne from "@/components/review/ReviewOne";
 import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 import {OrderRequestType} from "@/types/orderType";
 import ReviewCreate from "@/components/review/ReviewCreate";
-
+import ReviewList from "@/components/review/ReviewList";
 const cookie = require("cookie");
 
 export default function ProductDetail({productId}: { productId: string }) {
     const appbarTrigger = useScrollTrigger();
     const router = useRouter();
     const [productDetail, setProductDetail] = useState<ProductsDto | null>(null);
-    const [productReviews, setProductReviews] = useState<ProductReviewsDto[] | null>(null);
+    const [productReviews, setProductReviews] = useState<ProductReviewsDto[]|null>();
     const [quantity, setQuantity] = useState(0);
+    const [reviewCreateAuth, setReviewCreateAuth] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
+            const accessToken = getCookie("accessToken");
             try {
-                const res = await axios.get<ProductsDto>(`http://localhost:8080/api/products/detail/${productId}`);
+                let res: { status: number, data: ProductsDto };
+                if (!accessToken){
+                    res = await axios.get<ProductsDto>(`http://localhost:8080/api/products/detail/${productId}`);
+                } else {
+                    res = await authApi.get<ProductsDto>(`http://localhost:8080/api/products/detail/${productId}/user`);
+                    setReviewCreateAuth(res.data.boughtUser);
+                }
                 if (res.status !== 200) {
                     alert("상품 정보를 불러오는데 문제가 발생했습니다.");
                     router.back()
                 }
                 setProductDetail(res.data);
-                const res2 = await axios.get<ProductReviewsDto[] | null>(`http://localhost:8080/api/product/reviews/list/${productId}`);
-                if (res2.status !== 200) {
-                    alert("상품 리뷰를 불러오는데 문제가 발생했습니다.");
-                }
-                setProductReviews(res2.data);
             } catch (error) {
                 console.error('API 요청 오류:', error);
             }
@@ -189,16 +187,7 @@ export default function ProductDetail({productId}: { productId: string }) {
                         <Typography id="review" variant="h5">
                             리뷰
                         </Typography>
-                        <ReviewCreate/>
-                        {productReviews ?
-                            (productReviews.map(
-                                (productReview, index) =>
-                                    (<ReviewOne key={index} productReview={productReview}/>)))
-                            :
-                            <Paper>
-                                아직 리뷰가 없습니다.
-                            </Paper>
-                        }
+                        <ReviewList productId={productId} reviewCreateAuth={reviewCreateAuth}/>
                         <Typography id="rule" variant="h5">
                             판매 정책
                         </Typography>

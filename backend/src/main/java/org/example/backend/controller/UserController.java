@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UsersService usersService;
     private final JwtUtil jwtUtil;
-
+    
     // 유저 정보 조회
     @GetMapping("/detail")
     public ResponseEntity<?> userDetail(@AuthenticationPrincipal Users users) {

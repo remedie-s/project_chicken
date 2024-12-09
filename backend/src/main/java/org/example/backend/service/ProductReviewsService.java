@@ -40,6 +40,7 @@ public class ProductReviewsService {
         productReviewsDto.setProductsDto(productsService.productsDetailDto(productReviews.getId()));
         return productReviewsDto;
     }
+
     // List<ProductReviews>를 List<ProductReviewsDto>로 전환
     public List<ProductReviewsDto> productReviewListToDtoList(List<ProductReviews> productReviewsList) {
         List<ProductReviewsDto> productReviewsDtoList = new ArrayList<>();
@@ -55,14 +56,27 @@ public class ProductReviewsService {
         return productReviewListToDtoList(byProductsId);
     }
 
-    //물품 리뷰 작성 로직
-    public boolean createReview(ProductReviewsDto productReviewsDto, Users users) {
-        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
-        if (byId.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
+    // 물품 정보 획득
+    public Products getProductsById(Long productId) {
+    Optional<Products> products = this.productsRepository.findById(productId);
+        if(products.isEmpty()){
+        log.warn("Product with ID {} not found", productId);
+        return null;
+    }
+        return products.get();
+}
+    // 리뷰 정보 획득
+    public ProductReviews getProductReviewsById(Long productReviewsId) {
+        Optional<ProductReviews> review = this.productReviewsRepository.findById(productReviewsId);
+        if (review.isEmpty()) {
+            log.warn("Product with ID {} not found", productReviewsId);
+            return null;
         }
-        Products product = byId.get();
+        return review.get();
+    }
+    //물품 리뷰 작성 로직
+    public boolean createReview(Long productId, ProductReviewsDto productReviewsDto, Users users) {
+        Products product = getProductsById(productId);
         ProductReviews review = new ProductReviews();
         review.setProducts(product);
         review.setUsers(users);
@@ -70,7 +84,7 @@ public class ProductReviewsService {
         review.setContent(productReviewsDto.getContent());
         review.setRating(productReviewsDto.getRating());
         this.productReviewsRepository.save(review);
-        log.info("{}번 물품에 대한 리뷰가 등록되었습니다.", productReviewsDto.getProductId());
+        log.info("{}번 물품에 대한 리뷰가 등록되었습니다.", productId);
         // 리뷰 평점이 3.0 보다 낮으면 메시지 발송
         if(review.getRating()<=3.0){
             this.kafkaMessage.sendKafkaProductReviewMsg(review, "review");
@@ -80,18 +94,7 @@ public class ProductReviewsService {
 
     //물품 리뷰 변경 로직
     public boolean modifyReview(ProductReviewsDto productReviewsDto,Long reviewId) {
-        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
-        if (byId.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
-        }
-        Products product = byId.get();
-        Optional<ProductReviews> review = this.productReviewsRepository.findById(reviewId);
-        if (review.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
-        }
-        ProductReviews reviews = review.get();
+        ProductReviews reviews = getProductReviewsById(reviewId);
         reviews.setRating(productReviewsDto.getRating());
         reviews.setContent(productReviewsDto.getContent());
         log.info("{}번 물품에 대한 리뷰가 수정되었습니다.", reviewId);
@@ -104,18 +107,9 @@ public class ProductReviewsService {
     }
 
     //물품 리뷰 삭제 로직
-    public boolean deleteReview(ProductReviewsDto productReviewsDto,Long reviewId) {
-        Optional<Products> byId = this.productsRepository.findById(productReviewsDto.getProductId());
-        if (byId.isEmpty()) {
-            log.warn("Product with ID {} not found", productReviewsDto.getProductId());
-            return false;
-        }
-        Optional<ProductReviews> review = this.productReviewsRepository.findById(reviewId);
-        if (review.isEmpty()) {
-            log.warn("Product with ID {} not found",reviewId);
-            return false;
-        }
-        this.productReviewsRepository.delete(review.get());
+    public boolean deleteReview(Long reviewId) {
+        ProductReviews reviews = getProductReviewsById(reviewId);
+        this.productReviewsRepository.delete(reviews);
         return true;
     }
 
