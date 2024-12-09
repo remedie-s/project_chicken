@@ -67,6 +67,9 @@ public class Employee implements UserDetails {
     @Enumerated(EnumType.STRING)
     private List<Role> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "employee")
+    private List<ChatRoomUserMap> chatRoomUserMaps;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
