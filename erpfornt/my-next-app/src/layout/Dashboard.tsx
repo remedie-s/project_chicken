@@ -116,79 +116,100 @@ function UserAccountAndCart() {
 // DemoPageContent Component
 function DemoPageContent({ pathname, session}: IPage) {
 
-    if (!session || !session.user) {
-        return <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">세션이 없습니다. 로그인 해주세요.</Typography></Box>;
+    if(session!=null) {
+        const {roles} = session.user;
+        const isAdmin = roles.includes("ADMIN");
+        const isUser = roles.includes("USER");
+        const isManager = roles.includes("MANAGER");
+        const isPURCHASING = roles.includes("PURCHASING");
+        const isFINANCE = roles.includes("FINANCE");
+        const isHUMAN_RESOURCE = roles.includes("HUMAN_RESOURCE");
+        const CUSTOMER_SERVICE = roles.includes("CUSTOMER_SERVICE");
+
+
+        switch (pathname) {
+            // @ts-ignore
+            case pathname.startsWith("/products/edit"):
+                return isAdmin || isPURCHASING ? <ProductEditPage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+
+            case "/employee/login":
+                return <LoginPage/>;
+            case "/employee/logout":
+                return <LogoutPage/>;
+            case "/employee/signup":
+                return <SignupPage/>;
+            case "/employee/leave":
+                return <LeavePage/>;
+            case "/employee/attendance":
+                return <AttendancePage/>;
+            case "/employee/list":
+                return <EmployeePage/>;
+            case "/products/productCreate":
+                return isAdmin || isPURCHASING ? <ProductCreatePage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+            case "/products/index":
+                return <Index/>;
+            case "/products/detail":
+                return <ProductDetailPage/>;
+            case "/orders":
+                return <OrdersPage/>;
+            case "/partner/create":
+                return isAdmin || isPURCHASING ? <PartnerCreate/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+            case "/partner/index":
+                return <PartnerIndex/>;
+            case "/orders/product":
+                return <OrdersProductPage/>;
+            case "/orders/users":
+                return <OrdersUsersPage/>;
+            case "/orders/quarter":
+                return isAdmin || isFINANCE || isPURCHASING ? <OrderTable/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+            case "/dashboard":
+                return <Notice/>;
+            case "/finances/create":
+                return isAdmin || isFINANCE ? <FinancesCreate/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+
+            case "/finances/innerPage":
+                return isAdmin || isFINANCE ? <InnerPage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+            case "/finances/AnnualSummaryPage":
+                return isAdmin || isFINANCE ? <AnnualSummaryPage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+            case "/finances/QuarterlySummaryPage":
+                return isAdmin || isFINANCE ? <QuarterlySummaryPage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+            case "/admin/empList":
+                return isAdmin || isHUMAN_RESOURCE ? <EmployeeAdminPage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+            case "/admin/userList":
+                return isAdmin || CUSTOMER_SERVICE ? <UserAdminPage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+
+            case "/":
+                return <Notice/>;
+            default:
+                return (
+                    <Box sx={{py: 4, textAlign: "center"}}>
+                        <Typography variant="h4">404 - 페이지를 찾을 수 없습니다.</Typography>
+                    </Box>
+                );
+        }
+
     }
-    const {roles} = session.user;
-    const isAdmin = roles.includes("ADMIN");
-    const isUser = roles.includes("USER");
-    const isManager = roles.includes("MANAGER");
-    const isPURCHASING = roles.includes("PURCHASING");
-    const isFINANCE = roles.includes("FINANCE");
-    const isHUMAN_RESOURCE= roles.includes("HUMAN_RESOURCE");
-    const CUSTOMER_SERVICE =roles.includes("CUSTOMER_SERVICE");
-
-
-    switch (pathname) {
-        // @ts-ignore
-        case pathname.startsWith("/products/edit"):
-            return isAdmin||isPURCHASING ?  <ProductEditPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-
-        case "/employee/login":
-            return <LoginPage />;
-        case "/employee/logout":
-            return <LogoutPage />;
-        case "/employee/signup":
-            return <SignupPage />;
-        case "/employee/leave":
-            return <LeavePage />;
-        case "/employee/attendance":
-            return <AttendancePage />;
-        case "/employee/list":
-            return <EmployeePage />;
-        case "/products/productCreate":
-            return isAdmin||isPURCHASING?  <ProductCreatePage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-        case "/products/index":
-            return <Index />;
-        case "/products/detail":
-            return <ProductDetailPage />;
-        case "/orders":
-            return <OrdersPage />;
-        case "/partner/create":
-            return isAdmin||isPURCHASING?  <PartnerCreate />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-        case "/partner/index":
-            return <PartnerIndex />;
-        case "/orders/product":
-            return <OrdersProductPage />;
-        case "/orders/users":
-            return <OrdersUsersPage />;
-        case "/orders/quarter":
-            return isAdmin||isFINANCE||isPURCHASING ?  <OrderTable />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-        case "/dashboard":
-            return <Notice />;
-        case "/finances/create":
-            return isAdmin||isFINANCE ?  <FinancesCreate />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-
-        case "/finances/innerPage":
-            return isAdmin||isFINANCE ?  <InnerPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-        case "/finances/AnnualSummaryPage":
-            return isAdmin||isFINANCE ?  <AnnualSummaryPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-        case "/finances/QuarterlySummaryPage":
-            return isAdmin||isFINANCE ?  <QuarterlySummaryPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-        case "/admin/empList":
-            return isAdmin||isHUMAN_RESOURCE?  <EmployeeAdminPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-        case "/admin/userList":
-            return isAdmin||CUSTOMER_SERVICE? <UserAdminPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
-
-        case "/":
-            return <Notice />;
-        default:
-            return (
-                <Box sx={{ py: 4, textAlign: "center" }}>
-                    <Typography variant="h4">404 - 페이지를 찾을 수 없습니다.</Typography>
-                </Box>
-            );
+    else {
+        switch (pathname) {
+            case "/employee/login":
+                return <LoginPage/>;
+            case "/employee/logout":
+                return <LogoutPage/>;
+            case "/employee/signup":
+                return <SignupPage/>;
+        }
     }
+
 }
 
 // Main Layout Component
@@ -234,7 +255,7 @@ export default function DashboardLayoutBasic(props: DemoProps) {
                 { segment: "attendance", title: "출퇴근처리", icon: <Logout /> },
                 { segment: "leave", title: "휴가", icon: <Logout /> },
                 { segment: "list", title: "직원리스트", icon: <Logout /> },
-            ]
+            ],
         },
         { kind: "divider" },
         { kind: "header", title: "물품관리" },
@@ -243,9 +264,7 @@ export default function DashboardLayoutBasic(props: DemoProps) {
             title: "물품관리",
             icon: <Store />,
             children: [
-                ...(userGrade.includes("ADMIN") || userGrade.includes("PURCHASING")
-                    ? [{ segment: "productCreate", title: "물품등록", icon: <Input /> }]
-                    : []),
+                { segment: "productCreate", title: "물품등록", icon: <Input /> },
                 { segment: "index", title: "물품 목록", icon: <ShoppingBag /> },
                 { segment: "detail", title: "상세 물품", icon: <ShoppingBag /> },
             ],
@@ -260,10 +279,8 @@ export default function DashboardLayoutBasic(props: DemoProps) {
             children: [
                 { segment: "product", title: "물품별 주문", icon: <ShoppingBag /> },
                 { segment: "users", title: "유저별 주문", icon: <ShoppingBag /> },
-                ...(userGrade.includes("ADMIN") || userGrade.includes("PURCHASING") || userGrade.includes("FINANCE")
-                    ? [{ segment: "quarter", title: "쿼터별 주문", icon: <ShoppingBag /> }]
-                    : []),
-            ]
+                { segment: "quarter", title: "쿼터별 주문", icon: <ShoppingBag /> },
+            ],
         },
         { kind: "divider" },
         { kind: "header", title: "거래처" },
@@ -274,7 +291,7 @@ export default function DashboardLayoutBasic(props: DemoProps) {
             children: [
                 { segment: "create", title: "거래처등록", icon: <ShoppingBag /> },
                 { segment: "index", title: "거래처관리", icon: <ShoppingBag /> },
-            ]
+            ],
         },
         { kind: "divider" },
         { kind: "header", title: "재산관리" },
@@ -283,17 +300,11 @@ export default function DashboardLayoutBasic(props: DemoProps) {
             title: "재산관리",
             icon: <ShoppingBag />,
             children: [
-                ...(userGrade.includes("ADMIN") || userGrade.includes("FINANCE")
-                    ? [{ segment: "create", title: "재산 등록", icon: <ShoppingBag /> }]
-                    : []),
+                { segment: "create", title: "재산 등록", icon: <ShoppingBag /> },
                 { segment: "innerPage", title: "재산 목록", icon: <ShoppingBag /> },
-                ...(userGrade.includes("ADMIN") || userGrade.includes("FINANCE")
-                    ? [
-                        { segment: "AnnualSummaryPage", title: "연간 주문 관리", icon: <ShoppingBag /> },
-                        { segment: "QuarterlySummaryPage", title: "분기별 주문 관리", icon: <ShoppingBag /> },
-                    ]
-                    : []),
-            ]
+                { segment: "AnnualSummaryPage", title: "연간 주문 관리", icon: <ShoppingBag /> },
+                { segment: "QuarterlySummaryPage", title: "분기별 주문 관리", icon: <ShoppingBag /> },
+            ],
         },
         { kind: "divider" },
         { kind: "header", title: "관리자" },
@@ -302,15 +313,12 @@ export default function DashboardLayoutBasic(props: DemoProps) {
             title: "관리자 관리",
             icon: <ShoppingBag />,
             children: [
-                ...(userGrade.includes("ADMIN") || userGrade.includes("HUMAN_RESOURCE")
-                    ? [{ segment: "empList", title: "직원 관리", icon: <ShoppingBag /> }]
-                    : []),
-                ...(userGrade.includes("ADMIN") || userGrade.includes("CUSTOMER_SERVICE")
-                    ? [{ segment: "userList", title: "유저 관리", icon: <ShoppingBag /> }]
-                    : []),
-            ]
+                { segment: "empList", title: "직원 관리", icon: <ShoppingBag /> },
+                { segment: "userList", title: "유저 관리", icon: <ShoppingBag /> },
+            ],
         },
     ];
+
 
 
 
