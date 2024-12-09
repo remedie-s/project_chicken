@@ -9,7 +9,6 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 @Configuration
 @EnableWebSocket
-@EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired
