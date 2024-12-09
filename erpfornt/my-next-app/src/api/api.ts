@@ -6,7 +6,7 @@ import {
     modifyOrderData, modifyProductData,
     PartnerDto,
     productRegData,
-    signupData, UsersDto
+    signupData, TokenData, UsersDto
 } from "./datatype";
 
 const API_URL =  'http://localhost:8081/api'; // spring boot ERP 페이지
@@ -25,48 +25,39 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 // 요청 인터셉터 추가
+api.interceptors.request.use((config) => {
+    const token = sessionStorage.getItem('accessToken');
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => Promise.reject(error));
+
 api.interceptors.response.use(
     response => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // 액세스 토큰 만료로 인한 오류 처리 (401 Unauthorized 또는 403 Forbidden)
         if ((error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            const refreshToken = sessionStorage.getItem('refreshToken'); // 세션에서 리프레시 토큰 가져오기
-
-            // 리프레시 토큰이 없거나 만료된 경우, 다시 로그인 화면으로 리디렉션
+            const refreshToken = sessionStorage.getItem('refreshToken');
             if (!refreshToken) {
-                window.location.href = "/employee/login"; // 로그인 화면으로 리디렉션
+                window.location.href = "/employee/login";
                 return Promise.reject(error);
             }
 
             try {
-                // 리프레시 토큰을 사용하여 새로운 액세스 토큰 발급 요청
                 const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
                 const { accessToken } = response.data;
 
-                // 새로운 액세스 토큰을 세션 스토리지에 저장
                 sessionStorage.setItem('accessToken', accessToken);
-
-                // 원래 요청에 새로운 액세스 토큰을 헤더에 추가
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
-                // 원래 요청을 재시도
                 return api(originalRequest);
             } catch (refreshError) {
-                // 리프레시 토큰이 만료되거나 잘못된 경우 로그아웃 처리
-                window.location.href = "/employee/login"; // 로그인 화면으로 리디렉션
+                window.location.href = "/employee/login";
                 return Promise.reject(refreshError);
-            }
-        }
-
-        // 액세스 토큰이 만료되지 않았을 경우
-        if (error.response.status !== 401 && error.response.status !== 403) {
-            const accessToken = sessionStorage.getItem('accessToken'); // 세션에서 액세스 토큰 가져오기
-            if (accessToken) {
-                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
             }
         }
 
@@ -676,8 +667,20 @@ export const deletePartner = async (id: number) => {
     }
 };
 
-
-
+// FCM 관련 메시지
+export const storeToken = async (tokenData:TokenData ) => {
+    try {
+        const response = await api.put(`${API_URL}/fcm/storeToken`, tokenData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 수정된 파트너 데이터 반환
+    } catch (error: any) {
+        console.error("Error storing FCM token:", error);
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
 
 
 

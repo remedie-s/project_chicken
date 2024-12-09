@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Erp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Erp.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend.main.iml" filepath="$PROJECT_DIR$/.idea/modules/backend.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/frontend/frontend.iml" filepath="$PROJECT_DIR$/frontend/frontend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.example.Erp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.example.Erp.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/project_chicken.iml" filepath="$PROJECT_DIR$/.idea/project_chicken.iml" />
       <module fileurl="file://$PROJECT_DIR$/Erp/src/test/test.iml" filepath="$PROJECT_DIR$/Erp/src/test/test.iml" />
     </modules>
