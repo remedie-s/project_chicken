@@ -26,19 +26,19 @@ api.interceptors.request.use((config) => {
 });
 // 요청 인터셉터 추가
 api.interceptors.response.use(
-    response => response, // 정상 응답은 그대로 반환
+    response => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // 액세스 토큰 만료로 인한 오류 처리 (401 Unauthorized)
-        if (error.response.status === 401 && !originalRequest._retry) {
+        // 액세스 토큰 만료로 인한 오류 처리 (401 Unauthorized 또는 403 Forbidden)
+        if ((error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
             originalRequest._retry = true;
 
             const refreshToken = sessionStorage.getItem('refreshToken'); // 세션에서 리프레시 토큰 가져오기
 
             // 리프레시 토큰이 없거나 만료된 경우, 다시 로그인 화면으로 리디렉션
             if (!refreshToken) {
-                window.location.href = "/login"; // 로그인 화면으로 리디렉션
+                window.location.href = "/employee/login"; // 로그인 화면으로 리디렉션
                 return Promise.reject(error);
             }
 
@@ -57,13 +57,13 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (refreshError) {
                 // 리프레시 토큰이 만료되거나 잘못된 경우 로그아웃 처리
-                window.location.href = "/login"; // 로그인 화면으로 리디렉션
+                window.location.href = "/employee/login"; // 로그인 화면으로 리디렉션
                 return Promise.reject(refreshError);
             }
         }
 
         // 액세스 토큰이 만료되지 않았을 경우
-        if (error.response.status !== 401) {
+        if (error.response.status !== 401 && error.response.status !== 403) {
             const accessToken = sessionStorage.getItem('accessToken'); // 세션에서 액세스 토큰 가져오기
             if (accessToken) {
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;

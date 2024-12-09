@@ -1,4 +1,5 @@
 'use client';
+
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridRenderEditCellParams } from '@mui/x-data-grid';
@@ -9,7 +10,7 @@ import { getEmployeeListByEX, modifyEmployee, deleteEmployee } from "@/api/api";
 import { EmployeeDto } from "@/api/datatype";
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
-// 프론트엔드에서 사용할 Role 값 정의
+// Role 옵션 정의
 const roleOptions = [
     { value: 'USER', label: 'User' },
     { value: 'ADMIN', label: 'Admin' },
@@ -26,28 +27,31 @@ const EmployeeAdminPage = () => {
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null); // 에러 메시지 상태
 
     // 데이터 그리드 컬럼 정의
+    // @ts-ignore
     const columns: GridColDef<EmployeeDto>[] = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 150 },
-        { field: 'email', headerName: 'Email', width: 200 },
-        { field: 'gender', headerName: 'Gender', width: 100 },
-        { field: 'address', headerName: 'Address', width: 250 },
-        { field: 'birthDate', headerName: 'Birth Date', width: 150 },
-        { field: 'phoneNumber', headerName: 'Phone', width: 150 },
-        { field: 'department', headerName: 'Department', width: 150 },
-        { field: 'position', headerName: 'Position', width: 150 },
-        { field: 'salary', headerName: 'Salary', width: 120, type: 'number' },
-        { field: 'incentive', headerName: 'Incentive', width: 120, type: 'number' },
-        { field: 'hireDate', headerName: 'Hire Date', width: 150 },
-        { field: 'resignationDate', headerName: 'Resignation Date', width: 150 },
-        { field: 'annualLeave', headerName: 'Annual Leave', width: 120, type: 'number' },
-        { field: 'rating', headerName: 'Rating', width: 120, type: 'number' },
+        { field: 'id', headerName: 'ID', width: 50 },
+        { field: 'name', headerName: 'Name', width: 100, editable: true },
+        { field: 'email', headerName: 'Email', width: 150 , editable: true},
+        { field: 'gender', headerName: 'Gender', width: 80 , editable: true},
+        { field: 'address', headerName: 'Address', width: 100 , editable: true},
+        { field: 'birthDate', headerName: 'Birth Date', width: 100 , editable: true},
+        { field: 'phoneNumber', headerName: 'Phone', width: 100 , editable: true},
+        { field: 'department', headerName: 'Department', width: 100 , editable: true},
+        { field: 'position', headerName: 'Position', width: 100 , editable: true},
+        { field: 'salary', headerName: 'Salary', width: 100, type: 'number' , editable: true},
+        { field: 'incentive', headerName: 'Incentive', width: 100, type: 'number' , editable: true},
+        { field: 'hireDate', headerName: 'Hire Date', width: 100 },
+        { field: 'resignationDate', headerName: 'Resignation Date', width: 100 , editable: true},
+        { field: 'annualLeave', headerName: 'Annual Leave', width: 80, type: 'number' , editable: true},
+        { field: 'rating', headerName: 'Rating', width: 80, type: 'number' , editable: true},
         {
-            field: 'role',
-            headerName: 'Role',
+            field: 'roles',
+            headerName: 'Roles',
             width: 150,
+            //@ts-ignore
+            renderCell: (params) => params.row.roles.join(', '), // 배열 데이터를 문자열로 변환
             editable: true,
-            renderEditCell: (params) => renderEditRoleCell(params)
+            renderEditCell: (params) => renderEditRoleCell(params),
         },
         {
             field: 'actions',
@@ -124,13 +128,29 @@ const EmployeeAdminPage = () => {
 
     // 롤 수정 셀 렌더링
     const renderEditRoleCell = (params: GridRenderEditCellParams) => {
+        const currentRole = params.row.roles?.[0] || ''; // 첫 번째 롤 또는 빈 값
         return (
             <FormControl fullWidth>
                 <InputLabel>Role</InputLabel>
                 <Select
-                    value={params.value || ''}
+                    value={currentRole}
                     onChange={(event) => {
-                        params.api.setEditCellValue(event.target.value);
+                        const updatedRole = event.target.value as string;
+                        params.api.setEditCellValue({
+                            id: params.id,
+                            field: 'roles',
+                            value: [updatedRole], // 단일 롤로 업데이트
+                        });
+                        params.api.stopCellEditMode({ id: params.id, field: 'roles' });
+
+                        // 직접 상태 업데이트
+                        setEmployees((prev) =>
+                            prev.map((employee) =>
+                                employee.id === params.id
+                                    ? { ...employee, roles: [updatedRole] }
+                                    : employee
+                            )
+                        );
                     }}
                 >
                     {roleOptions.map((role) => (
@@ -142,6 +162,9 @@ const EmployeeAdminPage = () => {
             </FormControl>
         );
     };
+
+
+
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
@@ -170,8 +193,6 @@ const EmployeeAdminPage = () => {
                         },
                     }}
                     pageSizeOptions={[5, 10, 20]}
-                    checkboxSelection
-                    disableRowSelectionOnClick
                 />
             ) : loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>

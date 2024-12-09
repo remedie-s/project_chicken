@@ -53,7 +53,7 @@ export default function SignupPage(): JSX.Element {
             handleReset();
             // 3초 후 메인 페이지로 이동
             setTimeout(() => {
-                router.push('/login');
+                router.push('/employee/login');
             }, 3000);
         } catch (error: any) {
             alert(`회원가입 실패: ${error}`);

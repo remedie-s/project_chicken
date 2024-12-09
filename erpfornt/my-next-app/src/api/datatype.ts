@@ -88,7 +88,7 @@ export type EmployeeDto = {
     resignationDate: string | null; // 퇴사일은 null 가능
     annualLeave: number;
     rating: number | null; // rating은 null이 될 수 있음
-    role?: string; // 역할 추가 (예: 'Admin', 'Employee', 'Manager' 등)
+    roles?: string[]; // 역할 추가 (예: 'Admin', 'Employee', 'Manager' 등)
 };
 export type UsersDto ={
     id: number;

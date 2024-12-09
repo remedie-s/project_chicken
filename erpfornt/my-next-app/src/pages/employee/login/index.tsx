@@ -1,12 +1,10 @@
 'use client';
-
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; // next/router가 아님!
 
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
-import { login } from "../../../api/api" ;
-import {loginData} from "../../../api/datatype";
-
+import { login } from "../../../api/api";
+import { loginData } from "../../../api/datatype";
 /**
  * 로그인이라고 텍스트, 로그인 아이디 입력창, 패스워드 입력창, 로그인 버튼, 회원가입 버튼
  * 입력을 받아서 유효성 검사
@@ -14,6 +12,7 @@ import {loginData} from "../../../api/datatype";
  * 저장완료 메시지 뜨고 3초후 메인페이지로 이동합니다 메시지나오고 대시보드 메인으로 복귀
  * @constructor
  */
+
 
 export default function LoginPage(): JSX.Element {
     const [loginData, setLoginData] = useState<loginData>({ email: '', password: '' });
@@ -24,7 +23,7 @@ export default function LoginPage(): JSX.Element {
     // 입력 핸들러
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setLoginData((prev:any) => ({
+        setLoginData((prev: any) => ({
             ...prev,
             [name]: value,
         }));
@@ -42,6 +41,7 @@ export default function LoginPage(): JSX.Element {
             sessionStorage.setItem('email', response.email);
             sessionStorage.setItem('accessToken', response.accessToken);
             sessionStorage.setItem('refreshToken', response.refreshToken);
+            sessionStorage.setItem('roles', JSON.stringify(response.roles)); // roles 저장
 
             setSuccessMessage('로그인 성공! 3초 후 메인 페이지로 이동합니다.');
 

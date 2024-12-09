@@ -52,8 +52,8 @@ public class EmployeeController {
     // 직원 상세페이지
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getEmployeeDetail(@PathVariable("id") Long id) {
-        EmployeeDto byIdToEmployee = this.employeeService.findByIdToEmployee(id);
-        return ResponseEntity.ok(byIdToEmployee);
+        EmployeeDto byId = this.employeeService.findById(id);
+        return ResponseEntity.ok(byId);
     }
 
     // 직원 상세페이지(임원, 인사과)

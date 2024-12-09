@@ -35,13 +35,13 @@ const UserAdminPage = () => {
         { field: 'userGrade', headerName: 'User Grade', width: 120 },
         { field: 'totalPurchaseCount', headerName: 'Total Purchase Count', width: 180 },
         { field: 'totalPurchasePrice', headerName: 'Total Purchase Price', width: 180 },
-        {
-            field: 'role',
-            headerName: 'Role',
-            width: 150,
-            editable: true,
-            renderEditCell: (params) => renderEditRoleCell(params)
-        },
+        // {
+        //     field: 'role',
+        //     headerName: 'Role',
+        //     width: 150,
+        //     editable: true,
+        //     renderEditCell: (params) => renderEditRoleCell(params)
+        // },
         {
             field: 'actions',
             headerName: 'Actions',

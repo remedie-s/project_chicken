@@ -58,17 +58,19 @@ const demoTheme = createTheme({
     },
 });
 
+
 // 세션 관리
 function useSession() {
-    const [session, setSession] = React.useState<{ user: { name: string | null; email: string | null } } | null>(null);
+    const [session, setSession] = React.useState<{ user: { name: string | null; email: string | null; roles:string|null; } } | null>(null);
 
     React.useEffect(() => {
         if (typeof window !== "undefined") {
+            const roles = JSON.parse(sessionStorage.getItem("roles") || "[]");
             const email = sessionStorage.getItem("email");
             const name = sessionStorage.getItem("name");
 
-            if (email && name) {
-                setSession({ user: { name, email } });
+            if (email && name && roles) {
+                setSession({ user: { name, email,roles } });
             }
         }
     }, []);
@@ -103,7 +105,7 @@ function UserAccountAndCart() {
             {name && email ? (
                 <Typography variant="h6">안녕하세요, {name}님 이메일: {email}</Typography>
             ) : (
-                <Typography variant="h6" onClick={() => router.push("/login")}>
+                <Typography variant="h6" onClick={() => router.push("/employee/login")}>
                     먼저, 로그인을 해주세요. 미 로그인시 사이트 접속이 제한됩니다.
                 </Typography>
             )}
@@ -112,12 +114,26 @@ function UserAccountAndCart() {
 }
 
 // DemoPageContent Component
-function DemoPageContent({ pathname, session }: IPage) {
+function DemoPageContent({ pathname, session}: IPage) {
+
+    if (!session || !session.user) {
+        return <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">세션이 없습니다. 로그인 해주세요.</Typography></Box>;
+    }
+    const {roles} = session.user;
+    const isAdmin = roles.includes("ADMIN");
+    const isUser = roles.includes("USER");
+    const isManager = roles.includes("MANAGER");
+    const isPURCHASING = roles.includes("PURCHASING");
+    const isFINANCE = roles.includes("FINANCE");
+    const isHUMAN_RESOURCE= roles.includes("HUMAN_RESOURCE");
+    const CUSTOMER_SERVICE =roles.includes("CUSTOMER_SERVICE");
+
 
     switch (pathname) {
         // @ts-ignore
         case pathname.startsWith("/products/edit"):
-            return <ProductEditPage />;
+            return isAdmin||isPURCHASING ?  <ProductEditPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
+
         case "/employee/login":
             return <LoginPage />;
         case "/employee/logout":
@@ -131,7 +147,7 @@ function DemoPageContent({ pathname, session }: IPage) {
         case "/employee/list":
             return <EmployeePage />;
         case "/products/productCreate":
-            return <ProductCreatePage />;
+            return isAdmin||isPURCHASING?  <ProductCreatePage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
         case "/products/index":
             return <Index />;
         case "/products/detail":
@@ -139,7 +155,7 @@ function DemoPageContent({ pathname, session }: IPage) {
         case "/orders":
             return <OrdersPage />;
         case "/partner/create":
-            return <PartnerCreate />;
+            return isAdmin||isPURCHASING?  <PartnerCreate />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
         case "/partner/index":
             return <PartnerIndex />;
         case "/orders/product":
@@ -147,21 +163,22 @@ function DemoPageContent({ pathname, session }: IPage) {
         case "/orders/users":
             return <OrdersUsersPage />;
         case "/orders/quarter":
-            return <OrderTable />;
+            return isAdmin||isFINANCE||isPURCHASING ?  <OrderTable />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
         case "/dashboard":
             return <Notice />;
         case "/finances/create":
-            return <FinancesCreate />;
+            return isAdmin||isFINANCE ?  <FinancesCreate />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
+
         case "/finances/innerPage":
-            return <InnerPage />;
+            return isAdmin||isFINANCE ?  <InnerPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
         case "/finances/AnnualSummaryPage":
-            return <AnnualSummaryPage />;
+            return isAdmin||isFINANCE ?  <AnnualSummaryPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
         case "/finances/QuarterlySummaryPage":
-            return <QuarterlySummaryPage />;
+            return isAdmin||isFINANCE ?  <QuarterlySummaryPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
         case "/admin/empList":
-            return <EmployeeAdminPage />;
-            case "/admin/userList":
-            return <UserAdminPage />;
+            return isAdmin||isHUMAN_RESOURCE?  <EmployeeAdminPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
+        case "/admin/userList":
+            return isAdmin||CUSTOMER_SERVICE? <UserAdminPage />: <Box sx={{ py: 4, textAlign: "center" }}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box> ;
 
         case "/":
             return <Notice />;
@@ -180,7 +197,22 @@ export default function DashboardLayoutBasic(props: DemoProps) {
     const [pathname, setPathname] = React.useState("/dashboard");
     const demoWindow = window !== undefined ? window() : undefined;
     const { session, setSession } = useSession();
-    const [userGrade, setUserGrade] = React.useState<string>("0");
+    const [userGrade, setUserGrade] = React.useState<string[]>([]); // 배열로 상태 관리
+
+    // 세션에서 역할 정보 가져오기
+    React.useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedRoles = sessionStorage.getItem("roles");
+            if (storedRoles) {
+                try {
+                    const roles = JSON.parse(storedRoles);
+                    setUserGrade(roles); // roles 배열로 설정
+                } catch (error) {
+                    console.error("Failed to parse roles from sessionStorage", error);
+                }
+            }
+        }
+    }, []); // 컴포넌트 마운트 시 한 번만 실행
 
     const router = React.useMemo<Router>(() => ({
         pathname,
@@ -188,134 +220,99 @@ export default function DashboardLayoutBasic(props: DemoProps) {
         navigate: (path) => setPathname(String(path)), // path를 string으로 변환
     }), [pathname]);
 
-    React.useEffect(() => {
-        if (typeof window !== "undefined") {
-            // 클라이언트에서만 sessionStorage 접근
-            const storedUserGrade = sessionStorage.getItem("userGrade") || "0";
-            setUserGrade(storedUserGrade);
-        }
-    }, []);
 
     const NAVIGATION: Navigation = [
         { kind: "header", title: "사원 정보" },
-        { segment: "employee", title: "사원", icon: <LockOpen />,
-            children: [{ segment: "signup", title: "회원 가입", icon: <LockOpen /> },
+        {
+            segment: "employee",
+            title: "사원",
+            icon: <LockOpen />,
+            children: [
+                { segment: "signup", title: "회원 가입", icon: <LockOpen /> },
                 { segment: "login", title: "로그인", icon: <Login /> },
                 { segment: "logout", title: "로그아웃", icon: <Logout /> },
                 { segment: "attendance", title: "출퇴근처리", icon: <Logout /> },
                 { segment: "leave", title: "휴가", icon: <Logout /> },
                 { segment: "list", title: "직원리스트", icon: <Logout /> },
-        ]
+            ]
         },
-
         { kind: "divider" },
         { kind: "header", title: "물품관리" },
-        { segment: "products", title: "물품관리", icon: <Store /> ,
+        {
+            segment: "products",
+            title: "물품관리",
+            icon: <Store />,
             children: [
-                ...(userGrade !== "99" ? [{ segment: "productCreate", title: "물품등록", icon: <Input /> }] : []),//권한에따라 바꾸게
-                {
-                    segment: "index",
-                    title: "물품 목록",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "detail",
-                    title: "상세 물품",
-                    icon: <ShoppingBag />,// 물품 변경 및 삭제기능 추가
-                },
-            ]
+                ...(userGrade.includes("ADMIN") || userGrade.includes("PURCHASING")
+                    ? [{ segment: "productCreate", title: "물품등록", icon: <Input /> }]
+                    : []),
+                { segment: "index", title: "물품 목록", icon: <ShoppingBag /> },
+                { segment: "detail", title: "상세 물품", icon: <ShoppingBag /> },
+            ],
         },
         { kind: "divider" },
         { kind: "header", title: "주문관리" },
         { segment: "orders", title: "전체주문", icon: <ShoppingBag /> },
-        { segment: "orders", title: "특정주문", icon: <ShoppingBag />,
+        {
+            segment: "orders",
+            title: "특정주문",
+            icon: <ShoppingBag />,
             children: [
-
-                {
-                    segment: "product",
-                    title: "물품별 주문",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "users",
-                    title: "유저별 주문",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "quarter",
-                    title: "쿼터별 주문",
-                    icon: <ShoppingBag />,
-                },
+                { segment: "product", title: "물품별 주문", icon: <ShoppingBag /> },
+                { segment: "users", title: "유저별 주문", icon: <ShoppingBag /> },
+                ...(userGrade.includes("ADMIN") || userGrade.includes("PURCHASING") || userGrade.includes("FINANCE")
+                    ? [{ segment: "quarter", title: "쿼터별 주문", icon: <ShoppingBag /> }]
+                    : []),
             ]
         },
-        // ...(userGrade === "0" ? [{ segment: "ordersAdmin", title: "주문관리", icon: <ShoppingBag /> }] : []),
-
         { kind: "divider" },
         { kind: "header", title: "거래처" },
-        { segment: "partner", title: "거래처 관리", icon: <ShoppingBag />,
+        {
+            segment: "partner",
+            title: "거래처 관리",
+            icon: <ShoppingBag />,
             children: [
-                {
-                    segment: "create",
-                    title: "거래처등록",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "index",
-                    title: "거래처관리",
-                    icon: <ShoppingBag />,
-                },
-                ]
+                { segment: "create", title: "거래처등록", icon: <ShoppingBag /> },
+                { segment: "index", title: "거래처관리", icon: <ShoppingBag /> },
+            ]
         },
         { kind: "divider" },
         { kind: "header", title: "재산관리" },
-        { segment: "finances", title: "재산관리", icon: <ShoppingBag />,
+        {
+            segment: "finances",
+            title: "재산관리",
+            icon: <ShoppingBag />,
             children: [
-                {
-                    segment: "create",
-                    title: "재산 등록",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "innerPage",
-                    title: "재산 목록",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "AnnualSummaryPage",
-                    title: "연간 주문 관리",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "QuarterlySummaryPage",
-                    title: "분기별 주문 관리",
-                    icon: <ShoppingBag />,
-                },
+                ...(userGrade.includes("ADMIN") || userGrade.includes("FINANCE")
+                    ? [{ segment: "create", title: "재산 등록", icon: <ShoppingBag /> }]
+                    : []),
+                { segment: "innerPage", title: "재산 목록", icon: <ShoppingBag /> },
+                ...(userGrade.includes("ADMIN") || userGrade.includes("FINANCE")
+                    ? [
+                        { segment: "AnnualSummaryPage", title: "연간 주문 관리", icon: <ShoppingBag /> },
+                        { segment: "QuarterlySummaryPage", title: "분기별 주문 관리", icon: <ShoppingBag /> },
+                    ]
+                    : []),
             ]
         },
         { kind: "divider" },
         { kind: "header", title: "관리자" },
-        { segment: "admin", title: "관리자 관리", icon: <ShoppingBag />,
+        {
+            segment: "admin",
+            title: "관리자 관리",
+            icon: <ShoppingBag />,
             children: [
-                {
-                    segment: "empList",
-                    title: "직원 관리",
-                    icon: <ShoppingBag />,
-                },
-                {
-                    segment: "userList",
-                    title: "유저 관리",
-                    icon: <ShoppingBag />,
-                },
+                ...(userGrade.includes("ADMIN") || userGrade.includes("HUMAN_RESOURCE")
+                    ? [{ segment: "empList", title: "직원 관리", icon: <ShoppingBag /> }]
+                    : []),
+                ...(userGrade.includes("ADMIN") || userGrade.includes("CUSTOMER_SERVICE")
+                    ? [{ segment: "userList", title: "유저 관리", icon: <ShoppingBag /> }]
+                    : []),
             ]
         },
-
     ];
 
-    React.useEffect(() => {
-        if (typeof window !== "undefined" && !session) {
-            router.navigate("/login");
-        }
-    }, [router, session]);
+
 
     return (
         <AppProvider
