@@ -39,8 +39,8 @@ public class EmployeeController {
     // 직원 부서별 리스트 조회
 
     // 직원 리스트조회(임원, 인사과)
-    @GetMapping("/list/ex")
-    public ResponseEntity<?> getEmployeeByEX(@AuthenticationPrincipal Employee employee ) {
+    @GetMapping("/list/admin")
+    public ResponseEntity<?> getEmployeeByAdmin(@AuthenticationPrincipal Employee employee ) {
         //TODO 권한 체크 메소드 만들어야함
         if(employee==null){
             log.info("권한이 없어요");
@@ -52,22 +52,29 @@ public class EmployeeController {
     // 직원 상세페이지
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getEmployeeDetail(@PathVariable("id") Long id) {
-        EmployeeDto byIdToEmployee = this.employeeService.findByIdToEmployee(id);
-        return ResponseEntity.ok(byIdToEmployee);
+        EmployeeDto byId = this.employeeService.findById(id);
+        return ResponseEntity.ok(byId);
     }
 
     // 직원 상세페이지(임원, 인사과)
     @GetMapping("/admin/{id}")
-    public ResponseEntity<?> getAdminDetail(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getEmployeeDetailAdmin(@PathVariable("id") Long id) {
         EmployeeDto byId = this.employeeService.findById(id);
         return ResponseEntity.ok(byId);
     }
 
     // 직원 변경
-    @PostMapping("/modify/{id}")
+    @PutMapping("/modify/{id}")
     public ResponseEntity<?> modifyEmployee(@PathVariable("id") Long id, @RequestBody EmployeeDto employeeDto) {
         if(this.employeeService.modify(id, employeeDto)){
             return ResponseEntity.ok(employeeDto);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
+        if(this.employeeService.delete(id)){
+            return ResponseEntity.ok("삭제 성공");
         }
         return ResponseEntity.badRequest().build();
     }

@@ -72,7 +72,7 @@ export type modifyOrderData = {
 
 }
 export type EmployeeDto = {
-    id?: number|null;
+    id?: number | null;
     password: string;
     name: string;
     email: string;
@@ -85,11 +85,26 @@ export type EmployeeDto = {
     salary: number;
     incentive: number;
     hireDate: string; // LocalDateTime은 string으로 처리
-    resignationDate: string | null; // LocalDateTime은 string으로 처리, 퇴사일은 null 가능
+    resignationDate: string | null; // 퇴사일은 null 가능
     annualLeave: number;
     rating: number | null; // rating은 null이 될 수 있음
-
+    roles?: string[]; // 역할 추가 (예: 'Admin', 'Employee', 'Manager' 등)
+};
+export type UsersDto ={
+    id: number;
+    name: string;
+    email: string;
+    password: string;
+    createdAt: string;  // ISO 8601 형식의 날짜 문자열 (예: "2024-12-08T12:34:56Z")
+    gender: string;
+    address: string;
+    birthDate: string;  // ISO 8601 형식의 날짜 문자열 (예: "1990-01-01")
+    userGrade: number;
+    totalPurchaseCount: number;
+    totalPurchasePrice: number;
 }
+
+
 export type FianceDto={
     id?: number|null;
     name: string;

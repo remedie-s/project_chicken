@@ -62,17 +62,18 @@ public class Employee implements UserDetails {
     @Column(name="refresh_token")
     private String refreshToken;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
-    private List<Attendance> attendances;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
-    private List<Leave> leave;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "employee_roles", joinColumns = @JoinColumn(name = "employee_id"))
+    @Enumerated(EnumType.STRING)
+    private List<Role> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER")); // 적절한 권한 설정
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        }
+        return authorities;
     }
 
     @Override
