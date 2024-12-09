@@ -6,7 +6,7 @@ import {
     modifyOrderData, modifyProductData,
     PartnerDto,
     productRegData,
-    signupData
+    signupData, UsersDto
 } from "./datatype";
 
 const API_URL =  'http://localhost:8081/api'; // spring boot ERP 페이지
@@ -26,19 +26,19 @@ api.interceptors.request.use((config) => {
 });
 // 요청 인터셉터 추가
 api.interceptors.response.use(
-    response => response, // 정상 응답은 그대로 반환
+    response => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // 액세스 토큰 만료로 인한 오류 처리 (401 Unauthorized)
-        if (error.response.status === 401 && !originalRequest._retry) {
+        // 액세스 토큰 만료로 인한 오류 처리 (401 Unauthorized 또는 403 Forbidden)
+        if ((error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
             originalRequest._retry = true;
 
             const refreshToken = sessionStorage.getItem('refreshToken'); // 세션에서 리프레시 토큰 가져오기
 
             // 리프레시 토큰이 없거나 만료된 경우, 다시 로그인 화면으로 리디렉션
             if (!refreshToken) {
-                window.location.href = "/login"; // 로그인 화면으로 리디렉션
+                window.location.href = "/employee/login"; // 로그인 화면으로 리디렉션
                 return Promise.reject(error);
             }
 
@@ -57,13 +57,13 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (refreshError) {
                 // 리프레시 토큰이 만료되거나 잘못된 경우 로그아웃 처리
-                window.location.href = "/login"; // 로그인 화면으로 리디렉션
+                window.location.href = "/employee/login"; // 로그인 화면으로 리디렉션
                 return Promise.reject(refreshError);
             }
         }
 
         // 액세스 토큰이 만료되지 않았을 경우
-        if (error.response.status !== 401) {
+        if (error.response.status !== 401 && error.response.status !== 403) {
             const accessToken = sessionStorage.getItem('accessToken'); // 세션에서 액세스 토큰 가져오기
             if (accessToken) {
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -296,9 +296,10 @@ export const getEmployeeList = async () => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
+
 export const getEmployeeListByEX = async () => {
     try {
-        const response = await api.get(`${API_URL}/employee/list/ex`, {
+        const response = await api.get(`${API_URL}/employee/list/admin`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -320,9 +321,33 @@ export const getEmployeeDetail = async (id: number) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
+export const getEmployeeDetailAdmin = async (id: number) => {
+    try {
+        const response = await api.get(`${API_URL}/employee/admin/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 직원 상세 정보 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
 export const modifyEmployee = async (id: number, employeeData: EmployeeDto) => {//TODO
     try {
-        const response = await api.post(`${API_URL}/employee/modify/${id}`, employeeData, {
+        const response = await api.put(`${API_URL}/employee/modify/${id}`, employeeData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 변경된 직원 데이터 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const deleteEmployee = async (id: number) => {//TODO
+    try {
+        const response = await api.delete(`${API_URL}/employee/delete/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -462,6 +487,45 @@ export const getAnnualLeave = async (employeeId: number) => {
             },
         });
         return response.data; // 성공 시 연차 정보 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+
+// 유저 관리 메소드
+export const getUserList = async () => {
+    try {
+        const response = await api.get(`${API_URL}/user/list`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 직원 리스트 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+
+export const modifyUser = async (usersDto: UsersDto) => {//TODO
+    try {
+        const response = await api.put(`${API_URL}/user/modify}`, usersDto, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 변경된 직원 데이터 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+export const deleteUser = async (id: number) => {//TODO
+    try {
+        const response = await api.delete(`${API_URL}/employee/delete/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 변경된 직원 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패 시 에러 반환
     }
