@@ -55,6 +55,7 @@ export default function MypageOrder( ){
         payPrice: order.payPrice,
         quantity: order.quantity,
         createdAt: dayjs(order.createdAt).format("YYYY-MM-DD hh:mm"),
+        productId: order.products.id
     }));
 
     const columns: GridColDef[] = [
@@ -103,6 +104,9 @@ export default function MypageOrder( ){
                     onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
                         setSelectedIds(newSelection as number[]);
                     }}
+                    onRowClick={(params) => {
+                        const productId = params.row.productId;
+                        router.push(`/product/detail/${productId}`); }}
                     sx={{border: 0}}
                 />
             </Paper>

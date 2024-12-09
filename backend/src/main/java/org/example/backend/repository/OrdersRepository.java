@@ -11,5 +11,6 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     List<Orders> findByUsers_Id(Long usersId);
     // 특정 월에 해당하는 사용자의 주문 내역을 구할 수 있는 메서드
     List<Orders> findByUsersIdAndCreatedAtBetween(Long usersId, LocalDateTime startDate, LocalDateTime endDate);
-
+    Orders findFirstByUsers_Id(Long usersId);
+    Orders findFirstByUsers_IdAndProducts_Id(Long usersId, Long productsId);
 }
