@@ -70,6 +70,9 @@ public class Employee implements UserDetails {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
     private List<Leave> leave;
 
+    @OneToMany(mappedBy = "employee")
+    private List<ChatRoomUserMap> chatRoomUserMaps;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER")); // 적절한 권한 설정
