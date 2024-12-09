@@ -103,6 +103,15 @@ export type UsersDto ={
     totalPurchaseCount: number;
     totalPurchasePrice: number;
 }
+export type TokenData = {
+    token: string;
+    userId?: string;
+}
+export type NotificationPayload = {
+    title: string;
+    body: string;
+    icon?: string;
+};
 
 
 export type FianceDto={
