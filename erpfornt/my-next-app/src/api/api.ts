@@ -3,7 +3,7 @@ import {
     EmployeeDto,
     FianceDto,
     loginData,
-    modifyOrderData, modifyProductData,
+    modifyOrderData, modifyProductData, NotificationRequest,
     PartnerDto,
     productRegData,
     signupData, TokenData, UsersDto
@@ -524,7 +524,7 @@ export const deleteUser = async (id: number) => {//TODO
 // 모든 주문 로드해서 총 판매액, 할인액, 결과액, 원가 추출하는 API 호출
 export const getAllFianceData = async () => {
     try {
-        const response = await api.get('/fiance/all');
+        const response = await api.get('${API_URL}/fiance/all');
         return response.data; // 성공시 응답 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패시 에러 반환
@@ -533,7 +533,7 @@ export const getAllFianceData = async () => {
 // 특정 기간의 데이터를 로드하는 API 호출
 export const getFianceDataByDate = async (startDate: string, endDate: string) => {
     try {
-        const response = await api.get('/fiance/date', {
+        const response = await api.get('${API_URL}/fiance/date', {
             params: {
                 startDate,
                 endDate
@@ -547,7 +547,7 @@ export const getFianceDataByDate = async (startDate: string, endDate: string) =>
 // 카테고리별 데이터를 로드하는 API 호출
 export const getFianceDataByCategory = async (category: string) => {
     try {
-        const response = await api.get('/fiance/cate', {
+        const response = await api.get('${API_URL}/fiance/cate', {
             params: { category }
         });
         return response.data; // 성공시 응답 데이터 반환
@@ -558,7 +558,7 @@ export const getFianceDataByCategory = async (category: string) => {
 // 내부 재산 데이터를 조회하는 API 호출
 export const getInnerFianceData = async () => {
     try {
-        const response = await api.get('/fiance/inner');
+        const response = await api.get('${API_URL}/fiance/inner');
         return response.data; // 성공시 응답 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패시 에러 반환
@@ -567,7 +567,7 @@ export const getInnerFianceData = async () => {
 // 내부 재산을 생성하는 API 호출
 export const createInnerFianceData = async (fianceDto: FianceDto) => {
     try {
-        const response = await api.post('/fiance/inner/create', fianceDto, {
+        const response = await api.post('${API_URL}/fiance/inner/create', fianceDto, {
             headers: { 'Content-Type': 'application/json' }
         });
         return response.data; // 성공시 응답 데이터 반환
@@ -578,7 +578,7 @@ export const createInnerFianceData = async (fianceDto: FianceDto) => {
 // 내부 재산을 삭제하는 API 호출
 export const deleteInnerFianceData = async (innerId: number) => {
     try {
-        const response = await api.delete(`/fiance/inner/${innerId}`);
+        const response = await api.delete(`${API_URL}/fiance/inner/${innerId}`);
         return response.data; // 성공시 응답 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패시 에러 반환
@@ -587,7 +587,7 @@ export const deleteInnerFianceData = async (innerId: number) => {
 // 내부 재산을 수정하는 API 호출
 export const updateInnerFianceData = async (innerId: number, fianceDto: FianceDto) => {
     try {
-        const response = await api.put(`/fiance/inner/${innerId}`, fianceDto, {
+        const response = await api.put(`${API_URL}/fiance/inner/${innerId}`, fianceDto, {
             headers: { 'Content-Type': 'application/json' }
         });
         return response.data; // 성공시 응답 데이터 반환
@@ -668,6 +668,7 @@ export const deletePartner = async (id: number) => {
 };
 
 // FCM 관련 메시지
+// FCM 토큰 저장
 export const storeToken = async (tokenData:TokenData ) => {
     try {
         const response = await api.put(`${API_URL}/fcm/storeToken`, tokenData, {
@@ -681,6 +682,31 @@ export const storeToken = async (tokenData:TokenData ) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
+
+// FCM 토큰 저장 여부 확인
+export const getFCMIsStore = async () => {
+    try {
+        const response = await api.get('${API_URL}/fcm/isStore');
+        return response.data; // 성공시 응답 데이터 반환
+    } catch (error: any) {
+        throw error.response.data; // 실패시 에러 반환
+    }
+};
+// FCM 알림 전송
+export const sendNotification = async (notificationRequest:NotificationRequest ) => {
+    try {
+        const response = await api.put(`${API_URL}/fcm/sendNotification`, notificationRequest, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 성공 시 수정된 파트너 데이터 반환
+    } catch (error: any) {
+        console.error("Error storing FCM token:", error);
+        throw error.response.data; // 실패 시 에러 반환
+    }
+};
+
 
 
 

@@ -33,6 +33,7 @@ public class EmployeeDto {
     private LocalDate resignationDate;
     private double annualLeave;
     private Integer rating;
+    private String fcmToken;
 
     private List<Role> roles; // 역할 정보 추가
 
@@ -61,7 +62,9 @@ public class EmployeeDto {
                 employee.getResignationDate(),
                 employee.getAnnualLeave(),
                 employee.getRating(),
+                employee.getFcmToken(),
                 employee.getRoles() // Role 정보를 추가
+
         );
     }
 
@@ -91,6 +94,7 @@ public class EmployeeDto {
         employee.setAnnualLeave(employeeDto.getAnnualLeave());
         employee.setRating(employeeDto.getRating());
         employee.setRoles(employeeDto.getRoles()); // Role 정보를 추가
+        employee.setFcmToken(employeeDto.getFcmToken());
 
         return employee;
     }

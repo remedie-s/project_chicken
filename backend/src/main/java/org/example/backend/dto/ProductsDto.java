@@ -78,4 +78,5 @@ public class ProductsDto {
         product.setPartner(dto.getPartner()); // Partner 객체 매핑
         return product;
     }
+
 }
