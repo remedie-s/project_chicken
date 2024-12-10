@@ -116,11 +116,19 @@ public class OrderService {
             this.usersRepository.save(users);
             products.setStock(products.getStock() - order.getQuantity());
             this.productsRepository.save(products);
+            if (products.getStock() <= 10) {
+                log.info("Low stock alert for product ID {}. Remaining stock: {}", products.getId(), products.getStock());
+                this.kafkaMessage.sendKafkaProductMsg(products, "alert");
+            }
+            this.kafkaMessage.sendKafkaOrderMsg(order, "order");
+
+            log.info("Order created successfully for user ID {} with product ID {}", users.getId(), products.getId());
             Optional<Carts> oCarts = this.cartsRepository.findByUsersAndProducts(users, products);
             if (oCarts.isPresent()) {
                 Carts carts = oCarts.get();
                 this.cartsRepository.delete(carts);
             }
+
         }
         return true;
     }

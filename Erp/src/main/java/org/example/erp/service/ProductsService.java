@@ -176,13 +176,7 @@ public class ProductsService {
                     .action(action)
                     .id(products.getId())
                     .name(products.getName())
-                    .description(products.getDescription())
-                    .price(products.getPrice())
-                    .category(products.getCategory())
-                    .imageUrl(products.getImageUrl())
                     .stock(products.getStock())
-                    .brand(products.getBrand())
-                    .cost(products.getCost())
                     .build();
 
             String message = objectMapper.writeValueAsString(productMessage);

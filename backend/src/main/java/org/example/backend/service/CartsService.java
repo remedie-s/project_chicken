@@ -76,6 +76,7 @@ public class CartsService {
     // TODO (엘라스틱 서치 색인도 변경 필요)
     @Transactional
     public boolean cartToOrders(Users users, OrdersDto ordersDto) {
+        log.info("카트에서 주문 요청이 들어왔어요.");
         Optional<Carts> optionalCart = cartsRepository.findById(ordersDto.getId()); // 1. 카트 ID를 기반으로 조회
         if (optionalCart.isPresent()) {
             Carts cart = optionalCart.get();
@@ -108,11 +109,11 @@ public class CartsService {
             // 5. 카트에서 삭제
             cartsRepository.delete(cart);
 
-            if (product.getStock() <= 10) {
-                log.info("Low stock alert for product ID {}. Remaining stock: {}", product.getId(), product.getStock());
-                this.kafkaMessage.sendKafkaProductMsg(product, "alert");
-            }
-            this.kafkaMessage.sendKafkaOrderMsg(orders, "order");
+//            if (product.getStock() <= 10) {
+//                log.info("Low stock alert for product ID {}. Remaining stock: {}", product.getId(), product.getStock());
+//                this.kafkaMessage.sendKafkaProductMsg(product, "alert");
+//            }
+//            this.kafkaMessage.sendKafkaOrderMsg(orders, "order");
 
             log.info("Order created successfully for user ID {} with product ID {}", users.getId(), product.getId());
             return true;

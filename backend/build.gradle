@@ -49,6 +49,7 @@ dependencies {
     implementation 'org.springframework.security:spring-security-crypto'
     // 스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
 }
 
 tasks.named('test') {

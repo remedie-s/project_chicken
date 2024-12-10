@@ -54,6 +54,7 @@ public class CartsController {
     @PostMapping("/order")
     public ResponseEntity<?> orderCart(@AuthenticationPrincipal Users users,
                                        @Valid @RequestBody OrdersDto ordersDto){
+        log.info("카트에서 주문 요청이 들어왔어요.");
         if(this.cartsService.cartToOrders(users, ordersDto)){
             List<CartsDto> carts = this.cartsService.getCarts(users);
             return ResponseEntity.ok(carts);

@@ -1,11 +1,13 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import {useFCM} from "@/hooks/useFCM";
 
 const LoginSuccess = () => {
     const router = useRouter();
-
+    useFCM();
     useEffect(() => {
+
         router.push('/');
     }, [router]);
 
