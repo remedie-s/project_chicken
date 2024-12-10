@@ -59,6 +59,8 @@ public class Employee implements UserDetails {
     private Integer rating;
     // 근퇴 여부 테이블과 연결
     // 근태와의 관계 (1:N)
+    // FCM 토큰 추가
+    private String fcmToken;
     @Column(name="refresh_token")
     private String refreshToken;
 

@@ -1,26 +1,31 @@
-importScripts('https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/10.6.0/firebase-messaging.js');
+// firebase-messaging-sw.js
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID",
+    apiKey: "AIzaSyBvdGEQeCZrTSboWWn7hJ1JdUBJ7aHkVP8",
+    authDomain: "project-chicken-4c.firebaseapp.com",
+    projectId: "project-chicken-4c",
+    storageBucket: "project-chicken-4c.firebasestorage.app",
+    messagingSenderId: "672951577203",
+    appId: "1:672951577203:web:41b11a915050e129bad806"
 };
 
+// Initialize Firebase app in the service worker
 firebase.initializeApp(firebaseConfig);
 
+// Retrieve an instance of Firebase Messaging
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(function (payload) {
-    console.log('[firebase-messaging-sw.js] Background message received:', payload);
+// Background message handler
+messaging.onBackgroundMessage((payload) => {
+    console.log('[firebase-messaging-sw.js] Received background message: ', payload);
+
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
         icon: payload.notification.icon,
     };
 
-    self.registration.showNotification(notificationTitle, notificationOptions);
+    return self.registration.showNotification(notificationTitle, notificationOptions);
 });
