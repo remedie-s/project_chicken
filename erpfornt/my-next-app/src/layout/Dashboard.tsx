@@ -47,6 +47,7 @@ import PartnerIndex from "@/pages/partner";
 import PartnerCreate from "@/pages/partner/create";
 import EmployeeAdminPage from "@/pages/admin/empList";
 import EmployeePage from "@/pages/employee/list";
+import {useFCM} from "@/hooks/useFCM";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -228,6 +229,8 @@ export default function DashboardLayoutBasic(props: DemoProps) {
                 try {
                     const roles = JSON.parse(storedRoles);
                     setUserGrade(roles); // roles 배열로 설정
+
+
                 } catch (error) {
                     console.error("Failed to parse roles from sessionStorage", error);
                 }

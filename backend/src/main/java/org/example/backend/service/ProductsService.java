@@ -243,25 +243,25 @@ public class ProductsService {
             ObjectMapper objectMapper = new ObjectMapper();
             KafkaProductMessage productMessage = objectMapper.readValue(message, KafkaProductMessage.class);
 
-            switch (productMessage.getAction()) {
-                case "register":
-                    registerProductToElasticsearch(productMessage.toEntity());
-                    log.info("{} 물품이 등록되어 엘라스틱 서치에 색인합니다", productMessage.getId());
-                    break;
-
-                case "update":
-                    updateProductInElasticsearch(productMessage.toEntity());
-                    log.info("{} 물품이 갱신되어 엘라스틱 서치에 색인을 갱신합니다", productMessage.getId());
-                    break;
-
-                case "delete":
-                    deleteProductFromElasticsearch(productMessage.toEntity());
-                    log.info("{} 물품이 삭제되어 엘라스틱 서치에 색인을 삭제합니다", productMessage.getId());
-                    break;
-
-                default:
-                    log.warn("Unknown action: {}", productMessage.getAction());
-            }
+//            switch (productMessage.getAction()) {
+//                case "register":
+//                    registerProductToElasticsearch(productMessage.toEntity());
+//                    log.info("{} 물품이 등록되어 엘라스틱 서치에 색인합니다", productMessage.getId());
+//                    break;
+//
+//                case "update":
+//                    updateProductInElasticsearch(productMessage.toEntity());
+//                    log.info("{} 물품이 갱신되어 엘라스틱 서치에 색인을 갱신합니다", productMessage.getId());
+//                    break;
+//
+//                case "delete":
+//                    deleteProductFromElasticsearch(productMessage.toEntity());
+//                    log.info("{} 물품이 삭제되어 엘라스틱 서치에 색인을 삭제합니다", productMessage.getId());
+//                    break;
+//
+//                default:
+//                    log.warn("Unknown action: {}", productMessage.getAction());
+//            }
         } catch (JsonProcessingException e) {
             log.error("Failed to parse Kafka message: {}", message, e);
         }
@@ -303,12 +303,12 @@ public class ProductsService {
         product.setStock(product.getStock() - ordersDto.getQuantity());
         productsRepository.save(product);
 
-        // 5. 카프카 메시지 전송
-        if (product.getStock() <= 10) {
-            log.info("Low stock alert for product ID {}. Remaining stock: {}", product.getId(), product.getStock());
-            this.kafkaMessage.sendKafkaProductMsg(product, "alert");
-        }
-        this.kafkaMessage.sendKafkaOrderMsg(order, "order");
+//        // 5. 카프카 메시지 전송
+//        if (product.getStock() <= 10) {
+//            log.info("Low stock alert for product ID {}. Remaining stock: {}", product.getId(), product.getStock());
+//            this.kafkaMessage.sendKafkaProductMsg(product, "alert");
+//        }
+//        this.kafkaMessage.sendKafkaOrderMsg(order, "order");
 
         log.info("Order created successfully for user ID {} with product ID {}", users.getId(), product.getId());
         return true;

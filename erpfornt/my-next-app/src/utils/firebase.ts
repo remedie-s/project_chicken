@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken, onMessage, Messaging } from "firebase/messaging";
 
+// Firebase 설정
 const firebaseConfig = {
     apiKey: "AIzaSyBvdGEQeCZrTSboWWn7hJ1JdUBJ7aHkVP8",
     authDomain: "project-chicken-4c.firebaseapp.com",
@@ -9,11 +10,18 @@ const firebaseConfig = {
     messagingSenderId: "672951577203",
     appId: "1:672951577203:web:41b11a915050e129bad806",
 };
-// Firebase 초기화
-const firebaseApp = initializeApp(firebaseConfig);
 
-// Firebase Messaging 객체 가져오기
-const messaging = getMessaging(firebaseApp);
+// Firebase 초기화 및 Firebase Messaging 객체 가져오기
+let firebaseApp;
+let messaging: Messaging | undefined;
+
+if (typeof window !== "undefined") {  // 클라이언트 사이드에서만 실행
+    // Firebase 초기화
+    firebaseApp = initializeApp(firebaseConfig);
+
+    // Firebase Messaging 객체 가져오기
+    messaging = getMessaging(firebaseApp);
+}
 
 /**
  * FCM 토큰 요청 및 반환
@@ -25,14 +33,19 @@ export const requestPermission = async (): Promise<string | null> => {
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
             console.log("Notification permission granted.");
-            const token = await getToken(messaging, {
-                vapidKey: "BJtL49O7f2Hem0bq4Ezdg5cQbVF7nc4cnglqi0TuqD6zFrPJnb6hqbV1JY9__iSldh0B7omBsI8phnl2eGIvTFo",
-            });
-            if (token) {
-                console.log("FCM Token:", token);
-                return token;
+            if (messaging) {
+                const token = await getToken(messaging, {
+                    vapidKey: "BJtL49O7f2Hem0bq4Ezdg5cQbVF7nc4cnglqi0TuqD6zFrPJnb6hqbV1JY9__iSldh0B7omBsI8phnl2eGIvTFo",
+                });
+                if (token) {
+                    console.log("FCM Token:", token);
+                    return token;
+                } else {
+                    console.error("No registration token available. Request permission to generate one.");
+                    return null;
+                }
             } else {
-                console.error("No registration token available. Request permission to generate one.");
+                console.error("Firebase Messaging is not initialized.");
                 return null;
             }
         } else {
@@ -51,14 +64,13 @@ export const requestPermission = async (): Promise<string | null> => {
  */
 export const onMessageListener = (): Promise<any> =>
     new Promise((resolve, reject) => {
-        // 두 번째 인자만 사용하여 콜백 함수를 처리합니다.
-        onMessage(messaging, (payload) => {
-            resolve(payload);
-        });
-
-        // reject는 onMessage 내부에서 자동으로 처리되므로, 따로 넣지 않아도 됩니다.
-        // 만약 메시지 수신 오류가 발생할 경우, onMessage 내부에서 자동으로 처리됩니다.
+        if (messaging) {
+            onMessage(messaging, (payload) => {
+                resolve(payload);
+            });
+        } else {
+            reject("Firebase Messaging is not initialized.");
+        }
     });
-
 
 export default firebaseApp;

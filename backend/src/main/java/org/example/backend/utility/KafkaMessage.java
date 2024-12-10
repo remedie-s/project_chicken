@@ -26,18 +26,9 @@ public class KafkaMessage {
                     .action(action) // "order" 같은 행동 유형 지정
                     .id(orders.getId()) // 주문 ID
                     .name(orders.getProducts().getName()) // 상품 이름
-                    .description(orders.getProducts().getDescription()) // 상품 설명
-                    .price(orders.getProducts().getPrice()) // 상품 가격
-                    .category(orders.getProducts().getCategory()) // 상품 카테고리
-                    .imageUrl(orders.getProducts().getImageUrl()) // 상품 이미지 URL
                     .stock(orders.getProducts().getStock()) // 현재 재고
-                    .brand(orders.getProducts().getBrand()) // 상품 브랜드
-                    .cost(orders.getProducts().getCost()) // 상품 원가
-                    .discount(orders.getDiscount()) // 할인 정보
-                    .payPrice(orders.getPayPrice()) // 결제 가격
                     .address(orders.getAddress()) // 배송 주소
                     .userId(orders.getUsers().getId()) // 유저 ID
-                    .createdAt(orders.getCreatedAt()) // 주문 생성 시간
                     .build();
 
             // JSON으로 변환
@@ -58,13 +49,7 @@ public class KafkaMessage {
                     .action(action)
                     .id(products.getId())
                     .name(products.getName())
-                    .description(products.getDescription())
-                    .price(products.getPrice())
-                    .category(products.getCategory())
-                    .imageUrl(products.getImageUrl())
                     .stock(products.getStock())
-                    .brand(products.getBrand())
-                    .cost(products.getCost())
                     .build();
 
             String message = objectMapper.writeValueAsString(productMessage);
