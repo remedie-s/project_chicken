@@ -30,8 +30,9 @@ public class FirebaseService {
 
         return FirebaseMessaging.getInstance().send(message);  // FCM 응답
     }
+
     // 롤기반 푸시 알림 보내기
-    public String sendPushNotificationToRole(Role role, String title, String body) throws FirebaseMessagingException {
+    public String sendPushNotificationToRole(Role role, String title, String body) {
         // 특정 역할을 가진 사용자 목록 조회
         List<Employee> employees = employeeRepository.findByRolesContaining(role);
 
@@ -43,23 +44,29 @@ public class FirebaseService {
             }
         }
 
-        // 각 사용자에게 메시지 전송
-        List<Message> messages = new ArrayList<>();
+        // 각 사용자에게 푸시 알림 전송
         for (String token : tokens) {
-            Message message = Message.builder()
-                    .setToken(token)
-                    .setNotification(Notification.builder()
-                            .setTitle(title)
-                            .setBody(body)
-                            .build())
-                    .build();
-            messages.add(message);
+            try {
+                Message message = Message.builder()
+                        .setToken(token)
+                        .setNotification(Notification.builder()
+                                .setTitle(title)
+                                .setBody(body)
+                                .build())
+                        .build();
+
+                // FCM에 메시지 전송
+                String response = FirebaseMessaging.getInstance().send(message);
+                log.info("Successfully sent message to token: " + token);
+            } catch (FirebaseMessagingException e) {
+                log.error("Error sending message to token: " + token, e);
+            }
         }
 
-        // 메시지 배치 전송
-        BatchResponse response = FirebaseMessaging.getInstance().sendAll(messages);
-        return "Successfully sent " + response.getSuccessCount() + " messages.";
+        return "Messages sent individually.";
     }
+
+
 
     // 토큰 저장
     public String saveToken(Employee employee, String fcmToken) {
