@@ -59,7 +59,7 @@ export default function LoginPage(): JSX.Element {
 
     // 회원가입 페이지 이동
     const handleSignupRedirect = () => {
-        router.push('/signup');
+        router.push('/employee/signup');
     };
 
     return (

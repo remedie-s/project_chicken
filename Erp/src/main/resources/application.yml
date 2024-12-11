@@ -3,18 +3,16 @@ spring:
     name: Erp
   kafka:
     consumer:
-      bootstrap-servers: 192.168.0.11:9092  # Kafka 서버 주소
-      #bootstrap-servers: localhost:9092  # Kafka 서버 주소
-      group-id: erp-consumer-group
+      bootstrap-servers: 192.168.0.11:9092,192.168.0.11:9093,192.168.0.11:9094
+      group-id: erp-firebase-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
     producer:
-      bootstrap-servers: 192.168.0.11:9092  # Kafka 서버 주소
-      #bootstrap-servers: localhost:9092  # Kafka 서버 주소
+      bootstrap-servers: 192.168.0.11:9092,192.168.0.11:9093,192.168.0.11:9094
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-      asks: 1
+      acks: 1
   datasource:
     url: jdbc:mysql://192.168.0.11:3306/project_db  # MySQL 서버 주소
     #url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소

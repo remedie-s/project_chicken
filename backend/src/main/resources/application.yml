@@ -10,14 +10,14 @@ spring:
       enabled: true
   kafka:
     consumer:
-      bootstrap-servers: 192.168.0.11:9092  # Kafka 서버 주소
+      bootstrap-servers: 192.168.0.11:9092,192.168.0.11:9093,192.168.0.11:9094
       #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       group-id: backend-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
     producer:
-      bootstrap-servers: 192.168.0.11:9092  # Kafka 서버 주소
+      bootstrap-servers: 192.168.0.11:9092,192.168.0.11:9093,192.168.0.11:9094
       #bootstrap-servers: localhost:9092  # Kafka 서버 주소
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer

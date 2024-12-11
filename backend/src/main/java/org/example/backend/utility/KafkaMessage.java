@@ -33,6 +33,7 @@ public class KafkaMessage {
 
             // JSON으로 변환
             String message = objectMapper.writeValueAsString(orderMessage);
+            log.info("{} : 주문을 완료했어요 메시지입니다.",message);
             // Kafka에 전송
             kafkaTemplate.send("Order-Confirm", message);
             log.info("Kafka order message sent: {}", message);
@@ -53,6 +54,7 @@ public class KafkaMessage {
                     .build();
 
             String message = objectMapper.writeValueAsString(productMessage);
+            log.info("{} : 물품 수량이 낮아요 메시지입니다.",message);
             kafkaTemplate.send("Out-of-Stock", message);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize Kafka message", e);
@@ -66,13 +68,13 @@ public class KafkaMessage {
                     .action(action)
                     .id(productsReviews.getId())
                     .content(productsReviews.getContent())
-                    .user(productsReviews.getUsers())
-                    .createdAt(productsReviews.getCreatedAt())
+                    .userId(productsReviews.getUsers().getId())
                     .rating(productsReviews.getRating())
-                    .products(productsReviews.getProducts())
+                    .productId(productsReviews.getProducts().getId())
                     .build();
 
             String message = objectMapper.writeValueAsString(productReviewMessage);
+            log.info("{} : 별점이 낮아요 메시지입니다.",message);
             kafkaTemplate.send("Low-Rating", message);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize Kafka message", e);

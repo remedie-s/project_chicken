@@ -67,19 +67,19 @@ public class OrdersService {
         return false;
 
     }
-    // 카프카 리스너
-    @KafkaListener(topics = "Order-Confirm", groupId = "erp")
-    public void listenProductChanges(String message) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            KafkaProductMessage productMessage = objectMapper.readValue(message, KafkaProductMessage.class);
-            log.info("{} : listen Order-Confirm success", productMessage.getId());
-
-
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse Kafka message: {}", message, e);
-        }
-    }
+//    // 카프카 리스너
+//    @KafkaListener(topics = "Order-Confirm", groupId = "order-service-group")
+//    public void listenProductChanges(String message) {
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            KafkaProductMessage productMessage = objectMapper.readValue(message, KafkaProductMessage.class);
+//            log.info("{} : listen Order-Confirm success", productMessage.getId());
+//
+//
+//        } catch (JsonProcessingException e) {
+//            log.error("Failed to parse Kafka message: {}", message, e);
+//        }
+//    }
 
 
     public Orders findById(Long orderId) {
