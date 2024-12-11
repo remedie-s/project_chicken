@@ -18,7 +18,7 @@ const LogoutPage = () => {
                 deleteSession();
                 setTimeout(() => {
                     console.log("Navigating to main page...");
-                    router.push("/");
+                    router.push("/loginsuccess");
                 }, 3000);
             } catch (error: any) {
                 console.error("로그아웃 중 에러가 발생하였습니다.", error);

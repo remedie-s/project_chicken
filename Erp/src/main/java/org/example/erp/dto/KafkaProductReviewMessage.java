@@ -9,25 +9,26 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class KafkaProductReviewMessage {
+    private String name;
     private String action;
     private Long id;
     private String content;
-    private Users user;
-    private LocalDateTime createdAt;
-    private Integer rating;
-    private Products products;
+    private Long userId;
+    private float rating;
+    private Long productID;
 
     public KafkaProductReviewMessage() {
 
     }
 
-    public KafkaProductReviewMessage(String action, Long id, String content, Users user, LocalDateTime createdAt, Integer rating, Products products) {
+    public KafkaProductReviewMessage(String action,String name, Long id, String content, Long userId, float rating, Long productID) {
+
         this.action = action;
+        this.name = name;
         this.id = id;
         this.content = content;
-        this.user = user;
-        this.createdAt = createdAt;
+        this.userId = userId;
         this.rating = rating;
-        this.products = products;
+        this.productID = productID;
     }
 }
