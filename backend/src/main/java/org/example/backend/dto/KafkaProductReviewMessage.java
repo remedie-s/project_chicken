@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KafkaProductReviewMessage {
-    private String action; // register, update, delete
-    private Long id;       // 리뷰 아이디
-    private Products products;
-    private LocalDateTime createdAt;
-    private Users user;
-    private float rating;
+    private String action;
+    private Long id;
     private String content;
+    private Long userId;
+    private float rating;
+    private Long productId;
+
 
 }

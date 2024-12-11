@@ -20,7 +20,7 @@ public class KafkaConsumerService {
     private final FirebaseService firebaseService;
 
     // 주문 관련 메시지 수신
-    @KafkaListener(topics = "Order-Confirm", groupId = "backend-consumer-group")
+    @KafkaListener(topics = "Order-Confirm", groupId = "erp-firebase-group")
     public void consumeOrderMessage(ConsumerRecord<String, String> record) {
         try {
             String message = record.value();
@@ -35,7 +35,7 @@ public class KafkaConsumerService {
     }
 
     // 재고 관련 메시지 수신
-    @KafkaListener(topics = "Out-of-Stock", groupId = "backend-consumer-group")
+    @KafkaListener(topics = "Out-of-Stock", groupId = "erp-firebase-group")
     public void consumeProductMessage(ConsumerRecord<String, String> record) {
         try {
             String message = record.value();
@@ -50,7 +50,7 @@ public class KafkaConsumerService {
     }
 
     // 리뷰 관련 메시지 수신
-    @KafkaListener(topics = "Low-Rating", groupId = "backend-consumer-group")
+    @KafkaListener(topics = "Low-Rating", groupId = "erp-firebase-group")
     public void consumeProductReviewMessage(ConsumerRecord<String, String> record) {
         try {
             String message = record.value();
@@ -95,7 +95,7 @@ public class KafkaConsumerService {
         log.info("Handling product review message: {}", reviewMessage);
         try {
             String title = "New Product Low Review";
-            String body = "Product " + reviewMessage.getProducts().getName() + " has received a new review with rating: " + reviewMessage.getRating();
+            String body = "Product " + reviewMessage.getProductID() + " has received a new review with rating: " + reviewMessage.getRating();
             // 예시: 리뷰 관련 알림을 관리자에게 보낸다.
             firebaseService.sendPushNotificationToRole(Role.CUSTOMER_SERVICE, title, body);
         } catch (FirebaseMessagingException e) {

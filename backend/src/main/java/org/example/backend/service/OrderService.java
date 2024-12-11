@@ -13,6 +13,7 @@ import org.example.backend.repository.ProductsRepository;
 import org.example.backend.repository.UsersRepository;
 import org.example.backend.utility.KafkaMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -87,6 +88,8 @@ public class OrderService {
     }
 
     // 주문 추가
+    //TODO 로그 바꿔야함
+
     public boolean orderAdd(Users users, OrdersDto[] ordersDtos) {
         // 주문 배열 열어서 처리
         for (OrdersDto ordersDto : ordersDtos) {
@@ -115,11 +118,18 @@ public class OrderService {
             users.setTotalPurchasePrice(users.getTotalPurchasePrice() + payPrice);
             this.usersRepository.save(users);
             products.setStock(products.getStock() - order.getQuantity());
-            this.productsRepository.save(products);
+            products.setSellCount(products.getSellCount() + order.getQuantity());
+            System.out.println("주문 저장중");
+            log.info(products.getStock()+"");
+            log.info("Checking stock for product ID {}: {}", products.getId(), products.getStock());
             if (products.getStock() <= 10) {
                 log.info("Low stock alert for product ID {}. Remaining stock: {}", products.getId(), products.getStock());
-                this.kafkaMessage.sendKafkaProductMsg(products, "alert");
+
             }
+            this.kafkaMessage.sendKafkaProductMsg(products, "alert");
+            this.productsRepository.save(products);
+
+
             this.kafkaMessage.sendKafkaOrderMsg(order, "order");
 
             log.info("Order created successfully for user ID {} with product ID {}", users.getId(), products.getId());

@@ -5,6 +5,7 @@ import org.example.erp.dto.EmployeeDto;
 import org.example.erp.dto.FCMTokenRequest;
 import org.example.erp.dto.NotificationRequest;
 import org.example.erp.entity.Employee;
+import org.example.erp.entity.Role;
 import org.example.erp.service.EmployeeService;
 import org.example.erp.service.FirebaseService;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,16 @@ public class FCMController {
                     notificationRequest.getTitle(),
                     notificationRequest.getBody());
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send notification");
+        }
+    }
+    // 푸시 알림 전송 API
+    @PostMapping("/sendNotification/role")
+    public ResponseEntity<String> sendNotificationRole(@RequestBody NotificationRequest notificationRequest) {
+        try {
+            String s = this.firebaseService.sendPushNotificationToRole(Role.MANAGER, notificationRequest.getTitle(), notificationRequest.getBody());
+            return ResponseEntity.ok(s);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send notification");
         }
