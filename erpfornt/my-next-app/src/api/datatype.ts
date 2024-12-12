@@ -117,6 +117,16 @@ export type NotificationPayload = {
     body: string;
     icon?: string;
 };
+export type noticeData={
+    id?: number|null;
+    title: string;
+    content: string;
+    imageUrl: string;
+    type:string;
+    createTime: string;
+    updateTime: string;
+    deleteTime: string;
+}
 
 
 export type FianceDto={

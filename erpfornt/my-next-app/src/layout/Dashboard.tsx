@@ -51,6 +51,7 @@ import {useFCM} from "@/hooks/useFCM";
 
 // firebase
 import "@/utils/firebase"
+import NoticeDetailPage from "@/pages/notice/detail";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -156,6 +157,7 @@ function DemoPageContent({ pathname, session}: IPage) {
                 return <Index/>;
             case "/products/detail":
                 return <ProductDetailPage/>;
+
             case "/orders":
                 return <OrdersPage/>;
             case "/partner/create":
@@ -194,6 +196,10 @@ function DemoPageContent({ pathname, session}: IPage) {
 
             case "/":
                 return <Notice/>;
+            case "/notice":
+                return <Notice/>;
+            case "/notice/detail":
+                return <NoticeDetailPage/>;
             default:
                 return (
                     <Box sx={{py: 4, textAlign: "center"}}>
