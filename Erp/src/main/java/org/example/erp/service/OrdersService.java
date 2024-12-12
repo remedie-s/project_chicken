@@ -2,6 +2,7 @@ package org.example.erp.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.KafkaProductMessage;
@@ -22,6 +23,7 @@ public class OrdersService {
     private final OrdersRepository ordersRepository;
     private final ProductsRepository productsRepository;
     private final UsersRepository usersRepository;
+    private final FirebaseService firebaseService;
 
     // 주문 관리 메소드
 
@@ -40,13 +42,32 @@ public class OrdersService {
     }
 
     // 주문 상태 변경 메소드(반품도)
-    public boolean modify(Long orderId,Orders orders) {
+    public boolean modify(Long orderId,Orders orders) throws FirebaseMessagingException {
         Optional<Orders> byId = this.ordersRepository.findById(orderId);
         if (byId.isPresent()) {
             Orders orders1 = byId.get();
             orders1.setInvoice(orders.getInvoice());
             orders1.setStatus(orders.getStatus());
+
             this.ordersRepository.save(orders1);
+            if(orders1.getStatus().equals("접수")){
+                firebaseService.sendPushNotificationUser(orders.getUsers().getId(),"주문 접수 알람",
+                        "주문이 접수되었습니다.");
+            } else if (orders1.getStatus().equals("발송")) {
+                firebaseService.sendPushNotificationUser(orders.getUsers().getId(),"주문 발송 알람",
+                        "주문을 발송되었습니다.");
+
+            } else if (orders1.getStatus().equals("도착")) {
+                firebaseService.sendPushNotificationUser(orders.getUsers().getId(),"주문 도착 알람",
+                        "주문이 도착하였습니다.");
+
+            } else if (orders1.getStatus().equals("완료")) {
+                firebaseService.sendPushNotificationUser(orders.getUsers().getId(),"주문 완료 알람",
+                        "주문이 완료되었습니다.");
+
+            }
+
+
             log.info("{} : modify orders success", orders1.getId());
             return true;
         }

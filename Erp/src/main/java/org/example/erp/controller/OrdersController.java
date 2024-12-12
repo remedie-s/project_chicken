@@ -1,5 +1,6 @@
 package org.example.erp.controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class OrdersController {
 
     // 주문 상태 변경 메소드
     @PutMapping("/{orderId}")
-    public ResponseEntity<?> modifyOrders(@RequestBody @Valid OrdersDto ordersDto,@PathVariable ("orderId") Long orderId) {
+    public ResponseEntity<?> modifyOrders(@RequestBody @Valid OrdersDto ordersDto,@PathVariable ("orderId") Long orderId) throws FirebaseMessagingException {
         Orders byId = this.ordersService.findById(orderId);
         if (byId == null) {
             return ResponseEntity.badRequest().body("Order not found");
