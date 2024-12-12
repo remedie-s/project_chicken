@@ -9,15 +9,15 @@ import { UsersDto } from "@/api/datatype"; // UsersDto 사용
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 // 프론트엔드에서 사용할 Role 값 정의
-const roleOptions = [
-    { value: 'USER', label: 'User' },
-    { value: 'ADMIN', label: 'Admin' },
-    { value: 'MANAGER', label: 'Manager' },
-    { value: 'PURCHASING', label: 'Purchasing' },
-    { value: 'FINANCE', label: 'Finance' },
-    { value: 'HUMAN_RESOURCE', label: 'Human Resource' },
-    { value: 'CUSTOMER_SERVICE', label: 'Customer Service' },
-];
+// const roleOptions = [
+//     { value: 'USER', label: 'User' },
+//     { value: 'ADMIN', label: 'Admin' },
+//     { value: 'MANAGER', label: 'Manager' },
+//     { value: 'PURCHASING', label: 'Purchasing' },
+//     { value: 'FINANCE', label: 'Finance' },
+//     { value: 'HUMAN_RESOURCE', label: 'Human Resource' },
+//     { value: 'CUSTOMER_SERVICE', label: 'Customer Service' },
+// ];
 
 const UserAdminPage = () => {
     const [users, setUsers] = React.useState<UsersDto[]>([]); // 유저 데이터 상태
@@ -116,25 +116,25 @@ const UserAdminPage = () => {
     };
 
     // 롤 수정 셀 렌더링
-    const renderEditRoleCell = (params: GridRenderEditCellParams) => {
-        return (
-            <FormControl fullWidth>
-                <InputLabel>Role</InputLabel>
-                <Select
-                    value={params.value || ''}
-                    onChange={(event) => {
-                        params.api.setEditCellValue(event.target.value);
-                    }}
-                >
-                    {roleOptions.map((role) => (
-                        <MenuItem key={role.value} value={role.value}>
-                            {role.label}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-        );
-    };
+    // const renderEditRoleCell = (params: GridRenderEditCellParams) => {
+    //     return (
+    //         <FormControl fullWidth>
+    //             <InputLabel>Role</InputLabel>
+    //             <Select
+    //                 value={params.value || ''}
+    //                 onChange={(event) => {
+    //                     params.api.setEditCellValue(event.target.value);
+    //                 }}
+    //             >
+    //                 {roleOptions.map((role) => (
+    //                     <MenuItem key={role.value} value={role.value}>
+    //                         {role.label}
+    //                     </MenuItem>
+    //                 ))}
+    //             </Select>
+    //         </FormControl>
+    //     );
+    // };
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>
