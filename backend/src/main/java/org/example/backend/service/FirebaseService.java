@@ -1,14 +1,11 @@
 package org.example.backend.service;
 
-import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.entity.Users;
 import org.example.backend.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -16,18 +13,7 @@ import java.util.List;
 public class FirebaseService {
     private final UsersRepository usersRepository;
 
-    // 푸시 알림 보내기
-    public String sendPushNotification(String fcmToken, String title, String body) throws FirebaseMessagingException {
-        Message message = Message.builder()
-                .setToken(fcmToken)
-                .setNotification(Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .build())
-                .build();
 
-        return FirebaseMessaging.getInstance().send(message);  // FCM 응답
-    }
 
 
 

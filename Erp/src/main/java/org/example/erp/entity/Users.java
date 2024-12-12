@@ -41,6 +41,8 @@ public class Users {
     private Long totalPurchaseCount;
     // 구매 가격
     private Long totalPurchasePrice;
+
+    private String fcmToken;
     @Column(name="refresh_token")
     private String refreshToken;
     @JsonIgnore
