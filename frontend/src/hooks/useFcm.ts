@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { requestPermission, onMessageListener } from "../utils/firebase";
 import { storeToken } from "@/api/api";
-import { NotificationPayload } from "@/api/datatype";
+import {NotificationPayload} from "@/types/fcmType";
+
 
 export const useFCM = () => {
     const [notification, setNotification] = useState<NotificationPayload | null>(null);
