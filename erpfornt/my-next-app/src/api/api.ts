@@ -3,7 +3,7 @@ import {
     EmployeeDto,
     FianceDto,
     loginData,
-    modifyOrderData, modifyProductData, NotificationRequest,
+    modifyOrderData, modifyProductData, noticeData, NotificationRequest,
     PartnerDto,
     productRegData,
     signupData, TokenData, UsersDto
@@ -38,7 +38,7 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        if ((error.response.status === 401 || error.response.status === 403) && !originalRequest._retry) {
+        if ((error.response.status === 401) && !originalRequest._retry) {
             originalRequest._retry = true;
 
             const refreshToken = sessionStorage.getItem('refreshToken');
@@ -157,6 +157,7 @@ export const productListEvent = async (event:number)=>{
         throw error.response.data; // 실패시
     }
 }
+
 
 
 export const productDetail = async (productId:number)=>{
@@ -707,7 +708,62 @@ export const sendNotification = async (notificationRequest:NotificationRequest )
     }
 };
 
-
+// 공지사항 관리
+export const noticeList = async ()=>{
+    try{const response = await api.get(`${API_URL}/notice/list`,{
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+export const noticeDetail = async (noticeId:number)=>{
+    try{const response = await api.get(`${API_URL}/notice/detail/{noticeId}`,{
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+export const noticeModify = async (noticeData:noticeData)=>{
+    try{const response = await api.put(`${API_URL}/notice/modify`,noticeData, {
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+export const noticeCreate = async (noticeData:noticeData)=>{
+    try{const response = await api.post(`${API_URL}/notice/create`,noticeData, {
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+export const noticeDelete = async (noticeId:number)=>{
+    try{const response = await api.delete(`${API_URL}/notice/delete/{noticeId}`, {
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
 
 
 

@@ -48,8 +48,9 @@ public class NoticeController {
     public ResponseEntity<?> list() {
         return ResponseEntity.ok(this.noticeService.findAll());
     }
-    @GetMapping("/detail")
-    public ResponseEntity<?> detail(@RequestParam("id") Long id) {
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> detail(@PathVariable("id") Long id) {
         return ResponseEntity.ok(this.noticeService.findById(id));
 
     }
