@@ -721,7 +721,7 @@ export const noticeList = async ()=>{
     }
 }
 export const noticeDetail = async (noticeId:number)=>{
-    try{const response = await api.get(`${API_URL}/notice/detail/{noticeId}`,{
+    try{const response = await api.get(`${API_URL}/notice/detail/${noticeId}`,{
         headers :{
             'Content-Type' :'application/json',
         },
