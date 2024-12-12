@@ -3,13 +3,13 @@ import axios from "axios";
 import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
 import  type {TokenResponseDto} from "@/types/userType";
 import {useRouter} from "next/navigation";
+import {useFCM} from "@/hooks/useFcm";
 const cookie = require("cookie");
 
 export default function LoginScreen(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
-
 
     const loginHandler = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -50,6 +50,7 @@ export default function LoginScreen(){
                 // 쿠키 설정 확인
                 if (document.cookie.includes("userName=" + res.data.name)) {
                     // 쿠키 설정 확인됐으면 홈으로
+
                     window.location.href = "/";
                 } else {
                     // 실패 처리

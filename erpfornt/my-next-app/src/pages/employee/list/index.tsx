@@ -40,7 +40,7 @@ const EmployeePage = () => {
         { field: 'department', headerName: 'Department', width: 150 },
         { field: 'position', headerName: 'Position', width: 150 },
         { field: 'hireDate', headerName: 'Hire Date', width: 150 },
-    ];
+    ];1
 
     // 초기 데이터 로드
     React.useEffect(() => {

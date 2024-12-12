@@ -39,6 +39,7 @@ public class Users implements UserDetails {
     private Long totalPurchasePrice;
     private String passwordQuestion;
     private String passwordAnswer;
+    private String fcmToken;
 
     @Column(name = "refresh_token")
     private String refreshToken;

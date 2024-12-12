@@ -50,6 +50,8 @@ dependencies {
     // 스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
+    //FCM
+    implementation 'com.google.firebase:firebase-admin:9.4.1'
 }
 
 tasks.named('test') {
