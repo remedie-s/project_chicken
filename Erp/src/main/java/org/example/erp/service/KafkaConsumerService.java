@@ -67,39 +67,27 @@ public class KafkaConsumerService {
     // 주문 메시지 처리
     private void handleOrderMessage(KafkaProductMessage orderMessage) {
         log.info("Handling order message: {}", orderMessage);
-        try {
-            String title = "New Order Received";
-            String body = "You have received a new order with ID: " + orderMessage.getId();
-            // 예시: 관리자에게 알림을 보낸다.
-            firebaseService.sendPushNotificationToRole(Role.MANAGER, title, body);
-        } catch (FirebaseMessagingException e) {
-            log.error("Failed to send push notification for order message", e);
-        }
+        String title = "New Order Received";
+        String body = "You have received a new order with ID: " + orderMessage.getId();
+        // 예시: 관리자에게 알림을 보낸다.
+        firebaseService.sendPushNotificationToRole(Role.MANAGER, title, body);
     }
 
     // 물품 메시지 처리
     private void handleProductMessage(KafkaProductMessage productMessage) {
         log.info("Handling product message: {}", productMessage);
-        try {
-            String title = "Out of Stock Alert";
-            String body = "Product " + productMessage.getName() + " is out of stock.";
-            // 예시: 재고 관련 알림을 관리자에게 보낸다.
-            firebaseService.sendPushNotificationToRole(Role.PURCHASING, title, body);
-        } catch (FirebaseMessagingException e) {
-            log.error("Failed to send push notification for product message", e);
-        }
+        String title = "Out of Stock Alert";
+        String body = "Product " + productMessage.getName() + " is out of stock.";
+        // 예시: 재고 관련 알림을 관리자에게 보낸다.
+        firebaseService.sendPushNotificationToRole(Role.PURCHASING, title, body);
     }
 
     // 리뷰 메시지 처리
     private void handleProductReviewMessage(KafkaProductReviewMessage reviewMessage) {
         log.info("Handling product review message: {}", reviewMessage);
-        try {
-            String title = "New Product Low Review";
-            String body = "Product " + reviewMessage.getProductID() + " has received a new review with rating: " + reviewMessage.getRating();
-            // 예시: 리뷰 관련 알림을 관리자에게 보낸다.
-            firebaseService.sendPushNotificationToRole(Role.CUSTOMER_SERVICE, title, body);
-        } catch (FirebaseMessagingException e) {
-            log.error("Failed to send push notification for review message", e);
-        }
+        String title = "New Product Low Review";
+        String body = "Product " + reviewMessage.getProductID() + " has received a new review with rating: " + reviewMessage.getRating();
+        // 예시: 리뷰 관련 알림을 관리자에게 보낸다.
+        firebaseService.sendPushNotificationToRole(Role.CUSTOMER_SERVICE, title, body);
     }
 }
