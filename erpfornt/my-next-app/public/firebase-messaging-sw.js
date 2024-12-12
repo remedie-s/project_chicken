@@ -17,6 +17,26 @@ firebase.initializeApp(firebaseConfig);
 // Retrieve an instance of Firebase Messaging
 const messaging = firebase.messaging();
 
+self.addEventListener("install", function (e) {
+    self.skipWaiting();
+});
+
+self.addEventListener("activate", function (e) {
+    console.log("fcm service worker가 실행되었습니다.");
+});
+self.addEventListener("push", function (e) {
+    if (!e.data.json()) return;
+    const resultData = e.data.json().notification;
+    const notificationTitle = resultData.title;
+    const notificationOptions = {
+        body: resultData.body,
+    };
+    console.log(resultData.title, {
+        body: resultData.body,
+    });
+    e.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions));
+});
+
 // Background message handler
 messaging.onBackgroundMessage((payload) => {
     console.log('[firebase-messaging-sw.js] Received background message: ', payload);

@@ -24,6 +24,7 @@ export const useFCM = () => {
                 console.log("Received foreground message: ", payload);
                 const { title, body, icon } = payload.notification;
                 setNotification({ title, body, icon });
+
             })
             .catch((error) => {
                 console.error("Error listening to messages: ", error);

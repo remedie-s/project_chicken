@@ -49,6 +49,9 @@ import EmployeeAdminPage from "@/pages/admin/empList";
 import EmployeePage from "@/pages/employee/list";
 import {useFCM} from "@/hooks/useFCM";
 
+// firebase
+import "@/utils/firebase"
+
 const demoTheme = createTheme({
     cssVariables: {
         colorSchemeSelector: "data-toolpad-color-scheme",
