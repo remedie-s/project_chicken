@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
 import  type {TokenResponseDto} from "@/types/userType";
@@ -50,8 +50,7 @@ export default function LoginScreen(){
                 // 쿠키 설정 확인
                 if (document.cookie.includes("userName=" + res.data.name)) {
                     // 쿠키 설정 확인됐으면 홈으로
-
-                    window.location.href = "/";
+                    window.location.href = "/user/logined";
                 } else {
                     // 실패 처리
                     console.error("쿠키 설정 실패");
