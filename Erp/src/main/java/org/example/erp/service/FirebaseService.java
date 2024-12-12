@@ -5,18 +5,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.entity.Employee;
 import org.example.erp.entity.Role;
+import org.example.erp.entity.Users;
 import org.example.erp.repository.EmployeeRepository;
+import org.example.erp.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class FirebaseService {
     private final EmployeeRepository employeeRepository;
+    private final UsersRepository usersRepository;
 
     // 푸시 알림 보내기
     public String sendPushNotification(String fcmToken, String title, String body) throws FirebaseMessagingException {
@@ -29,6 +33,23 @@ public class FirebaseService {
                 .build();
 
         return FirebaseMessaging.getInstance().send(message);  // FCM 응답
+    }
+    // 푸시 알림 보내기
+    public String sendPushNotificationUser(Long userId, String title, String body) throws FirebaseMessagingException {
+        Optional<Users> byId = this.usersRepository.findById(userId);
+        if(byId.isPresent()) {
+            Message message = Message.builder()
+                    .setToken(byId.get().getFcmToken())
+                    .setNotification(Notification.builder()
+                            .setTitle(title)
+                            .setBody(body)
+                            .build())
+                    .build();
+
+            return FirebaseMessaging.getInstance().send(message);  // FCM 응답
+        }
+        return null;
+
     }
 
     // 롤기반 푸시 알림 보내기

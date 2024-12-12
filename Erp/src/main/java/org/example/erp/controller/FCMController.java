@@ -62,4 +62,15 @@ public class FCMController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send notification");
         }
     }
+    // 푸시 알림 전송 API
+    @PostMapping("/sendNotification/users")
+    public ResponseEntity<String> sendNotificationUser(@RequestBody NotificationRequest notificationRequest) {
+        try {
+            String s = this.firebaseService.sendPushNotificationUser(notificationRequest.getUserId(), notificationRequest.getTitle(), notificationRequest.getBody());
+            return ResponseEntity.ok(s);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send notification");
+        }
+    }
+
 }
