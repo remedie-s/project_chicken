@@ -5,15 +5,15 @@ import {useEffect, useState} from "react";
 import authApi from "@/scripts/auth/authApi";
 import {QuestionDto} from "@/types/questionType";
 import QuestionDetail from "@/components/question/QuestionDetail";
-import {useRouter} from "next/navigation";
+import {useRouter, useParams} from "next/navigation";
 import axios from "axios";
 import authErrorLogout from "@/scripts/auth/authErrorLogout";
 import AnswersList from "@/components/question/AnswersList";
 import LoadingScreen from "@/components/layout/LoadingScreen";
 
-export default function page({params}: { params: { id: string } }) {
+export default function page() {
     const [question, setQuestion] = useState<QuestionDto | null>(null);
-    const {id} = params;
+    const { id } = useParams();
     const { user, loading } = useAuth();
     const router = useRouter();
 
