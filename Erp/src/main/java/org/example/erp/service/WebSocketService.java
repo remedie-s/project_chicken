@@ -1,7 +1,6 @@
 package org.example.erp.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.erp.dto.ChatMessagesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
