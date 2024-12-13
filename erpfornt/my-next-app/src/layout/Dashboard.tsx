@@ -31,7 +31,7 @@ import type { DemoProps, IPage } from "@/api/datatype";
 import type { Navigation, Router } from "@toolpad/core";
 import Index from "@/pages/products";
 import Leave from "@/pages/employee/leave/index";
-import Notice from "@/pages/notice";
+import Notice from "@/pages/notice/list";
 import FinancesCreate from "@/pages/finances/create";
 import FinancePage from "@/pages/finances/QuarterlySummaryPage";
 import OrderSummaryPage from "@/pages/finances/QuarterlySummaryPage";
@@ -52,6 +52,9 @@ import {useFCM} from "@/hooks/useFCM";
 // firebase
 import "@/utils/firebase"
 import NoticeDetailPage from "@/pages/notice/detail";
+import NoticeCreatePage from "@/pages/notice/create";
+import NoticeAdminPage from "@/pages/notice/list";
+import NoticePage from "@/pages/notice";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -195,11 +198,18 @@ function DemoPageContent({ pathname, session}: IPage) {
                     <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
 
             case "/":
-                return <Notice/>;
+                return <NoticePage/>;
             case "/notice":
-                return <Notice/>;
+                return <NoticePage/>;
+            case "/notice/list":
+                return <NoticeAdminPage/>;
             case "/notice/detail":
                 return <NoticeDetailPage/>;
+            case "/notice/create":
+                return isAdmin ? <NoticeCreatePage/> :
+                    <Box sx={{py: 4, textAlign: "center"}}><Typography variant="h4">접근 권한이 없습니다.</Typography></Box>;
+
+                
             default:
                 return (
                     <Box sx={{py: 4, textAlign: "center"}}>
@@ -327,6 +337,18 @@ export default function DashboardLayoutBasic(props: DemoProps) {
             children: [
                 { segment: "empList", title: "직원 관리", icon: <ShoppingBag /> },
                 { segment: "userList", title: "유저 관리", icon: <ShoppingBag /> },
+            ],
+        },
+        { kind: "divider" },
+        { kind: "header", title: "공지사항관리" },
+        {
+            segment: "notice",
+            title: "공지사항관리",
+            icon: <ShoppingBag />,
+            children: [
+                { segment: "list", title: "공지사항 리스트", icon: <ShoppingBag /> },
+                { segment: "detail", title: "공지사항 상세정보", icon: <ShoppingBag /> },
+                { segment: "create", title: "공지사항 생성", icon: <ShoppingBag /> },
             ],
         },
     ];

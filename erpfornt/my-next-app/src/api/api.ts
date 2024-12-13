@@ -720,6 +720,17 @@ export const noticeList = async ()=>{
         throw error.response.data; // 실패시
     }
 }
+export const noticeAdminList = async ()=>{
+    try{const response = await api.get(`${API_URL}/notice/list/admin`,{
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
 export const noticeDetail = async (noticeId:number)=>{
     try{const response = await api.get(`${API_URL}/notice/detail/${noticeId}`,{
         headers :{
