@@ -38,8 +38,18 @@ export default function layout({children}: layoutChildren) {
     return (
         <html lang="ko">
         <head></head>
-        <body>
-        <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <body style={{overflow: "auto"}}>
+        <Box sx={{
+            // 최소 화면 높이가 브라우저 100%
+            minHeight: "100vh",
+            // 브라우저 컨텐츠 관리용
+            display: "flex",
+            // 세로 방향으로 배치
+            flexDirection: "column",
+            // 스크롤 가능
+            overflowY: "auto"
+                 }}
+                >
             <Box sx={{ flex: "1" }}>
                 {/* 상단 검색창, 로그인 등 */}
                 <Header userName={userName} />
@@ -49,9 +59,7 @@ export default function layout({children}: layoutChildren) {
                 {children}
             </Box>
             {/* 하단 레이아웃 */}
-            <Box sx={{ flexShrink: 0 }}>
             <Footer />
-            </Box>
         </Box>
         </body>
         </html>
