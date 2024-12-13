@@ -5,10 +5,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/router'; // Next.js 라우터 사용
-import { noticeList, noticeModify, noticeDelete } from "@/api/api"; // API 호출
+import {noticeList, noticeModify, noticeDelete, noticeAdminList} from "@/api/api"; // API 호출
 import { noticeData } from "@/api/datatype"; // 타입 정의
 
-const NoticePage = () => {
+const NoticeAdminPage = () => {
     const [notices, setNotices] = React.useState<noticeData[]>([]); // 공지사항 상태
     const [loading, setLoading] = React.useState<boolean>(false); // 로딩 상태
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null); // 에러 메시지 상태
@@ -31,12 +31,13 @@ const NoticePage = () => {
                 </Button>
             ),
         },
-        { field: 'title', headerName: 'Title', width: 200 },
-        { field: 'content', headerName: 'Content', width: 150 },
+        { field: 'title', headerName: 'Title', width: 200, editable: true },
+        { field: 'content', headerName: 'Content', width: 150, editable: true },
         {
             field: 'type',
             headerName: 'Type',
             width: 120,
+            editable: true,
             //@ts-ignore
             renderCell: (params: GridRenderCellParams<number>) => {
                 // 타입 값에 따라 텍스트 변환
@@ -85,7 +86,7 @@ const NoticePage = () => {
             setLoading(true);
             setErrorMessage(null);
             try {
-                const fetchedNotices = await noticeList();
+                const fetchedNotices = await noticeAdminList();
                 const sortedNotices = fetchedNotices.sort(
                     (a: noticeData, b: noticeData) =>
                         new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
@@ -171,4 +172,4 @@ const NoticePage = () => {
     );
 };
 
-export default NoticePage;
+export default NoticeAdminPage;

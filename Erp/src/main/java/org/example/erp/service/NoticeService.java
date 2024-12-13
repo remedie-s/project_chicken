@@ -8,6 +8,8 @@ import org.example.erp.repository.NoticeRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class NoticeService {
         return noticeRepository.findById(noticeDto.getId())
                 .map(notice -> {
                     BeanUtils.copyProperties(noticeDto, notice);
+                    notice.setUpdateTime(LocalDateTime.now());
                     noticeRepository.save(notice);
                     return true;
                 })
@@ -53,6 +56,13 @@ public class NoticeService {
     public List<Notice> findAll() {
         return noticeRepository.findAll();
     }
+
+    // 공지사항 ERP 페이지만 조회
+    public List<Notice> findByType() {
+        List<Notice> byTypeIn = this.noticeRepository.findByTypeIn((Arrays.asList(1, 2)));
+        return byTypeIn;
+    }
+
 
     // 공지사항 단건 조회
     public Notice findById(long id) {
