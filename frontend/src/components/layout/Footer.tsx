@@ -4,14 +4,15 @@ import {Box} from "@mui/material";
 
 export default function Footer() {
     return (
-        <footer style={{margin: 0, padding: 0, width: "100%"}}>
             <Box sx={{
                 backgroundColor: "#FFDF00",
                 display: "flex",
                 width: "100%",
                 alignItems: "center",
                 flexWrap: "wrap",
-                padding: 0
+                padding: 0,
+                position: "relative", // 부모 컨테이너에서 위치 조정이 가능하게 합니다.
+                bottom: 0, // 하단에 위치
             }}>
                 <Box sx={{
                     width: "40%",
@@ -47,6 +48,5 @@ export default function Footer() {
                     </h3>
                 </Box>
             </Box>
-        </footer>
     )
 }
