@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Box, Grid, Typography } from '@mui/material';
+import { Button, TextField, Box, Grid, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { productReg } from '@/api/api';
 import { productRegData } from '@/api/datatype';
 
@@ -22,9 +22,18 @@ function Index(): JSX.Element {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const brands = [
+        'Bosch', 'DeWalt', 'Festool', 'ES산업', '계양',
+        'Milwaukee', 'Makita', 'LS전선', 'Hitachi', 'Stanley'
+    ];
+    const categories = [
+        '목공공구', '용접공구', '원예공구', '수작업공구', '전동공구',
+        '측정공구', '안전용품', '전기용품', '페인트용품', '공구세트'
+    ];
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData({ ...formData, [name as string]: value });
     };
 
     const handleSubmit = async () => {
@@ -120,14 +129,22 @@ function Index(): JSX.Element {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField
-                        label="카테고리"
-                        variant="outlined"
-                        fullWidth
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                    />
+                    <FormControl fullWidth>
+                        <InputLabel id="category-label">카테고리</InputLabel>
+                        <Select
+                            labelId="category-label"
+                            value={formData.category}
+                            //@ts-ignore
+                            onChange={handleChange}
+                            name="category"
+                        >
+                            {categories.map((category) => (
+                                <MenuItem key={category} value={category}>
+                                    {category}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
@@ -152,18 +169,26 @@ function Index(): JSX.Element {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField
-                        label="브랜드"
-                        variant="outlined"
-                        fullWidth
-                        name="brand"
-                        value={formData.brand}
-                        onChange={handleChange}
-                    />
+                    <FormControl fullWidth>
+                        <InputLabel id="brand-label">브랜드</InputLabel>
+                        <Select
+                            labelId="brand-label"
+                            value={formData.brand}
+                            //@ts-ignore
+                            onChange={handleChange}
+                            name="brand"
+                        >
+                            {brands.map((brand) => (
+                                <MenuItem key={brand} value={brand}>
+                                    {brand}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
-                        label="비용"
+                        label="원가"
                         variant="outlined"
                         fullWidth
                         type="number"
