@@ -123,7 +123,7 @@ public class ProductsController {
         return ResponseEntity.status(500).body("주문 등록 오류입니다.");
     }
 
-    // 물품 여러개 정보 조회(주문 등)
+    // 물품id 리스트로 받아서 물품 여러개 정보 조회(주문 등)
     @GetMapping("/views")
     public ResponseEntity<?> productList(@RequestBody List<Long> productIds,
                                          @AuthenticationPrincipal Users users) {
@@ -133,5 +133,22 @@ public class ProductsController {
         }
         return ResponseEntity.ok(productsDtoList);
     }
+    // 물품 브랜드 별 조회
+    @GetMapping("/brand/{brand}")
+    public ResponseEntity<List<ProductsDto>> getProductsByBrand(
+            @PathVariable String brand){
+        List<ProductsDto> productsDtoList = this.productsService.productsListByBrand(brand);
+        return ResponseEntity.ok(productsDtoList);
+    };
+
+    // 물품 카테고리 별 조회
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<ProductsDto>> getProductsByCategory(
+            @PathVariable String category){
+        System.out.println(category);
+        List<ProductsDto> productsDtoList = this.productsService.productsListByCategory(category);
+        return ResponseEntity.ok(productsDtoList);
+    };
+
 
 }

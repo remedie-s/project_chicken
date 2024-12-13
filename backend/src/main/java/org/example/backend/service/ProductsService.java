@@ -94,6 +94,7 @@ public class ProductsService {
         }
         return null;
     }
+    // 해당 유저의 상품 구매 이력 확인(리뷰 권한용)
     public ProductsDto productsDetailAndUser(Long productId, Users users) {
         ProductsDto productsDto = productsDetailDto(productId);
         if(productsDto==null) { return null;}
@@ -106,7 +107,7 @@ public class ProductsService {
             return productsDto;
         }
     }
-
+    // 상품 아이디 리스트 받은 다음 상품Dto 리스트로 돌려줌
     public List<ProductsDto> productsDtoList(List<Long> productIds){
         List<ProductsDto> productsDtoList = new ArrayList<>();
         for (Long productId : productIds) {
@@ -115,6 +116,19 @@ public class ProductsService {
         return productsDtoList;
     }
 
+    // 카테고리 별 상품 목록
+    public List<ProductsDto> productsListByCategory(String category) {
+        List<Products> productsList = this.productsRepository.findByCategory(category);
+        if(productsList==null) { return null;}
+        return productListToDtoList(productsList);
+    }
+
+    // 브랜드 별 상품 목록
+    public List<ProductsDto> productsListByBrand(String brand) {
+        List<Products> productsList = this.productsRepository.findByBrand(brand);
+        if(productsList==null) { return null;}
+        return productListToDtoList(productsList);
+    }
 
     /**
      * 키워드 기반 검색

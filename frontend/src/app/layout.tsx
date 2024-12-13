@@ -9,6 +9,7 @@ import Navbar from "@/components/layout/Navbar";
 import '@/styles/globals.css';
 import {useRouter} from "next/navigation";
 import LoadingScreen from "@/components/layout/LoadingScreen";
+import BrandTab from "@/components/layout/BrandTab";
 const cookie = require("cookie");
 
 type layoutChildren = {
@@ -55,6 +56,8 @@ export default function layout({children}: layoutChildren) {
                 <Header userName={userName} />
                 {/* 카테고리 바 */}
                 <Navbar />
+                {/* 브랜드 탭(bar형태) */}
+                <BrandTab/>
                 {/* 페이지 별 내용 */}
                 {children}
             </Box>
