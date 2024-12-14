@@ -55,6 +55,8 @@ import NoticeDetailPage from "@/pages/notice/detail";
 import NoticeCreatePage from "@/pages/notice/create";
 import NoticeAdminPage from "@/pages/notice/list";
 import NoticePage from "@/pages/notice";
+import ChatPage from "@/pages/chat/public";
+import PrivateChatPage from "@/pages/chat/private";
 
 const demoTheme = createTheme({
     cssVariables: {
@@ -160,6 +162,11 @@ function DemoPageContent({ pathname, session}: IPage) {
                 return <Index/>;
             case "/products/detail":
                 return <ProductDetailPage/>;
+            case "/chat/public":
+                return <ChatPage/>;
+            case "/chat/private":
+                return <PrivateChatPage/>;
+
 
             case "/orders":
                 return <OrdersPage/>;
@@ -351,6 +358,15 @@ export default function DashboardLayoutBasic(props: DemoProps) {
                 { segment: "create", title: "공지사항 생성", icon: <ShoppingBag /> },
             ],
         },
+        { kind: "divider" },
+        { kind: "header", title: "채팅", },
+        {
+            segment: "chat", title: "채팅", icon: <ShoppingBag/>,
+            children: [
+                {segment: "private", title: "개인 채팅", icon: <ShoppingBag/>},
+                {segment: "public", title: "전체 채팅", icon: <ShoppingBag/>},
+            ],
+        }
     ];
 
 
