@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
 @Component
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
@@ -40,9 +39,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         username = jwtUtil.extractUsername(jwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Employee employee = (Employee) userDetailsService.loadUserByUsername(username);
+            System.out.println("Authentication attempt for user: " + username);  // 사용자 인증 시도 로그
 
             if (jwtUtil.validateToken(jwt)) {
+                Employee employee = (Employee) userDetailsService.loadUserByUsername(username);
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         employee, // `Employee` 객체를 Principal로 설정
                         null,
@@ -56,3 +57,4 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 }
+
