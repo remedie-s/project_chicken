@@ -21,7 +21,7 @@ export default function () {
         const fetchData = async ()=> {
             // 변수 초기화시 실행되는 거 방지
             if(decodedId===null){return;}
-            const res = await axios.get(`http://localhost:8080/api/products/category/${decodedId}`)
+            const res = await axios.get(`http://localhost:8080/api/products/brand/${decodedId}`)
             setProductsList(res.data);
         }
         fetchData();
@@ -29,7 +29,7 @@ export default function () {
 
     return(
         <Box sx={{display: "flex", justifyContent: "center"}}>
-            {productsList && productsList.length > 0 ?
+        {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
                 <Typography>
