@@ -31,7 +31,7 @@ public class ChatService {
 
     // 1:1 채팅 내역 조회
     public List<ChatMessageEntity> getPrivateChatHistory(String user1, String user2) {
-        return repository.findBySenderOrReceiverAndReceiverOrSender(user1, user2, user1, user2);
+        return repository.findBySenderAndReceiverOrSenderAndReceiver(user1, user2, user2, user1);
     }
 
 }

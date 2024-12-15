@@ -5,11 +5,11 @@ export default class WebSocketClient {
     private client: Client;
 
     constructor(accessToken: string, onMessage: (message: any) => void, receiver?: string) {
-        const socketUrl = `http://localhost:8081/ws?access_token=${accessToken}&receiver=${receiver || ""}`; // 토큰과 receiver를 쿼리 파라미터로 전달
+        const socketUrl = `http://localhost:8081/ws?access_token=${accessToken}`; // receiver를 URL에 포함하지 않음
 
         this.client = new Client({
             webSocketFactory: () => new SockJS(socketUrl),
-            connectHeaders: {}, // 헤더를 따로 추가하지 않음, 토큰은 URL에 포함
+            connectHeaders: {},
             debug: (str) => console.log("WebSocket Debug:", str),
             onConnect: () => console.log("WebSocket connected"),
             onDisconnect: () => console.log("WebSocket disconnected"),
@@ -27,10 +27,12 @@ export default class WebSocketClient {
         // 구독 설정
         this.client.onConnect = () => {
             if (receiver) {
-                this.client.subscribe(`/user/${receiver}/queue/private`, (message) => {
+                // 개인 메시지 구독
+                this.client.subscribe("/user/queue/private", (message) => {
                     onMessage(JSON.parse(message.body));
                 });
             } else {
+                // 공용 메시지 구독
                 this.client.subscribe("/topic/public", (message) => {
                     onMessage(JSON.parse(message.body));
                 });

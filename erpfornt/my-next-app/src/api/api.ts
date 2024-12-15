@@ -786,8 +786,8 @@ export const chatPublic = async ()=>{
         throw error.response.data; // 실패시
     }
 }
-export const chatPrivate = async (user1:string,user2:string)=>{
-    try{const response = await api.get(`${API_URL}/chats/private/${user1}/${user2}`, {
+export const chatPrivate = async (sender:string,receiver:string)=>{
+    try{const response = await api.get(`${API_URL}/chats/private/${sender}/${receiver}`, {
         headers :{
             'Content-Type' :'application/json',
         },
