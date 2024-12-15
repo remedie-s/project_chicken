@@ -1,120 +1,163 @@
 import { useState, useEffect } from "react";
 import WebSocketClient from "../../../component/websocketClient";
-import { chatPrivate, getEmployeeList } from "../../../api/api"; // API 함수 임포트
+import { chatPrivate, getEmployeeList } from "../../../api/api";
 
 type ChatMessage = {
     sender: string;
     content: string;
-    receiver: string; // 리시버 추가
+    receiver: string;
 };
 
 type Employee = {
-    id: string;    // 직원 ID
-    name: string;  // 직원 이름
-    email: string; // 직원 이메일
+    id: string;
+    name: string;
+    email: string;
 };
 
 const PrivateChatPage = () => {
-    const [messages, setMessages] = useState<ChatMessage[]>([]); // 메시지 상태
-    const [newMessage, setNewMessage] = useState<string>(""); // 새 메시지 상태
-    const [receiver, setReceiver] = useState<string>(""); // 선택된 리시버 이메일
+    const [messages, setMessages] = useState<ChatMessage[]>([]); // 채팅 메시지 상태
+    const [newMessage, setNewMessage] = useState<string>(""); // 새로운 메시지 상태
+    const [receiver, setReceiver] = useState<string>(""); // 채팅 상대
     const [employees, setEmployees] = useState<Employee[]>([]); // 직원 리스트
     const [websocketClient, setWebsocketClient] = useState<WebSocketClient | null>(null); // WebSocket 클라이언트
-    const [username, setUsername] = useState<string>(""); // 현재 사용자 이메일
+    const [username, setUsername] = useState<string>(""); // 로그인한 사용자 이름
+    const [shouldReloadMessages, setShouldReloadMessages] = useState<boolean>(false); // 메시지 강제 로딩 상태
 
-    // 페이지 로드 시 실행되는 useEffect
+    // 초기 데이터 불러오기 (JWT 디코딩 + 직원 리스트)
     useEffect(() => {
-        // 액세스 토큰 가져오기
         const accessToken = sessionStorage.getItem("accessToken");
         if (!accessToken) {
+            console.error("액세스 토큰 없음 - 로그인 필요");
             alert("로그인이 필요합니다.");
             return;
         }
 
-        // JWT에서 사용자 이메일 추출
         try {
             const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-            const extractedEmail = decodedToken.email;
-            setUsername(extractedEmail); // 사용자 이메일 상태 업데이트
+            const extractedUsername = decodedToken.sub; // JWT의 subject에서 username 추출
+            if (!extractedUsername) {
+                console.error("JWT에 username 정보 없음");
+                return;
+            }
+            console.log(`JWT 디코딩 성공: username=${extractedUsername}`);
+            setUsername(extractedUsername);
         } catch (error) {
             console.error("JWT 디코딩 오류:", error);
         }
 
-        // 직원 리스트 가져오기
         const loadEmployeeList = async () => {
             try {
                 const employeeList = await getEmployeeList();
+                console.log("직원 리스트 로드 성공:", employeeList);
                 setEmployees(employeeList);
             } catch (error) {
-                console.error("직원 리스트 로딩 실패:", error);
+                console.error("직원 리스트 로드 실패:", error);
             }
         };
 
         loadEmployeeList();
-    }, []); // 컴포넌트가 처음 렌더링될 때 한 번 실행
+    }, []);
 
-    // username 또는 receiver가 변경될 때마다 WebSocket 연결 초기화
+    // WebSocket 초기화
     useEffect(() => {
-        if (!username || !receiver) return;
+        if (!username || !receiver) {
+            console.log("WebSocketClient 초기화 안 됨 - username 또는 receiver 없음");
+            return;
+        }
+        console.log(`WebSocketClient 초기화: username=${username}, receiver=${receiver}`);
 
-        // 개인 채팅 메시지 로드
-        const loadPrivateMessages = async () => {
-            try {
-                const privateMessages = await chatPrivate(username, receiver);
-                setMessages(privateMessages); // 기존 메시지 설정
-            } catch (error) {
-                console.error("개인 채팅 내역 로딩 실패:", error);
-            }
-        };
-
-        loadPrivateMessages();
-
-        // WebSocket 클라이언트 초기화
         const accessToken = sessionStorage.getItem("accessToken");
         if (accessToken) {
             const client = new WebSocketClient(
                 accessToken,
                 (message: ChatMessage) => {
-                    console.log("Received message:", message); // 메시지 수신 시 로그 추가
-                    setMessages((prevMessages) => [...prevMessages, message]); // 새 메시지 추가
+                    console.log("수신된 메시지:", message);
+                    setMessages((prevMessages) => [...prevMessages, message]);
                 },
                 receiver
             );
-            console.log("WebSocketClient initialized:", client); // WebSocketClient 초기화 로그 추가
             setWebsocketClient(client);
 
-            // 컴포넌트 unmount 시 WebSocket 연결 해제
-            return () => {
-                client.disconnect(); // 연결 해제
-            };
-        }
-    }, [username, receiver]); // username과 receiver가 변경될 때마다 실행
+            // 웹소켓 초기화 후, 메시지 다시 불러오기
+            setShouldReloadMessages(true);
 
-    // 메시지 전송 처리
+            return () => {
+                console.log("WebSocket 연결 해제");
+                client.disconnect();
+            };
+        } else {
+            console.error("액세스 토큰 없음 - WebSocketClient 생성 실패");
+        }
+
+    }, [username, receiver]);
+
+    // 리시버 변경 시 초기 메시지 로드
+    useEffect(() => {
+        if (!username || !receiver || !shouldReloadMessages) {
+            console.log(`chatPrivate 호출: username=${username}, receiver=${receiver}`);
+            return; // username, receiver, shouldReloadMessages가 제대로 설정되지 않으면 초기화 안 함
+        }
+
+        const loadInitialMessages = async () => {
+            console.log(`chatPrivate 호출: username=${username}, receiver=${receiver}`);
+
+            try {
+                const initialMessages = await chatPrivate(username, receiver);
+                console.log("초기 메시지 로드 성공:", initialMessages);
+                setMessages(initialMessages);  // 초기 메시지 설정
+                setShouldReloadMessages(false); // 메시지 로딩 완료 후 상태 초기화
+            } catch (error) {
+                console.error("초기 메시지 로드 실패:", error);
+            }
+        };
+
+        loadInitialMessages();
+    }, [username, receiver, shouldReloadMessages]);
+    const handleManualRequest = async () => {
+        if (!username || !receiver) return;
+
+        try {
+            const messages = await chatPrivate(username, receiver);
+            console.log("수동으로 메시지 불러오기:", messages);
+        } catch (error) {
+            console.error("수동 요청 실패:", error);
+        }
+    };
+
+    // 메시지 전송
     const handleSendMessage = () => {
-        if (newMessage.trim() === "" || !websocketClient) return;
+        if (newMessage.trim() === "" || !websocketClient) {
+            console.error("메시지 전송 실패 - 메시지가 비어있거나 WebSocketClient 없음");
+            return;
+        }
 
         const message: ChatMessage = {
             sender: username,
             content: newMessage,
-            receiver: receiver, // 리시버 추가
+            receiver: receiver,
         };
 
-        console.log("Sending message:", message); // 메시지 전송 로그 추가
-        websocketClient.sendMessage("/app/chat.privateSendMessage", message); // 개인 메시지 전송
-        setNewMessage(""); // 메시지 입력창 비우기
+        console.log("메시지 전송:", message);
+
+        // WebSocket으로 메시지 전송
+        websocketClient.sendMessage("/app/chat.privateSendMessage", message);
+
+        // 로컬 상태 업데이트
+        setMessages((prevMessages) => [...prevMessages, message]);
+        setNewMessage(""); // 입력란 초기화
     };
 
-    // 리시버 이메일 선택 변경 처리
+    // 리시버 변경
     const handleReceiverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setReceiver(e.target.value);
+        setShouldReloadMessages(true); // 리시버 변경 시 이전 메시지를 강제로 불러오도록 설정
+        console.log(`리시버 변경: ${e.target.value}`);
     };
 
     return (
         <div>
             <h1>개인 채팅</h1>
             <div>
-                {/* 직원 목록 선택 */}
                 <select onChange={handleReceiverChange} value={receiver}>
                     <option value="" disabled>
                         직원 이메일 선택
@@ -125,17 +168,10 @@ const PrivateChatPage = () => {
                         </option>
                     ))}
                 </select>
-                <button
-                    onClick={() => {
-                        if (!receiver) alert("직원을 선택하세요!"); // 리시버가 없으면 경고
-                    }}
-                >
-                    채팅 시작
-                </button>
+                <button onClick={handleManualRequest}> 요청 </button>
             </div>
             {receiver && (
                 <div>
-                    {/* 메시지 표시 */}
                     <div style={{ border: "1px solid #ccc", height: "300px", overflowY: "scroll" }}>
                         {messages.map((msg, index) => (
                             <p key={index}>
@@ -143,7 +179,6 @@ const PrivateChatPage = () => {
                             </p>
                         ))}
                     </div>
-                    {/* 메시지 입력 */}
                     <input
                         type="text"
                         value={newMessage}
