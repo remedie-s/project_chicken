@@ -25,23 +25,46 @@ export default function Navbar() {
         menuClose();
     };
 
+    const categoryItem = (name:string) => {
+        return (
+            <MenuItem onClick={() => selectCategory(name)}>
+                {name}
+            </MenuItem>
+        )
+    }
+    const barMenu = ({name, url}:{name:string, url:string}) => {
+        return (
+            <Box sx={{
+                color: "#FFFFFF",
+                width: "10%",
+                // Box 사이에 얇은 선 추가
+                borderRight: '1px solid #ccc',
+                textAlign: "center",
+            }}
+                 onClick={() => router.push(`${url}`)}
+            >
+                {name}
+            </Box>
+        )
+    }
+
     return (
         <>
             <AppBar position="static" sx={{ height: 60, width: "100%", backgroundColor: '#000000', display: "flex"}}>
                 <Toolbar sx={{height: 60, backgroundColor: '#000000', padding: 0, margin: 0, alignItems: 'center' }}>
                     <Box
                         id="categoryMenu"
-                        sx={{height: 60, backgroundColor: "#FFDF00", color: "#000000", display: 'flex', alignItems: 'center',
-                            justifyContent: 'center'}}
+                        sx={{height: "100%", backgroundColor: "#FFDF00", color: "#000000", display: 'flex', alignItems: 'center',
+                            justifyContent: 'center', width: "10%"}}
                         onClick={menuOpen}>
                         <MenuIcon/>
                         전체 카테고리
                     </Box>
-                    <Button color="inherit" onClick={() => router.push("/")}>홈</Button>
-                    <Button color="inherit" onClick={() => router.push("/product/new")}>신상품</Button>
-                    <Button color="inherit" onClick={() => router.push("/product/event")}>이벤트 상품</Button>
-                    <Button color="inherit" onClick={() => router.push("/notice")}>공지사항</Button>
-                    <Button color="inherit" onClick={() => router.push("/service")}>고객센터</Button>
+                    {barMenu ({name:"홈", url:"/"})}
+                    {barMenu ({name:"신상품", url:"/product/new"})}
+                    {barMenu ({name:"이벤트 상품", url:"/product/event"})}
+                    {barMenu ({name:"공지사항", url:"/notice"})}
+                    {barMenu ({name:"고객센터", url:"/service"})}
                 </Toolbar>
             </AppBar>
             <Menu
@@ -58,14 +81,16 @@ export default function Navbar() {
                 }}
                 sx={{ mt: 1 }}
             >
-                <MenuItem onClick={() => selectCategory("wood")}>목공공구</MenuItem>
-                <MenuItem onClick={() => selectCategory("")}>설비공구</MenuItem>
-                <MenuItem onClick={() => selectCategory("")}>원예공구</MenuItem>
-                <MenuItem onClick={() => selectCategory("")}>전동공구</MenuItem>
-                <MenuItem onClick={() => selectCategory("hand")}>수작업공구</MenuItem>
-                <MenuItem onClick={() => selectCategory("")}>측정공구</MenuItem>
-                <MenuItem onClick={() => selectCategory("elec")}>전기용품</MenuItem>
-                <MenuItem onClick={() => selectCategory("safe")}>안전용품</MenuItem>
+                {categoryItem("목공공구")}
+                {categoryItem("용접공구")}
+                {categoryItem("원예공구")}
+                {categoryItem("수작업공구")}
+                {categoryItem("전동공구")}
+                {categoryItem("측정공구")}
+                {categoryItem("안전용품")}
+                {categoryItem("전기용품")}
+                {categoryItem("페인트용품")}
+                {categoryItem("공구세트")}
             </Menu>
         </>)
 }
