@@ -19,6 +19,7 @@
     "@mui/x-charts": "^7.21.0",
     "@mui/x-data-grid": "^7.23.0",
     "@mui/x-date-pickers": "^7.21.0",
+    "@stomp/stompjs": "^7.0.0",
     "@toolpad/core": "^0.8.1",
     "axios": "^1.7.7",
     "chart.js": "^4.4.7",
@@ -31,7 +32,8 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-router-dom": "^6.27.0",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@types/node": "^20",

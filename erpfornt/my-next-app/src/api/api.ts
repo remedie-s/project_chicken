@@ -775,6 +775,29 @@ export const noticeDelete = async (noticeId:number)=>{
         throw error.response.data; // 실패시
     }
 }
+export const chatPublic = async ()=>{
+    try{const response = await api.get(`${API_URL}/chats/public`, {
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+export const chatPrivate = async (sender:string,receiver:string)=>{
+    try{const response = await api.get(`${API_URL}/chats/private/${sender}/${receiver}`, {
+        headers :{
+            'Content-Type' :'application/json',
+        },
+    });
+        return response.data;}// 성공시
+    catch(error:any){
+        throw error.response.data; // 실패시
+    }
+}
+
 
 
 

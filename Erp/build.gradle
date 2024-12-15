@@ -49,6 +49,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	//FCM
 	implementation 'com.google.firebase:firebase-admin:9.4.1'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {

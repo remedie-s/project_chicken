@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/product/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll() // WebSocket 경로에 대한 접근 허용
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용
