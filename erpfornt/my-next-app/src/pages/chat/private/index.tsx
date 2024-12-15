@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import WebSocketClient from "../../../component/websocketClient";
 import { chatPrivate, getEmployeeList } from "../../../api/api";
+import {
+    Box,
+    Typography,
+    Select,
+    MenuItem,
+    Paper,
+    TextField,
+    Button,
+    Avatar,
+} from "@mui/material";
 
 type ChatMessage = {
     sender: string;
@@ -15,31 +25,24 @@ type Employee = {
 };
 
 const PrivateChatPage = () => {
-    const [messages, setMessages] = useState<ChatMessage[]>([]); // 채팅 메시지 상태
-    const [newMessage, setNewMessage] = useState<string>(""); // 새로운 메시지 상태
-    const [receiver, setReceiver] = useState<string>(""); // 채팅 상대
-    const [employees, setEmployees] = useState<Employee[]>([]); // 직원 리스트
-    const [websocketClient, setWebsocketClient] = useState<WebSocketClient | null>(null); // WebSocket 클라이언트
-    const [username, setUsername] = useState<string>(""); // 로그인한 사용자 이름
-    const [shouldReloadMessages, setShouldReloadMessages] = useState<boolean>(false); // 메시지 강제 로딩 상태
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [newMessage, setNewMessage] = useState<string>("");
+    const [receiver, setReceiver] = useState<string>("");
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [websocketClient, setWebsocketClient] = useState<WebSocketClient | null>(null);
+    const [username, setUsername] = useState<string>("");
+    const [shouldReloadMessages, setShouldReloadMessages] = useState<boolean>(false);
 
-    // 초기 데이터 불러오기 (JWT 디코딩 + 직원 리스트)
     useEffect(() => {
         const accessToken = sessionStorage.getItem("accessToken");
         if (!accessToken) {
-            console.error("액세스 토큰 없음 - 로그인 필요");
             alert("로그인이 필요합니다.");
             return;
         }
 
         try {
             const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-            const extractedUsername = decodedToken.sub; // JWT의 subject에서 username 추출
-            if (!extractedUsername) {
-                console.error("JWT에 username 정보 없음");
-                return;
-            }
-            console.log(`JWT 디코딩 성공: username=${extractedUsername}`);
+            const extractedUsername = decodedToken.sub;
             setUsername(extractedUsername);
         } catch (error) {
             console.error("JWT 디코딩 오류:", error);
@@ -48,7 +51,6 @@ const PrivateChatPage = () => {
         const loadEmployeeList = async () => {
             try {
                 const employeeList = await getEmployeeList();
-                console.log("직원 리스트 로드 성공:", employeeList);
                 setEmployees(employeeList);
             } catch (error) {
                 console.error("직원 리스트 로드 실패:", error);
@@ -58,54 +60,35 @@ const PrivateChatPage = () => {
         loadEmployeeList();
     }, []);
 
-    // WebSocket 초기화
     useEffect(() => {
-        if (!username || !receiver) {
-            console.log("WebSocketClient 초기화 안 됨 - username 또는 receiver 없음");
-            return;
-        }
-        console.log(`WebSocketClient 초기화: username=${username}, receiver=${receiver}`);
+        if (!username || !receiver) return;
 
         const accessToken = sessionStorage.getItem("accessToken");
         if (accessToken) {
             const client = new WebSocketClient(
                 accessToken,
                 (message: ChatMessage) => {
-                    console.log("수신된 메시지:", message);
                     setMessages((prevMessages) => [...prevMessages, message]);
                 },
                 receiver
             );
             setWebsocketClient(client);
-
-            // 웹소켓 초기화 후, 메시지 다시 불러오기
             setShouldReloadMessages(true);
 
             return () => {
-                console.log("WebSocket 연결 해제");
                 client.disconnect();
             };
-        } else {
-            console.error("액세스 토큰 없음 - WebSocketClient 생성 실패");
         }
-
     }, [username, receiver]);
 
-    // 리시버 변경 시 초기 메시지 로드
     useEffect(() => {
-        if (!username || !receiver || !shouldReloadMessages) {
-            console.log(`chatPrivate 호출: username=${username}, receiver=${receiver}`);
-            return; // username, receiver, shouldReloadMessages가 제대로 설정되지 않으면 초기화 안 함
-        }
+        if (!username || !receiver || !shouldReloadMessages) return;
 
         const loadInitialMessages = async () => {
-            console.log(`chatPrivate 호출: username=${username}, receiver=${receiver}`);
-
             try {
                 const initialMessages = await chatPrivate(username, receiver);
-                console.log("초기 메시지 로드 성공:", initialMessages);
-                setMessages(initialMessages);  // 초기 메시지 설정
-                setShouldReloadMessages(false); // 메시지 로딩 완료 후 상태 초기화
+                setMessages(initialMessages);
+                setShouldReloadMessages(false);
             } catch (error) {
                 console.error("초기 메시지 로드 실패:", error);
             }
@@ -113,23 +96,9 @@ const PrivateChatPage = () => {
 
         loadInitialMessages();
     }, [username, receiver, shouldReloadMessages]);
-    const handleManualRequest = async () => {
-        if (!username || !receiver) return;
 
-        try {
-            const messages = await chatPrivate(username, receiver);
-            console.log("수동으로 메시지 불러오기:", messages);
-        } catch (error) {
-            console.error("수동 요청 실패:", error);
-        }
-    };
-
-    // 메시지 전송
     const handleSendMessage = () => {
-        if (newMessage.trim() === "" || !websocketClient) {
-            console.error("메시지 전송 실패 - 메시지가 비어있거나 WebSocketClient 없음");
-            return;
-        }
+        if (newMessage.trim() === "" || !websocketClient) return;
 
         const message: ChatMessage = {
             sender: username,
@@ -137,58 +106,115 @@ const PrivateChatPage = () => {
             receiver: receiver,
         };
 
-        console.log("메시지 전송:", message);
-
-        // WebSocket으로 메시지 전송
         websocketClient.sendMessage("/app/chat.privateSendMessage", message);
-
-        // 로컬 상태 업데이트
         setMessages((prevMessages) => [...prevMessages, message]);
-        setNewMessage(""); // 입력란 초기화
-    };
-
-    // 리시버 변경
-    const handleReceiverChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setReceiver(e.target.value);
-        setShouldReloadMessages(true); // 리시버 변경 시 이전 메시지를 강제로 불러오도록 설정
-        console.log(`리시버 변경: ${e.target.value}`);
+        setNewMessage("");
     };
 
     return (
-        <div>
-            <h1>개인 채팅</h1>
-            <div>
-                <select onChange={handleReceiverChange} value={receiver}>
-                    <option value="" disabled>
+        <Box
+            sx={{
+                maxWidth: "800px",
+                margin: "auto",
+                mt: 4,
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                backgroundColor: "#f9f9f9",
+                borderRadius: "8px",
+                padding: 3,
+                boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+            }}
+        >
+            <Typography variant="h5" align="center" gutterBottom>
+                개인 채팅
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Select
+                    value={receiver}
+                    onChange={(e) => setReceiver(e.target.value)}
+                    displayEmpty
+                    sx={{ width: "100%" }}
+                >
+                    <MenuItem value="" disabled>
                         직원 이메일 선택
-                    </option>
+                    </MenuItem>
                     {employees.map((employee) => (
-                        <option key={employee.id} value={employee.email}>
+                        <MenuItem key={employee.id} value={employee.email}>
                             {employee.name} ({employee.email})
-                        </option>
+                        </MenuItem>
                     ))}
-                </select>
-                <button onClick={handleManualRequest}> 요청 </button>
-            </div>
+                </Select>
+            </Box>
+            <Paper
+                sx={{
+                    height: "500px",
+                    overflowY: "auto",
+                    padding: 2,
+                    backgroundColor: "#ffffff",
+                    borderRadius: "8px",
+                    border: "1px solid #e0e0e0",
+                }}
+            >
+                {messages.map((msg, index) => (
+                    <Box
+                        key={index}
+                        sx={{
+                            display: "flex",
+                            justifyContent: msg.sender === username ? "flex-end" : "flex-start",
+                            marginBottom: "10px",
+                        }}
+                    >
+                        {msg.sender !== username && (
+                            <Avatar sx={{ bgcolor: "#4caf50", width: 32, height: 32, mr: 2 }}>
+                                {msg.sender.charAt(0).toUpperCase()}
+                            </Avatar>
+                        )}
+                        <Box
+                            sx={{
+                                maxWidth: "60%",
+                                padding: "10px 15px",
+                                backgroundColor:
+                                    msg.sender === username ? "#e1f5fe" : "#f1f1f1",
+                                borderRadius: "10px",
+                                textAlign: "left",
+                                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                            }}
+                        >
+                            <Typography
+                                variant="subtitle2"
+                                sx={{
+                                    fontWeight: "bold",
+                                    color: msg.sender === username ? "#0288d1" : "#4caf50",
+                                }}
+                            >
+                                {msg.sender === username ? "나" : msg.sender}
+                            </Typography>
+                            <Typography variant="body2">{msg.content}</Typography>
+                        </Box>
+                    </Box>
+                ))}
+            </Paper>
             {receiver && (
-                <div>
-                    <div style={{ border: "1px solid #ccc", height: "300px", overflowY: "scroll" }}>
-                        {messages.map((msg, index) => (
-                            <p key={index}>
-                                <strong>{msg.sender}:</strong> {msg.content}
-                            </p>
-                        ))}
-                    </div>
-                    <input
-                        type="text"
+                <Box sx={{ display: "flex", gap: 1 }}>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="메시지를 입력하세요..."
                     />
-                    <button onClick={handleSendMessage}>전송</button>
-                </div>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSendMessage}
+                        sx={{ minWidth: "100px" }}
+                    >
+                        전송
+                    </Button>
+                </Box>
             )}
-        </div>
+        </Box>
     );
 };
 
