@@ -1,6 +1,7 @@
 package org.example.backend.config;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,20 +40,36 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter  {
         }
 
         jwt = authHeader.substring(7);
-        username = jwtUtil.extractUsername(jwt);
+        try {
+            username = jwtUtil.extractUsername(jwt);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Users user = (Users) userDetailsService.loadUserByUsername(username);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                System.out.println("Authentication attempt for user: " + username);  // 사용자 인증 시도 로그
 
-            if (jwtUtil.validateToken(jwt)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user, // `Users` 객체를 Principal로 설정
-                        null,
-                        user.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtUtil.validateToken(jwt)) {
+                    Users users = (Users) userDetailsService.loadUserByUsername(username);
+
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            users, // `Users` 객체를 Principal로 설정
+                            null,
+                            users.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        }
+        catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 반환
+            response.getWriter().write("JWT Token has expired");
+            return;
+        }
+        catch (Exception e) {
+            // 기타 예외 처리
+            e.printStackTrace();  // 콘솔에 예외 정보 출력
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 반환
+            response.getWriter().write("Invalid JWT Token");
+            return;
         }
 
         chain.doFilter(request, response);

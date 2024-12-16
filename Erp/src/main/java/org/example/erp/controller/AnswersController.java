@@ -2,9 +2,15 @@ package org.example.erp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.erp.dto.AnswersDto;
+import org.example.erp.dto.QuestionsDto;
+import org.example.erp.entity.Answers;
+import org.example.erp.entity.Questions;
 import org.example.erp.service.AnswersService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -13,24 +19,76 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnswersController {
     private final AnswersService answersService;
 
-    //질문 전체 리스트 불러오기 기능
 
-    //질문 답변 리스트 불러오기 기능
+    // 질문 전체 리스트 불러오기 기능
+    @GetMapping("/questions")
+    public ResponseEntity<List<QuestionsDto>> getAllQuestions() {
+        List<QuestionsDto> questions = answersService.findAllQuestions();
+        return ResponseEntity.ok(questions);
+    }
 
-    //질문 상세페이지
+    // 질문 답변 리스트 불러오기 기능
+    @GetMapping("/question/{questionId}")
+    public ResponseEntity<List<AnswersDto>> getAnswersByQuestionId(@PathVariable Long questionId) {
+        List<AnswersDto> answers = answersService.findByQuestionId(questionId);
+        return ResponseEntity.ok(answers);
+    }
 
-    //답변 리스트 불러오기기능(상세페이지에서)
+    // 질문 상세페이지
+    @GetMapping("/question/{id}/details")
+    public ResponseEntity<?> getQuestionById(@PathVariable Long id) {
+        QuestionsDto byIdQuestions = this.answersService.findByIdQuestions(id);
 
-    //TODO 질문 생성로직(관리자 필요한가?) - 질문 생성되면 카프카로 경고 넣을지 정해야함
+        return ResponseEntity.ok(byIdQuestions);
+    }
 
-    //TODO 질문 변경로직? 질문 상태를 엔티티에 추가하고 완료버튼 누르면 작동하는 로직? 구매자 측에서 생성해서 카프카로 메시지
+    // 질문 생성 로직
+    @PostMapping("/question")
+    public ResponseEntity<String> createQuestion(@RequestBody QuestionsDto questionsDto) {
+        boolean b = answersService.saveQuestions(questionsDto);
+        if (!b) {
+            return  ResponseEntity.badRequest().build();
+        }
+        // TODO: 카프카 메시지 보내기
+        return ResponseEntity.status(200).body("질문 생성에 성공하였습니다.");
+    }
 
-    //질문 삭제로직
+    // 질문 변경 로직
+    @PutMapping("/question/{id}")
+    public ResponseEntity<String> updateQuestion(@PathVariable Long id, @RequestBody QuestionsDto questionsDto) {
+        answersService.updateQuestions(questionsDto);
 
-    //TODO 답변 생성로직 답변 생성시 구매자에게 카프카로 메시지
+        return ResponseEntity.ok("질문 변경이 완료되었습니다.");
+    }
 
-    //답변 변경로직
+    // 질문 삭제 로직
+    @DeleteMapping("/question/{id}")
+    public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
+        answersService.deleteQuestions(id);
+        return ResponseEntity.noContent().build();
+    }
 
-    //답변 삭제로직
+    // 답변 생성 로직
+    @PostMapping("/answer")
+    public ResponseEntity<Answers> createAnswer(@RequestBody Answers answers) {
+        Answers createdAnswer = answersService.saveAnswers(answers);
+        // TODO: 카프카 메시지 보내기
+        return ResponseEntity.status(201).body(createdAnswer);
+    }
+
+    // 답변 변경 로직
+    @PutMapping("/answer/{id}")
+    public ResponseEntity<Answers> updateAnswer(@PathVariable Long id, @RequestBody Answers answers) {
+        answers.setId(id);  // 수정할 답변 ID 설정
+        Answers updatedAnswer = answersService.updateAnswers(answers);
+        return ResponseEntity.ok(updatedAnswer);
+    }
+
+    // 답변 삭제 로직
+    @DeleteMapping("/answer/{id}")
+    public ResponseEntity<Void> deleteAnswer(@PathVariable Long id) {
+        answersService.deleteAnswers(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

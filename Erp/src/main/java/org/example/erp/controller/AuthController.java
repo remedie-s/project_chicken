@@ -1,9 +1,11 @@
 package org.example.erp.controller;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.EmployeeDto;
 
+import org.example.erp.dto.RefreshRequest;
 import org.example.erp.dto.TokenRequestDto;
 import org.example.erp.dto.TokenResponseDto;
 import org.example.erp.entity.Attendance;
@@ -72,29 +74,40 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken, roles, login.getEmail(), login.getName()));
     }
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponseDto> refresh(@RequestBody String refreshToken) {
-        // 리프레시 토큰 검증
-        if (!jwtUtil.validateRefreshToken(refreshToken)) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.", null, null, null, null, null));
+    public ResponseEntity<TokenResponseDto> refresh(@RequestBody RefreshRequest request) {
+        String refreshToken = request.getRefreshToken();
+
+        try {
+            jwtUtil.validateToken(refreshToken);
+
+            String username = jwtUtil.extractUsername(refreshToken);
+            var employee = employeeService.findByEmail(username);
+
+            if (employee == null) {
+                return ResponseEntity.badRequest()
+                        .body(new TokenResponseDto("User not found.", null, null, null, null, null));
+            }
+
+            String newAccessToken = jwtUtil.generateToken(username);
+            List<String> roles = employee.getRoles().stream()
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully",
+                    newAccessToken,
+                    refreshToken,
+                    roles,
+                    username,
+                    employee.getName()));
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(401)
+                    .body(new TokenResponseDto("Refresh token expired.", null, null, null, null, null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new TokenResponseDto("Invalid refresh token.", null, null, null, null, null));
         }
-
-        // 토큰에서 사용자 정보 추출
-        String username = jwtUtil.extractUsername(refreshToken);
-        if (username == null || employeeService.findByEmail(username) == null) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.", null, null, null, null, null));
-        }
-
-        // 새로운 액세스 토큰 발급
-        String newAccessToken = jwtUtil.generateToken(username);
-
-        // Employee의 roles을 List<String>으로 변환하여 반환
-        Employee employee = this.employeeService.findByEmail(username);
-        List<String> roles = employee.getRoles().stream()
-                .map(role -> role.name())  // Role enum을 String으로 변환
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, roles, username, employee.getName()));
     }
+
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestBody TokenRequestDto tokenRequestDto) {
         String refreshToken = tokenRequestDto.getRefreshToken();

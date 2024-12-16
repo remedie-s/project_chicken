@@ -24,14 +24,6 @@ api.interceptors.request.use((config) => {
 }, (error) => {
     return Promise.reject(error);
 });
-// 요청 인터셉터 추가
-api.interceptors.request.use((config) => {
-    const token = sessionStorage.getItem('accessToken');
-    if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-}, (error) => Promise.reject(error));
 
 api.interceptors.response.use(
     response => response,
@@ -48,7 +40,9 @@ api.interceptors.response.use(
             }
 
             try {
-                const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+                const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken }, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
                 const { accessToken } = response.data;
 
                 sessionStorage.setItem('accessToken', accessToken);
@@ -325,7 +319,7 @@ export const getEmployeeDetailAdmin = async (id: number) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
-export const modifyEmployee = async (id: number, employeeData: EmployeeDto) => {//TODO
+export const modifyEmployee = async (id: number, employeeData: EmployeeDto) => {
     try {
         const response = await api.put(`${API_URL}/employee/modify/${id}`, employeeData, {
             headers: {
@@ -337,7 +331,7 @@ export const modifyEmployee = async (id: number, employeeData: EmployeeDto) => {
         throw error.response.data; // 실패 시 에러 반환
     }
 };
-export const deleteEmployee = async (id: number) => {//TODO
+export const deleteEmployee = async (id: number) => {
     try {
         const response = await api.delete(`${API_URL}/employee/delete/${id}`, {
             headers: {
@@ -797,6 +791,112 @@ export const chatPrivate = async (sender:string,receiver:string)=>{
         throw error.response.data; // 실패시
     }
 }
+// 질문 전체 리스트 불러오기
+export const getAllQuestions = async () => {
+    try {
+        const response = await api.get('/answers/questions');
+        return response.data; // 질문 리스트 반환
+    }     catch(error:any){
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 특정 질문의 답변 리스트 불러오기
+export const getAnswersByQuestionId = async (questionId:number) => {
+    try {
+        const response = await api.get(`/answers/question/${questionId}`);
+        return response.data; // 답변 리스트 반환
+    }     catch(error:any){
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 질문 상세 페이지 불러오기
+export const getQuestionById = async (id:number) => {
+    try {
+        const response = await api.get(`/answers/question/${id}/details`);
+        return response.data; // 질문 상세 정보 반환
+    } catch (error:any) {
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 질문 생성
+export const createQuestion = async (questionData:any) => {
+    try {
+        const response = await api.post('/answers/question', questionData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 생성된 질문 반환
+    }     catch(error:any){
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 질문 수정
+export const updateQuestion = async (id:number, questionData:any) => {
+    try {
+        const response = await api.put(`/answers/question/${id}`, questionData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 수정된 질문 반환
+    }     catch(error:any){
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 질문 삭제
+export const deleteQuestion = async (id:number) => {
+    try {
+        const response = await api.delete(`/answers/question/${id}`);
+        return response.data; // 삭제된 질문 반환
+    }     catch(error:any){
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 답변 생성
+export const createAnswer = async (answerData:any) => {
+    try {
+        const response = await api.post('/answers/answer', answerData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 생성된 답변 반환
+    }     catch(error:any){
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 답변 수정
+export const updateAnswer = async (id:number, answerData:any) => {
+    try {
+        const response = await api.put(`/answers/answer/${id}`, answerData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data; // 수정된 답변 반환
+    } catch (error:any) {
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
+// 답변 삭제
+export const deleteAnswer = async (id:number) => {
+    try {
+        const response = await api.delete(`/answers/answer/${id}`);
+        return response.data; // 삭제된 답변 반환
+    } catch (error:any) {
+        throw error.response.data; // 오류 발생 시 에러 반환
+    }
+};
+
 
 
 
