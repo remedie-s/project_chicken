@@ -6,6 +6,7 @@ import org.example.erp.dto.PartnerDto;
 import org.example.erp.entity.Partner;
 import org.example.erp.service.PartnerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class PartnerController {
     }
 
     // 파트너 등록
+    @PreAuthorize("hasAnyRole('ADMIN','PURCHASING','MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<Partner> createPartner(@RequestBody PartnerDto partnerDto) {
         Partner entity = PartnerDto.toEntity(partnerDto);
@@ -39,6 +41,7 @@ public class PartnerController {
     }
 
     // 파트너 수정
+    @PreAuthorize("hasAnyRole('ADMIN','PURCHASING','MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<Partner> updatePartner(@PathVariable Long id, @RequestBody PartnerDto partnerDto) {
         Partner entity = PartnerDto.toEntity(partnerDto);
@@ -51,6 +54,7 @@ public class PartnerController {
     }
 
     // 파트너 삭제
+    @PreAuthorize("hasAnyRole('ADMIN','PURCHASING','MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePartner(@PathVariable Long id) {
         partnerService.deletePartner(id);

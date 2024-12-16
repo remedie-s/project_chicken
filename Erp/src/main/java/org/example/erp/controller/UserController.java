@@ -7,6 +7,7 @@ import org.example.erp.dto.UsersDto;
 import org.example.erp.entity.Users;
 import org.example.erp.service.UsersService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,12 +15,14 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE')")
 @RequestMapping("/api/user")
 public class UserController {
     
     private final UsersService usersService;
     
     // 유저 리스트 보기 매핑
+
     @GetMapping("/list")
     public ResponseEntity<?> list() {
         return ResponseEntity.ok(usersService.findAll());

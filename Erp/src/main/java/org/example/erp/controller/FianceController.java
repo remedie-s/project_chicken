@@ -9,6 +9,7 @@ import org.example.erp.entity.Employee;
 import org.example.erp.entity.Fiance;
 import org.example.erp.service.FianceService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class FianceController {
 
 
     // 모든 주문 로드해서 총 판매액, 할인액, 결과액, 원가 추출 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','FINANCE','PURCHASING','MANAGER')")
     @GetMapping("/all")
     public ResponseEntity<?> getAll(@AuthenticationPrincipal Employee employee) {
         //TODO 노동자 계급 구분
@@ -39,6 +41,7 @@ public class FianceController {
     }
 
     // 기간 집어넣고 주문 로드해서 총 판매액, 할인액, 결과액, 원가 추출 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','FINANCE','PURCHASING','MANAGER')")
     @GetMapping("/date")
     public ResponseEntity<?> getDate(@AuthenticationPrincipal Employee employee,
                                      @RequestParam("startDate") String startDateStr,
@@ -68,6 +71,7 @@ public class FianceController {
     }
 
     // 카테고리 집어넣고 주문 로드해서 총 판매액, 할인액, 결과액, 원가 추출 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','FINANCE','PURCHASING','MANAGER')")
     @GetMapping("/cate")
     public ResponseEntity<?> getCate(@AuthenticationPrincipal Employee employee,
 
@@ -87,6 +91,7 @@ public class FianceController {
 
 
     // 디비에 들어있는 현재 회사 내부 재산 추출하는 메소드(더미데이터 입력해놓은것)
+    @PreAuthorize("hasAnyRole('ADMIN','FINANCE')")
     @GetMapping("/inner")
     public ResponseEntity<?> getInner(@AuthenticationPrincipal Employee employee) {
         if (employee == null) {
@@ -97,6 +102,7 @@ public class FianceController {
     }
 
     // 내부재산 입력 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','FINANCE')")
     @PostMapping("/inner/create")
     public ResponseEntity<?> createInner(@AuthenticationPrincipal Employee employee,@RequestBody @Valid FianceDto fianceDto) {
         if (employee == null) {
@@ -108,6 +114,7 @@ public class FianceController {
     }
 
     // 내부재산 제거 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','FINANCE')")
     @DeleteMapping("/inner/{innerId}")
     public ResponseEntity<?> deleteInner(@AuthenticationPrincipal Employee employee,@PathVariable("innerId") Long innerId) {
         if (employee == null) {
@@ -119,6 +126,7 @@ public class FianceController {
     }
 
     // 내부재산 수정 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','FINANCE')")
     @PutMapping("/inner/{innerId}")
     public ResponseEntity<?> updateInner(@AuthenticationPrincipal Employee employee,@PathVariable("innerId") Long innerId,@RequestBody @Valid FianceDto fianceDto) {
         if (employee == null) {
