@@ -37,7 +37,7 @@ export default function Navbar() {
         const router = useRouter();
 
         const handleMouseOver = () => {
-            setBgColor("#909090");
+            setBgColor("#707070");
         };
 
         const handleMouseOut = () => {

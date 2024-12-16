@@ -27,7 +27,7 @@ export default function newProductPage () {
 
     return (
         <Box sx={{height: 500}}>
-            {products ?
+            {products &&products.length!==0 ?
                 <ProductList products={products}/>
                 :
                 <CenterBox>
