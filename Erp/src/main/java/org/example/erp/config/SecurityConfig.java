@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
+@EnableMethodSecurity // 메소드 수준 보안 활성화
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
@@ -33,6 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/product/**").permitAll()
+                        .requestMatchers("/api/notice/**").permitAll()
                         .requestMatchers("/ws/**").permitAll() // WebSocket 경로에 대한 접근 허용
                         .anyRequest().authenticated()
                 )

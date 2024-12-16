@@ -9,6 +9,7 @@ import org.example.erp.entity.Employee;
 import org.example.erp.entity.ProductReviews;
 import org.example.erp.service.ProductsService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class ProductsController {
     private final ProductsService productsService;
 
     // 물품 등록
+    @PreAuthorize("hasAnyRole('ADMIN','PURCHASING','MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductsDto productsDto ) {
         log.info("createProduct: {}", productsDto.getName());
@@ -35,6 +37,7 @@ public class ProductsController {
         return ResponseEntity.ok(productsDto);
     }
     // 물품 수정
+    @PreAuthorize("hasAnyRole('ADMIN','PURCHASING','MANAGER')")
     @PutMapping("/{productId}")
     public ResponseEntity<?> updateProduct(@PathVariable("productId") Long productId,@Valid @RequestBody ProductsDto productsDto) {
         boolean updated = productsService.updateProduct(productsDto);
@@ -45,6 +48,7 @@ public class ProductsController {
     }
 
     // 물품 삭제
+    @PreAuthorize("hasAnyRole('ADMIN','PURCHASING','MANAGER')")
     @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable("productId") Long productId) {
         boolean deleted = productsService.deleteProduct(productId);
@@ -96,6 +100,7 @@ public class ProductsController {
         return ResponseEntity.ok(reviews);
     }
     // 물품 리뷰 리스트 삭제
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE','MANAGER')")
     @DeleteMapping("/review/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Long id) {
         if(this.productsService.reviewDelete(id)){

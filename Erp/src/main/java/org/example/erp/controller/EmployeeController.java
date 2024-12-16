@@ -12,6 +12,7 @@ import org.example.erp.service.AttendanceService;
 import org.example.erp.service.EmployeeService;
 import org.example.erp.service.LeaveService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,9 +40,9 @@ public class EmployeeController {
     // 직원 부서별 리스트 조회
 
     // 직원 리스트조회(임원, 인사과)
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE')")
     @GetMapping("/list/admin")
     public ResponseEntity<?> getEmployeeByAdmin(@AuthenticationPrincipal Employee employee ) {
-        //TODO 권한 체크 메소드 만들어야함
         if(employee==null){
             log.info("권한이 없어요");
             return ResponseEntity.badRequest().build();
@@ -57,6 +58,7 @@ public class EmployeeController {
     }
 
     // 직원 상세페이지(임원, 인사과)
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE')")
     @GetMapping("/admin/{id}")
     public ResponseEntity<?> getEmployeeDetailAdmin(@PathVariable("id") Long id) {
         EmployeeDto byId = this.employeeService.findById(id);
@@ -64,6 +66,7 @@ public class EmployeeController {
     }
 
     // 직원 변경
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE')")
     @PutMapping("/modify/{id}")
     public ResponseEntity<?> modifyEmployee(@PathVariable("id") Long id, @RequestBody EmployeeDto employeeDto) {
         if(this.employeeService.modify(id, employeeDto)){
@@ -71,6 +74,7 @@ public class EmployeeController {
         }
         return ResponseEntity.badRequest().build();
     }
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
         if(this.employeeService.delete(id)){
@@ -82,12 +86,14 @@ public class EmployeeController {
 
     //근태 관련
     // 직원 근태 기록 조회
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE') or #id == authentication.principal.id")
     @GetMapping("/attendance/{employeeId}")
     public ResponseEntity<?> getAttendanceByEmployee(@PathVariable Long employeeId) {
         log.info("근태 기록 조회 요청: Employee ID={}", employeeId);
         List<Attendance> attendances = attendanceService.getAttendanceByEmployee(employeeId);
         return ResponseEntity.ok(attendances);
     }
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE') or #id == authentication.principal.id")
     @PostMapping("/attendance")
     public ResponseEntity<?> getAttendance(@AuthenticationPrincipal Employee employee) {
         log.info("근태 기록 조회 요청: Employee ID={}", employee.getId());
@@ -148,6 +154,7 @@ public class EmployeeController {
         return ResponseEntity.ok("Leave requested successfully.");
     }
     // 특정 직원의 휴가 조회
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE') or #id == authentication.principal.id")
     @GetMapping("/leave")
     public ResponseEntity<?> getEmployeeLeaves(@AuthenticationPrincipal Employee employee) {
         Long employeeId = employee.getId();
@@ -157,6 +164,7 @@ public class EmployeeController {
     }
 
     // 휴가 취소
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE') or #id == authentication.principal.id")
     @DeleteMapping("/leave/cancel/{leaveId}")
     public ResponseEntity<?> cancelLeave(@PathVariable Long leaveId) {
         log.info("휴가 취소 요청: Leave ID={}", leaveId);
@@ -165,6 +173,7 @@ public class EmployeeController {
     }
 
     // 직원 부서별 리스트 조회
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE')")
     @GetMapping("/list/department/{department}")
     public ResponseEntity<?> getEmployeesByDepartment(@PathVariable String department) {
         log.info("부서별 직원 조회 요청: Department ={}", department);
@@ -173,6 +182,7 @@ public class EmployeeController {
     }
 
     // 직원 연차(Annual Leave) 조회
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE') or #id == authentication.principal.id")
     @GetMapping("/leave/annual/{employeeId}")
     public ResponseEntity<?> getAnnualLeave(@PathVariable Long employeeId) {
         log.info("직원의 남은 연차 조회 요청: Employee ID={}", employeeId);
@@ -182,6 +192,8 @@ public class EmployeeController {
         }
         return ResponseEntity.ok("Remaining annual leave: " + employeeDto.getAnnualLeave());
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','HUMAN_RESOURCE') or #id == authentication.principal.id")
     @PostMapping("/getAttLea/{year}/{month}")
     public ResponseEntity<?> getMonthlyAttendanceAndLeave(
             @PathVariable int year,

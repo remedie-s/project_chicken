@@ -9,6 +9,7 @@ import org.example.erp.entity.Orders;
 import org.example.erp.service.OrdersService;
 import org.example.erp.service.UsersService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class OrdersController {
     // 주문 관리 메소드
 
     // 주문 전체리스트 보기 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE','MANAGER')")
     @GetMapping("/all")
     public ResponseEntity<?> getOrders() {
         return ResponseEntity.ok(ordersService.findAll());
@@ -31,17 +33,21 @@ public class OrdersController {
 
 
     // 주문 리스트(고객아이디) 보기 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE','MANAGER')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserOrders(@PathVariable ("userId") Long userId) {
         return ResponseEntity.ok(ordersService.findByUserId(userId));
     }
 
     // 주문 리스트(물품) 보기 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE','MANAGER')")
     @GetMapping("/product/{productId}")
     public ResponseEntity<?> getProductOrders(@PathVariable ("productId") Long productId) {
         return ResponseEntity.ok(this.ordersService.findByProductId(productId));
     }
+
     // 주문 상태 변경 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE','MANAGER')")
     @PostMapping("/{orderId}")
     public ResponseEntity<?> detailOrders(@PathVariable ("orderId") Long orderId) {
         Orders byId = this.ordersService.findById(orderId);
@@ -53,6 +59,7 @@ public class OrdersController {
     }
 
     // 주문 상태 변경 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE','MANAGER')")
     @PutMapping("/{orderId}")
     public ResponseEntity<?> modifyOrders(@RequestBody @Valid OrdersDto ordersDto,@PathVariable ("orderId") Long orderId) throws FirebaseMessagingException {
         Orders byId = this.ordersService.findById(orderId);
@@ -70,6 +77,7 @@ public class OrdersController {
     }
 
     // 주문 삭제 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE','MANAGER')")
     @DeleteMapping("/{orderId}")
     public ResponseEntity<?> deleteOrders(@PathVariable ("orderId") Long orderId) {
         boolean isReturned = ordersService.delete(orderId);

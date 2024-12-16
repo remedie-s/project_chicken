@@ -7,6 +7,7 @@ import org.example.erp.dto.NoticeDto;
 import org.example.erp.entity.Employee;
 import org.example.erp.service.NoticeService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class NoticeController {
 
 
     // 공지사항 등록 메소드
+
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody NoticeDto noticeDto, @AuthenticationPrincipal Employee employee) {
         if(employee == null){
@@ -32,6 +34,7 @@ public class NoticeController {
     }
 
     // 공지사항 수정 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE')")
     @PutMapping("/modify")
     public ResponseEntity<?> update(@Valid @RequestBody NoticeDto noticeDto, @AuthenticationPrincipal Employee employee) {
         if(employee == null){
@@ -45,6 +48,7 @@ public class NoticeController {
     }
 
     // 공지사항 삭제 메소드
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_SERVICE')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable ("id") Long id) {
         if(this.noticeService.noticeDelete(id)){
@@ -57,6 +61,7 @@ public class NoticeController {
     public ResponseEntity<?> list() {
         return ResponseEntity.ok(this.noticeService.findAll());
     }
+
     @GetMapping("/list")
     public ResponseEntity<?> listAdmin() {
         return ResponseEntity.ok(this.noticeService.findByType());
