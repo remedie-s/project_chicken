@@ -203,6 +203,12 @@ const PrivateChatPage = () => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="메시지를 입력하세요..."
+                        onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSendMessage();
+                            }
+                        }}
                     />
                     <Button
                         variant="contained"
