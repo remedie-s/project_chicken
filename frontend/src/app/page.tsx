@@ -9,6 +9,7 @@ import ProductList from "@/components/product/ProductList";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Banner from "@/components/layout/Banner";
+import CenterBox from "@/components/layout/CenterBox";
 
 
 export default function index() {
@@ -35,9 +36,9 @@ export default function index() {
             {products ?
                 <ProductList products={products}/>
                 :
-                <Box>
+                <CenterBox>
                     현재 판매 물품이 없습니다.
-                </Box>
+                </CenterBox>
             }
         </Box>
     )

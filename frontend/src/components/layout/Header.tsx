@@ -54,7 +54,7 @@ export default function Header({userName}:userNameType){
 
     return (
         <Box sx={{ margin: 1}}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems:"center"}}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems:"center", zIndex: 1100}}>
                 <Box
                     component="img" src="/ToolBox_Logo.png"
                     sx={{ height: "70px", width: "auto", objectFit: "contain", margin: '0 10px', }}
