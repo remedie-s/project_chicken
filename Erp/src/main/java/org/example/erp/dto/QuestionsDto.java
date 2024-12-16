@@ -25,7 +25,7 @@ public class QuestionsDto {
     private String content;
     // 작성일
     private LocalDateTime createTime;
-    private Users users;
+    private Long userId;
 
 
 }

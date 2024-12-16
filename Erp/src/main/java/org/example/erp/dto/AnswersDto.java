@@ -25,13 +25,13 @@ public class AnswersDto {
     private String content;
     private LocalDateTime createTime;
     private Questions questions;
-    private Users users;
+    private Long userId;
 
-    public AnswersDto(String title, String content, LocalDateTime createTime, Questions questions, Users users) {
+    public AnswersDto(String title, String content, LocalDateTime createTime, Questions questions, Long userId) {
         this.title = title;
         this.content = content;
         this.createTime = createTime;
         this.questions = questions;
-        this.users = users;
+        this.userId = userId;
     }
 }

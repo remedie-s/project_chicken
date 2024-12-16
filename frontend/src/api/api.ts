@@ -2,7 +2,7 @@ import axios from "axios";
 import { NotificationRequest, TokenData } from "@/types/fcmType";
 
 const API_URL = 'http://localhost:8080/api'; // Spring Boot ERP 페이지
-// const API_URL =  'http://192.168.0.8:8080/api'; // Spring Boot ERP 페이지 - 차후 서버페이지로 변경
+// const API_URL =  'http://192.168.0.11:8080/api'; // Spring Boot ERP 페이지 - 차후 서버페이지로 변경
 
 // 쿠키에서 값을 추출하는 함수
 const getCookie = (name: string): string | null => {
@@ -33,26 +33,27 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // 401 또는 403 오류 발생 시 리프레시 토큰으로 새로운 accessToken을 발급
         if ((error.response.status === 401) && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            const refreshToken = getCookie('refreshToken'); // 쿠키에서 refreshToken 가져오기
+            const refreshToken = sessionStorage.getItem('refreshToken');
             if (!refreshToken) {
-                window.location.href = "/user/login";
+                window.location.href = "/employee/login";
                 return Promise.reject(error);
             }
 
             try {
-                const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+                const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken }, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
                 const { accessToken } = response.data;
 
-                document.cookie = `accessToken=${accessToken}; path=/`; // 새로운 accessToken 쿠키에 저장
+                sessionStorage.setItem('accessToken', accessToken);
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
                 return api(originalRequest);
             } catch (refreshError) {
-                window.location.href = "/user/login";
+                window.location.href = "/employee/login";
                 return Promise.reject(refreshError);
             }
         }
