@@ -3,20 +3,21 @@ spring:
     name: Erp
   kafka:
     consumer:
-#      bootstrap-servers: 192.168.0.11:9092,192.168.0.11:9093,192.168.0.11:9094
-      bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+      bootstrap-servers: 192.168.0.11:9092,192.168.0.11:9093,192.168.0.11:9094
+#      bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
       group-id: erp-firebase-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
     producer:
-      bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+      bootstrap-servers: 192.168.0.11:9092,192.168.0.11:9093,192.168.0.11:9094
+      #bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       acks: 1
   datasource:
-#    url: jdbc:mysql://192.168.0.11:3306/project_db  # MySQL 서버 주소
-    url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소
+    url: jdbc:mysql://192.168.0.11:3306/project_db  # MySQL 서버 주소
+#    url: jdbc:mysql://localhost:3306/project_db  # MySQL 서버 주소
     username: root
     password: 1q2w3e4r
     driver-class-name: com.mysql.cj.jdbc.Driver
