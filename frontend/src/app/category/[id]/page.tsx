@@ -6,6 +6,7 @@ import axios from "axios";
 import {ProductsDto} from "@/types/productType";
 import {Box, Typography} from "@mui/material";
 import ProductList from "@/components/product/ProductList";
+import CenterBox from "@/components/layout/CenterBox";
 
 export default function () {
     const { id } = useParams();
@@ -32,9 +33,9 @@ export default function () {
             {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
-                <Typography>
+                <CenterBox>
                     현재 판매 중인 {decodedId} 상품이 아직 없습니다
-                </Typography>}
+                </CenterBox>}
         </Box>
     )
 }

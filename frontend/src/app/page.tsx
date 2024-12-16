@@ -31,7 +31,7 @@ export default function index() {
     }, [])
 
     return (
-        <Box sx={{height: 500}}>
+        <Box sx={{ flex: 1 }}>
             <Banner/>
             {products ?
                 <ProductList products={products}/>
