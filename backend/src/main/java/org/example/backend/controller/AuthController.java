@@ -1,7 +1,9 @@
 package org.example.backend.controller;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.backend.dto.RefreshRequest;
 import org.example.backend.dto.TokenResponseDto;
 import org.example.backend.dto.UsersDto;
 import org.example.backend.entity.Users;
@@ -13,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -61,25 +66,36 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName(), login.getUserGrade()));
     }
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponseDto> refresh(@RequestHeader("Authorization") String refreshToken) {
-        // 리프레시 토큰 검증
-        if (!refreshToken.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.", null, null, null, null, null));
-        }
-        refreshToken = refreshToken.substring(7);
-        if (!jwtUtil.validateRefreshToken(refreshToken)) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null, null));
-        }
+    public ResponseEntity<TokenResponseDto> refresh(@RequestBody RefreshRequest request) {
+        String refreshToken = request.getRefreshToken();
 
-        // 토큰에서 사용자 정보 추출
-        String username = jwtUtil.extractUsername(refreshToken);
-        if (username == null || usersService.findByEmail(username) == null) {
-            return ResponseEntity.badRequest().body(new TokenResponseDto("Invalid refresh token.",null, null, null, null, null));
-        }
+        try {
+            jwtUtil.validateToken(refreshToken);
 
-        // 새로운 액세스 토큰 발급
-        String newAccessToken = jwtUtil.generateToken(username);
-        return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully", newAccessToken, refreshToken, username,this.usersService.findByEmail(username).getName(), this.usersService.findByEmail(username).getUserGrade()));
+            String username = jwtUtil.extractUsername(refreshToken);
+            var user = usersService.findByEmail(username);
+
+            if (user == null) {
+                return ResponseEntity.badRequest()
+                        .body(new TokenResponseDto("User not found.", null, null, null, null, null));
+            }
+
+            String newAccessToken = jwtUtil.generateToken(username);
+            Integer userGrade = user.getUserGrade();
+
+            return ResponseEntity.ok(new TokenResponseDto("Token refreshed successfully",
+                    newAccessToken,
+                    refreshToken,
+                    user.getEmail(),
+                    username,
+                    userGrade));
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(401)
+                    .body(new TokenResponseDto("Refresh token expired.", null, null, null, null, null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new TokenResponseDto("Invalid refresh token.", null, null, null, null, null));
+        }
     }
 
     // 비밀번호 변경

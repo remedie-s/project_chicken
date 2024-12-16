@@ -2,7 +2,7 @@ import axios from "axios";
 import { NotificationRequest, TokenData } from "@/types/fcmType";
 
 const API_URL = 'http://localhost:8080/api'; // Spring Boot ERP 페이지
-// const API_URL =  'http://192.168.0.8:8080/api'; // Spring Boot ERP 페이지 - 차후 서버페이지로 변경
+// const API_URL =  'http://192.168.0.11:8080/api'; // Spring Boot ERP 페이지 - 차후 서버페이지로 변경
 
 // 쿠키에서 값을 추출하는 함수
 const getCookie = (name: string): string | null => {
@@ -44,7 +44,9 @@ api.interceptors.response.use(
             }
 
             try {
-                const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+                const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken }, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
                 const { accessToken } = response.data;
 
                 document.cookie = `accessToken=${accessToken}; path=/`; // 새로운 accessToken 쿠키에 저장
@@ -60,6 +62,7 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
 
 // FCM 관련 메시지
 // FCM 토큰 저장
