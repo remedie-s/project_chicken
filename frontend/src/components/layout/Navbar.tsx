@@ -33,15 +33,31 @@ export default function Navbar() {
         )
     }
     const barMenu = ({name, url}:{name:string, url:string}) => {
+        const [bgColor, setBgColor] = useState("transparent");
+        const router = useRouter();
+
+        const handleMouseOver = () => {
+            setBgColor("#707070");
+        };
+
+        const handleMouseOut = () => {
+            setBgColor("transparent");
+        };
         return (
             <Box sx={{
                 color: "#FFFFFF",
                 width: "10%",
+                height: "100%",
                 // Box 사이에 얇은 선 추가
                 borderRight: '1px solid #ccc',
-                textAlign: "center",
+                bgcolor: bgColor,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
             }}
                  onClick={() => router.push(`${url}`)}
+                 onMouseOver={handleMouseOver}
+                 onMouseOut={handleMouseOut}
             >
                 {name}
             </Box>
@@ -50,8 +66,9 @@ export default function Navbar() {
 
     return (
         <>
-            <AppBar position="static" sx={{ height: 60, width: "100%", backgroundColor: '#000000', display: "flex"}}>
-                <Toolbar sx={{height: 60, backgroundColor: '#000000', padding: 0, margin: 0, alignItems: 'center' }}>
+            <AppBar
+                position="relative" sx={{ height: 60, width: "100%", backgroundColor: '#000000', zIndex: 1000}}>
+                <Toolbar sx={{height: 60, backgroundColor: '#000000', padding: 0, margin: 0, alignItems: 'center', display: "flex" }}>
                     <Box
                         id="categoryMenu"
                         sx={{height: "100%", backgroundColor: "#FFDF00", color: "#000000", display: 'flex', alignItems: 'center',

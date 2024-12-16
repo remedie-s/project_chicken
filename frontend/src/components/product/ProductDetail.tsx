@@ -21,6 +21,7 @@ import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 import {OrderRequestType} from "@/types/orderType";
 import ReviewCreate from "@/components/review/ReviewCreate";
 import ReviewList from "@/components/review/ReviewList";
+import {getCookie} from "@/scripts/cookieScript";
 const cookie = require("cookie");
 
 export default function ProductDetail({productId}: { productId: string }) {
@@ -74,11 +75,6 @@ export default function ProductDetail({productId}: { productId: string }) {
         }
     };
 
-    // 쿠키 획득을 위한 함수
-    function getCookie(name: string) {
-        const cookies = cookie.parse(document.cookie);
-        return cookies[name];
-    }
     // 로그인, 주문 수량 체크
     const check = () => {
         // 로그인 상태 확인 (쿠키에서 accessToken 존재 여부 확인)

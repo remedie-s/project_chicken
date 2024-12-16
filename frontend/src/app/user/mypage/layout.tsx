@@ -22,7 +22,7 @@ export default function mypage({children}: LayoutChildren) {
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push("/login");
+            router.push("/user/login");
         }
     }, [loading, user, router]);
 

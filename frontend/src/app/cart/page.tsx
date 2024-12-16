@@ -15,7 +15,7 @@ export default function page(){
     useEffect(() => {
         if (!loading && !user) {
             console.log("레이아웃측에서 user 정보 못 받음");
-            router.push("/login");
+            router.push("/user/login");
         }
     }, [loading, user, router]);
 
