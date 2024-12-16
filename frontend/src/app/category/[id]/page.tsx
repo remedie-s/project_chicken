@@ -13,7 +13,7 @@ export default function () {
     const [productsList,setProductsList] = useState<ProductsDto[]>();
 
     useEffect(() => {
-        if (id) {
+        if (id && typeof id === "string") {
             setDecodedId(decodeURIComponent(id));
         }
     }, [id]);
