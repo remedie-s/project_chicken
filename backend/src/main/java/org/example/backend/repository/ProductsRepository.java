@@ -16,4 +16,5 @@ public interface ProductsRepository extends JpaRepository<Products, Long> {
     List<Products> findByCreatedAtAfterOrderByIdDesc(LocalDateTime oneWeekAgo);
     List<Products> findByBrand(String brand);
     List<Products> findByCategory(String category);
+    List<Products> findByNameContainingIgnoreCase(String keyword);
 }

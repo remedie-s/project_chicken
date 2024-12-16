@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +29,14 @@ public class NoticeService {
     // 공지사항 단건 조회
     public Notice findById(long id) {
         return noticeRepository.findById(id).orElse(null);
+    }
+
+    public Object findNewest() {
+        List<Notice> noticeList = this.noticeRepository.findByTypeIn((Arrays.asList(0, 2)));
+        if (noticeList.isEmpty()) {
+            return null;
+        }
+        return noticeList.get(0); // 가장 최신 항목을 반환
     }
 }
 

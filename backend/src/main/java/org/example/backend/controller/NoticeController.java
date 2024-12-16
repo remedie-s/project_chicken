@@ -24,7 +24,10 @@ public class NoticeController {
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> detail(@PathVariable("id") Long id) {
         return ResponseEntity.ok(this.noticeService.findById(id));
-
+    }
+    @GetMapping("/newest")
+    public ResponseEntity<?> newest() {
+        return ResponseEntity.ok(this.noticeService.findNewest());
     }
 
 
