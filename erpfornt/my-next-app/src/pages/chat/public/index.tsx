@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import WebSocketClient from "../../../component/websocketClient";
 import { chatPublic } from "../../../api/api"; // API 호출 함수 임포트
 import { Box, Typography, TextField, Button, Paper, Avatar } from "@mui/material";
@@ -13,6 +13,7 @@ const ChatPage = () => {
     const [newMessage, setNewMessage] = useState<string>("");
     const [email, setEmail] = useState<string>(""); // 이메일 상태 추가
     const [websocketClient, setWebsocketClient] = useState<WebSocketClient | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null); // 입력창 참조 추가
 
     useEffect(() => {
         // 세션스토리지에서 이메일 가져오기
@@ -49,6 +50,9 @@ const ChatPage = () => {
 
         loadInitialMessages();
 
+        // 입력창 자동 포커스
+        inputRef.current?.focus();
+
         return () => {
             client.disconnect(); // 컴포넌트 unmount 시 연결 해제
         };
@@ -64,6 +68,13 @@ const ChatPage = () => {
 
         websocketClient.sendMessage("/app/chat.sendMessage", message); // 서버로 메시지 전송
         setNewMessage("");
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault(); // 기본 Enter 동작 방지
+            handleSendMessage();
+        }
     };
 
     return (
@@ -139,6 +150,8 @@ const ChatPage = () => {
                     fullWidth
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyPress={handleKeyPress} // 엔터키 이벤트 핸들러 추가
+                    inputRef={inputRef} // 자동 포커스 설정
                     placeholder="메시지를 입력하세요..."
                 />
                 <Button
