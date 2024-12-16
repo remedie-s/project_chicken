@@ -10,6 +10,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import Banner from "@/components/layout/Banner";
 import CenterBox from "@/components/layout/CenterBox";
+import NewestNotice from "@/components/Notice/NewestNotice";
 
 
 export default function index() {
@@ -32,6 +33,7 @@ export default function index() {
 
     return (
         <Box sx={{ flex: 1 }}>
+            <NewestNotice/>
             <Banner/>
             {products ?
                 <ProductList products={products}/>

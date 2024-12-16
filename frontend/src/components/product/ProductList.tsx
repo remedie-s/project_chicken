@@ -83,7 +83,7 @@ export default function ProductList({ products }: productsType) {
             columns,
             data: sortedProducts,
             // 첫 페이지 번호, 페이지마다 몇 개 나올지
-            initialState: {pageIndex: 0, pageSize: 5} as TableStateWithPagination<ProductsDto>,
+            initialState: {pageIndex: 0, pageSize: 8} as TableStateWithPagination<ProductsDto>,
         },
         useSortBy,
         usePagination
@@ -124,16 +124,20 @@ export default function ProductList({ products }: productsType) {
                     return (
                         <Grid2
                             key={row.original.id}
-                            size={{xs: 4, sm: 4, md: 3}} // 아이템의 크기 설정 (xs, sm, md에 맞게 크기 조정)
+                            size={{ xs: 4, sm: 4, md: 3 }}
                         >
                             <Card onClick={() => {
                                 router.push(`/product/detail/${row.original.id}`)
-                            }}>
+                            }}
+                                  sx={{ width: '100%', minWidth: 250 }}
+                            >
                                 <CardMedia
                                     component="img"
                                     height="200"
                                     image={row.original.imageUrl}
                                     alt={row.original.name}
+                                    // 이미지 크기 조절
+                                    style={{ objectFit: 'cover', width: '100%', height: '200px' }}
                                 />
                                 <CardContent>
                                     <Typography variant="h6">{row.original.name}</Typography>

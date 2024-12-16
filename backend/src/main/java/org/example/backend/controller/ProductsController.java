@@ -11,6 +11,7 @@ import org.example.backend.dto.ProductsDto;
 import org.example.backend.entity.ProductReviews;
 import org.example.backend.entity.Products;
 import org.example.backend.entity.Users;
+import org.example.backend.search.ProductDocument;
 import org.example.backend.service.ProductsService;
 import org.example.backend.service.UsersService;
 import org.springframework.http.HttpStatus;
@@ -150,5 +151,15 @@ public class ProductsController {
         return ResponseEntity.ok(productsDtoList);
     };
 
+    // 물품 검색 (jpa쿼리)
+//    @GetMapping("/search/{keyword}")
+//    public ResponseEntity<List<ProductsDto>> getProductsByKeyword(@PathVariable String keyword) {
+//        return ResponseEntity.ok(this.productsService.searchProducts(keyword));
+//    }
 
+    // 물품 검색 (엘라스틱)
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<ProductDocument>> getProductsByKeyword(@PathVariable String keyword) {
+        return ResponseEntity.ok(this.productsService.searchProductsByKeyword(keyword));
+    }
 }
