@@ -33,12 +33,13 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // 401 또는 403 오류 발생 시 리프레시 토큰으로 새로운 accessToken을 발급
         if ((error.response.status === 401) && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            const refreshToken = sessionStorage.getItem('refreshToken');
+            const refreshToken = getCookie('refreshToken'); // 쿠키에서 refreshToken 가져오기
             if (!refreshToken) {
-                window.location.href = "/employee/login";
+                window.location.href = "/user/login";
                 return Promise.reject(error);
             }
 
@@ -48,12 +49,12 @@ api.interceptors.response.use(
                 });
                 const { accessToken } = response.data;
 
-                sessionStorage.setItem('accessToken', accessToken);
+                document.cookie = `accessToken=${accessToken}; path=/`; // 새로운 accessToken 쿠키에 저장
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
                 return api(originalRequest);
             } catch (refreshError) {
-                window.location.href = "/employee/login";
+                window.location.href = "/user/login";
                 return Promise.reject(refreshError);
             }
         }
@@ -61,6 +62,7 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
 
 // FCM 관련 메시지
 // FCM 토큰 저장
