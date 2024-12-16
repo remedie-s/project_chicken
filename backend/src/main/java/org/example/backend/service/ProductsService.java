@@ -129,6 +129,11 @@ public class ProductsService {
         if(productsList==null) { return null;}
         return productListToDtoList(productsList);
     }
+    // 검색 키워드 그대로 검색
+    public List<ProductsDto> searchProducts(String keyword) {
+        List<Products> productsList = productsRepository.findByNameContainingIgnoreCase(keyword);
+        return productListToDtoList(productsList);
+    }
 
     /**
      * 키워드 기반 검색

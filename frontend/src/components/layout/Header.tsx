@@ -36,13 +36,7 @@ export default function Header({userName}:userNameType){
     };
 
     const searchHandler = async () =>{
-        alert("아직 검색 미구현")
-        // try {
-        //     await axios.post("http://localhost:8080/api/product/search", { keyword });
-        //     router.push(`/search?query=${keyword}`);
-        // } catch (error) {
-        //     console.error("검색 오류:", error);
-        // }
+        router.push(`/product/search/${keyword}`)
     }
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {

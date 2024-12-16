@@ -36,7 +36,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/products/detail/**").permitAll()
                         .requestMatchers("/api/products/brand/**").permitAll()
                         .requestMatchers("/api/products/category/**").permitAll()
+                        .requestMatchers("/api/products/search/**").permitAll()
                         .requestMatchers("/api/product/reviews/list/**").permitAll()
+                        .requestMatchers("/api/notice/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 적용
