@@ -65,10 +65,15 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            throw e; // 예외를 다시 던져 필터에서 처리
         } catch (JwtException | IllegalArgumentException e) {
             System.err.println("Invalid access token: " + e.getMessage());
             return false;
+        } catch (Exception e) {
+            return false;
         }
+
     }
 
     // 리프레시 토큰 검증
@@ -81,9 +86,14 @@ public class JwtUtil {
             return true;
         } catch (ExpiredJwtException e) {
             System.err.println("Refresh token expired: " + e.getMessage());
+            throw e; // 만료된 토큰 예외 처리
+        } catch (MalformedJwtException e) {
+            System.err.println("Malformed refresh token: " + e.getMessage());
         } catch (SignatureException e) {
             System.err.println("Invalid refresh token signature: " + e.getMessage());
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
+            System.err.println("Illegal argument in refresh token: " + e.getMessage());
+        } catch (JwtException e) {
             System.err.println("Invalid refresh token: " + e.getMessage());
         }
         return false;
@@ -98,7 +108,12 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
+        } catch (ExpiredJwtException e) {
+            // 토큰 만료 시 처리
+            System.err.println("JWT expired: " + e.getMessage());
+            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), e.getMessage());
         } catch (JwtException | IllegalArgumentException e) {
+            // JWT 형식 오류 또는 다른 예외 처리
             System.err.println("Failed to extract username: " + e.getMessage());
             return null;
         }
