@@ -5,6 +5,7 @@ import ProductList from "@/components/product/ProductList";
 import {useEffect, useState} from "react";
 import {ProductsDto} from "@/types/productType";
 import axios from "axios";
+import CenterBox from "@/components/layout/CenterBox";
 
 
 export default function eventProductPage () {
@@ -30,9 +31,9 @@ export default function eventProductPage () {
             {products ?
                 <ProductList products={products}/>
                 :
-                <Box>
+                <CenterBox>
                     현재 대상 물품이 없습니다.
-                </Box>
+                </CenterBox>
             }
         </Box>
     )

@@ -6,6 +6,7 @@ import axios from "axios";
 import {ProductsDto} from "@/types/productType";
 import {Box, Typography} from "@mui/material";
 import ProductList from "@/components/product/ProductList";
+import CenterBox from "@/components/layout/CenterBox";
 
 export default function () {
     const { id } = useParams();
@@ -13,7 +14,7 @@ export default function () {
     const [productsList,setProductsList] = useState<ProductsDto[]>();
 
     useEffect(() => {
-        if (id) {
+        if (id && typeof id === "string") {
             setDecodedId(decodeURIComponent(id));
         }
     }, [id]);
@@ -28,13 +29,13 @@ export default function () {
     }, [decodedId]);
 
     return(
-        <Box sx={{display: "flex", justifyContent: "center"}}>
+        <CenterBox>
         {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
                 <Typography>
                     현재 판매 중인 {decodedId} 상품이 아직 없습니다
                 </Typography>}
-        </Box>
+        </CenterBox>
     )
 }

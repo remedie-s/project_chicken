@@ -9,10 +9,6 @@ export default function Footer() {
                 display: "flex",
                 width: "100%",
                 alignItems: "center",
-                flexWrap: "wrap",
-                padding: 0,
-                position: "relative", // 부모 컨테이너에서 위치 조정이 가능하게 합니다.
-                bottom: 0, // 하단에 위치
             }}>
                 <Box sx={{
                     width: "40%",
