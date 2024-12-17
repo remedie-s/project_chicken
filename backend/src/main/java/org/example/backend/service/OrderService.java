@@ -7,10 +7,8 @@ import org.example.backend.entity.Carts;
 import org.example.backend.entity.Orders;
 import org.example.backend.entity.Products;
 import org.example.backend.entity.Users;
-import org.example.backend.repository.CartsRepository;
-import org.example.backend.repository.OrdersRepository;
-import org.example.backend.repository.ProductsRepository;
-import org.example.backend.repository.UsersRepository;
+import org.example.backend.repository.*;
+import org.example.backend.search.ProductDocument;
 import org.example.backend.utility.KafkaMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +27,7 @@ public class OrderService {
     private final ProductsRepository productsRepository;
     private final CartsRepository cartsRepository;
     private final KafkaMessage kafkaMessage;
+    private final ProductsSearchRepository productsSearchRepository;
 
     // 주문 목록보기
     public List<OrdersDto> ordersList(Users user) {
@@ -114,24 +113,29 @@ public class OrderService {
             order.setProducts(products);
             order.setStatus("준비"); // 임시 처리
             this.ordersRepository.save(order);
+            // 사용자 정보 업데이트
             users.setTotalPurchaseCount(users.getTotalPurchaseCount() + 1);
             users.setTotalPurchasePrice(users.getTotalPurchasePrice() + payPrice);
             this.usersRepository.save(users);
+
+            // 상품 정보 업데이트
             products.setStock(products.getStock() - order.getQuantity());
             products.setSellCount(products.getSellCount() + order.getQuantity());
-            System.out.println("주문 저장중");
-            log.info(products.getStock()+"");
-            log.info("Checking stock for product ID {}: {}", products.getId(), products.getStock());
-            if (products.getStock() <= 10) {
-                log.info("Low stock alert for product ID {}. Remaining stock: {}", products.getId(), products.getStock());
-
-            }
-            this.kafkaMessage.sendKafkaProductMsg(products, "alert");
             this.productsRepository.save(products);
 
+            // Elasticsearch 업데이트 (변경된 stock과 sellCount 반영)
+            updateProductInElasticsearch(products);
 
+            // 재고 부족 알림
+            if (products.getStock() <= 10) {
+                log.info("Low stock alert for product ID {}. Remaining stock: {}", products.getId(), products.getStock());
+                this.kafkaMessage.sendKafkaProductMsg(products, "alert");
+            }
+
+            // 카프카 메시지 전송
             this.kafkaMessage.sendKafkaOrderMsg(order, "order");
 
+            // 장바구니에서 상품 제거
             log.info("Order created successfully for user ID {} with product ID {}", users.getId(), products.getId());
             Optional<Carts> oCarts = this.cartsRepository.findByUsersAndProducts(users, products);
             if (oCarts.isPresent()) {
@@ -141,6 +145,10 @@ public class OrderService {
 
         }
         return true;
+    }
+    public void updateProductInElasticsearch(Products products) {
+        ProductDocument productDocument = ProductDocument.fromEntity(products);
+        productsSearchRepository.save(productDocument); // Elasticsearch에 저장
     }
 
     // 주문 숨기기 처리
