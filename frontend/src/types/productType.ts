@@ -11,6 +11,7 @@ export type ProductsDto = {
     sellCount: number,
     category: string,
     mainItemNumber: number,
-    boughtUser: boolean
+    boughtUser: boolean,
+    brand: string
 };
 

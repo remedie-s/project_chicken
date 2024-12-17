@@ -49,6 +49,7 @@ public class ProductsService {
         productsDto.setImageUrl(products.getImageUrl());
         productsDto.setName(products.getName());
         productsDto.setSellCount(products.getSellCount());
+        productsDto.setBrand(products.getBrand());
         return productsDto;
     }
 

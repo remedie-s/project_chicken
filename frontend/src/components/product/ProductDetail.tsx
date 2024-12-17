@@ -13,15 +13,15 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import axios from "axios";
 import {useRouter} from "next/navigation";
 import Warranty from "@/components/product/Warranty";
-import useAuth from "@/scripts/auth/useAuth";
 import authApi from "@/scripts/auth/authApi";
 import type {ProductsDto} from "@/types/productType";
 import {ProductReviewsDto} from "@/types/productReviewType";
 import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 import {OrderRequestType} from "@/types/orderType";
-import ReviewCreate from "@/components/review/ReviewCreate";
 import ReviewList from "@/components/review/ReviewList";
 import {getCookie} from "@/scripts/cookieScript";
+import CenterBox from "@/components/layout/CenterBox";
+import ScrollBox from "@/components/product/ScrollBox";
 const cookie = require("cookie");
 
 export default function ProductDetail({productId}: { productId: string }) {
@@ -31,6 +31,8 @@ export default function ProductDetail({productId}: { productId: string }) {
     const [productReviews, setProductReviews] = useState<ProductReviewsDto[]|null>();
     const [quantity, setQuantity] = useState(0);
     const [reviewCreateAuth, setReviewCreateAuth] = useState(false);
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,6 +76,7 @@ export default function ProductDetail({productId}: { productId: string }) {
             }
         }
     };
+
 
     // 로그인, 주문 수량 체크
     const check = () => {
@@ -126,20 +129,31 @@ export default function ProductDetail({productId}: { productId: string }) {
         }
     }
 
+
+
+
     return (
         <Box>
-            <Box sx={{display: "flex", alignItems: "center"}}>
+            <Box sx={{ margin:5, display: "flex", justifyContent: "center"}}>
                 <Box
                     component="img" src={productDetail.imageUrl}
-                    sx={{width: "40%", minWidth: 250}}/>
-                <Box sx={{display: "flexDirection"}}>
+                    sx={{
+                        width: "40%", 
+                        minWidth: 250,
+                        maxWidth: 600,
+                        // 이미지 비율
+                        aspectRatio: "4/3"}}/>
+                <Box sx={{display: "flexDirection", marginLeft: 5, width: "25%"}}>
                     <Typography variant="h4">
                         {productDetail.name}
                     </Typography>
-                    <Typography variant="h6">
+                    <Typography >
+                        브랜드 : {productDetail.brand}
+                    </Typography>
+                    <Typography>
                         ₩{productDetail.price}
                     </Typography>
-                    <Typography variant="h6">
+                    <Typography variant="h6" sx={{marginBottom:3}}>
                     현재 가격 : ₩{gradeDiscountPrice(productDetail.price)}
                     </Typography>
                     {productDetail.stock>0?
@@ -153,10 +167,14 @@ export default function ProductDetail({productId}: { productId: string }) {
                                        e.preventDefault(); // 음수, 소수점, 지수표기법 입력 방지
                                    }
                                }}
+                               size="small"
+                               sx={{marginBottom:3}}
                     />
                     <Box sx={{display: "flex"}}>
-                        <Button onClick={orderOneHandler}>구매하기</Button>
-                        <Button onClick={cartAddHandler}>장바구니</Button>
+                        <Button onClick={orderOneHandler}
+                        sx={{backgroundColor: "#FFDF00", color: "#000000", marginRight:2}}>구매하기</Button>
+                        <Button onClick={cartAddHandler}
+                                sx={{backgroundColor: "#000000", color: "#FFFFFF"}}>장바구니</Button>
                     </Box>
                     </Box>
                      :
@@ -168,12 +186,13 @@ export default function ProductDetail({productId}: { productId: string }) {
             </Box>
             <Box>
                 <Box>
-                    <Toolbar sx={{backgroundColor: "#000000", color: "#FFFFFF"}}>
-                        <Button>상세 설명</Button>
-                        <Button>리뷰</Button>
-                        <Button>판매 정책</Button>
+                    <Toolbar sx={{backgroundColor: "#000000", color: "#FFFFFF", width: "100%", justifyContent: "center", height: 40}}>
+                        <ScrollBox name="상세 설명" id="description"/>
+                        <ScrollBox name="리뷰" id="review"/>
+                        <ScrollBox name="판매 정책" id="rule"/>
                     </Toolbar>
-                    <Box>
+                    <Box sx={{justifyItems: "center"}}>
+                        <Box sx={{width: "50%"}}>
                         <Typography id="description" variant="h5">
                             상세 설명
                         </Typography>
@@ -188,6 +207,7 @@ export default function ProductDetail({productId}: { productId: string }) {
                             판매 정책
                         </Typography>
                         <Warranty/>
+                        </Box>
                     </Box>
                 </Box>
             </Box>
