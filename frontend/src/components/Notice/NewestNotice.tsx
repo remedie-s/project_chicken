@@ -5,7 +5,7 @@ import {NoticeDto} from "@/types/noticeType";
 
 const NoticeModal = () => {
     const [open, setOpen] = useState(false);
-    const [noticeDetal, setNoticeDetail] = useState<NoticeDto>();
+    const [noticeDetail, setNoticeDetail] = useState<NoticeDto>();
 
     useEffect(() => {
         const hideNotice = localStorage.getItem('hideNotice');
@@ -32,6 +32,9 @@ const NoticeModal = () => {
         setOpen(false);
     };
 
+
+    if(!noticeDetail) {return null;}
+
     return (
         <Modal open={open} onClose={handleClose}>
             <Box sx={{
@@ -47,11 +50,30 @@ const NoticeModal = () => {
                 <Typography variant="h5">
                     최근 공지사항
                 </Typography>
-                <Typography sx={{ mt: 2 }} variant="h6">
-                    {noticeDetal?.title}
+                {noticeDetail.imageUrl?
+                    (<Box
+                        // 이미지 크기 조절
+                        sx={{
+                            width: "100%",
+                            height: "400px", // 원하는 높이로 설정
+                            backgroundImage: `url(${noticeDetail.imageUrl})`,
+                            backgroundSize: "cover", // 이미지가 전체 박스를 덮도록 설정
+                            backgroundPosition: "center", // 이미지의 중앙을 기준으로 설정
+                            display: "flex", // Flexbox 사용
+                            justifyContent: "space-between", // 좌우로 배치
+                            alignItems: "center", // 세로로 가운데 정렬
+                            maxWidth: "800px"
+                        }}
+                    ></Box>)
+                    :
+                    (<></>)
+                }
+                <Typography sx={{ mt: 2,
+                    borderBottom: '1px solid #ccc' }} variant="h6">
+                    {noticeDetail.title}
                 </Typography>
                 <Typography sx={{ mt: 2 }}>
-                    {noticeDetal?.content}
+                    {noticeDetail.content}
                 </Typography>
                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
                     <Button onClick={handleHideForDay} variant="contained">하루 동안 안 보기</Button>

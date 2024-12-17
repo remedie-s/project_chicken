@@ -34,6 +34,7 @@ export default function index() {
         <Box sx={{ flex: 1 }}>
             <NewestNotice/>
             <Banner/>
+            <CenterBox>
             {products ?
                 <ProductList products={products}/>
                 :
@@ -41,6 +42,7 @@ export default function index() {
                     현재 판매 물품이 없습니다.
                 </CenterBox>
             }
+            </CenterBox>
         </Box>
     )
 }

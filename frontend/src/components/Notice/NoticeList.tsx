@@ -10,6 +10,7 @@ import {useRouter} from "next/navigation";
 import authErrorLogout from "@/scripts/auth/authErrorLogout";
 import axios from "axios";
 import {NoticeDto} from "@/types/noticeType";
+import timeStyle from "@/scripts/timeStyle";
 
 
 // TODO 대충 형태만 붙여넣기한 상태, 값 수정 필요
@@ -18,8 +19,10 @@ export default function NoticeList() {
     const paginationModel = {page: 0, pageSize: 5};
     // 데이터 그리드 컬럼 설정
     const columns: GridColDef[] = [
-        {field: "title", headerName: "제목", width: 300},
-        {field: "createTime", headerName: "작성일", width: 150},
+        {field: "title", headerName: "제목", width: 400},
+        { field: "createTime", headerName: "작성일", width: 200,
+            // 날짜 형식 변환
+            valueFormatter: (params) => timeStyle(params),}
     ];
     const [noticeList,setNoticeList] = useState<NoticeDto[]|null>(null);
 

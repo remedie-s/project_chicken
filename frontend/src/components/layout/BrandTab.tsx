@@ -22,6 +22,7 @@ export default function BrandTab() {
                 width: "10%",
                 height: "100%",
                 // Box 사이에 얇은 선 추가
+                borderLeft: '1px solid #ccc',
                 borderRight: '1px solid #ccc',
                 bgcolor: bgColor,
                 display: "flex",
@@ -61,6 +62,7 @@ export default function BrandTab() {
                     {brandBox("LS전선")}
                     {brandBox("Hitachi")}
                     {brandBox("Stanley")}
+                    {brandBox("기타")}
                 </Toolbar>
             </AppBar>)
 }

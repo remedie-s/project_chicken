@@ -1,6 +1,6 @@
 
 "use client"
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import {useParams, useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {ProductsDto} from "@/types/productType";
@@ -28,13 +28,16 @@ export default function page() {
     }, [decodedId]);
 
     return(
-        <Box sx={{display: "flex", justifyContent: "center"}}>
+        <CenterBox>
+            <Typography variant="h5" sx={{marginBottom: 3}}>
+                {id} 검색 결과
+            </Typography>
             {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
                 <CenterBox>
                     현재 판매 중인 {decodedId} 상품이 아직 없습니다
                 </CenterBox>}
-        </Box>
+        </CenterBox>
     )
 }

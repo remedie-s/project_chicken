@@ -30,6 +30,9 @@ export default function () {
 
     return(
         <CenterBox>
+            <Typography variant="h5" sx={{marginBottom: 3}}>
+                {decodedId} 브랜드 상품
+            </Typography>
         {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
