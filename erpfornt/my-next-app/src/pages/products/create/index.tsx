@@ -24,11 +24,11 @@ function Index(): JSX.Element {
 
     const brands = [
         'Bosch', 'DeWalt', 'Festool', 'ES산업', '계양',
-        'Milwaukee', 'Makita', 'LS전선', 'Hitachi', 'Stanley'
+        'Milwaukee', 'Makita', 'LS전선', 'Hitachi', 'Stanley','기타'
     ];
     const categories = [
         '목공공구', '용접공구', '원예공구', '수작업공구', '전동공구',
-        '측정공구', '안전용품', '전기용품', '페인트용품', '공구세트'
+        '측정공구', '안전용품', '전기용품', '페인트용품', '공구세트','기타'
     ];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
