@@ -2,7 +2,6 @@
 "use client"
 
 import {Box} from "@mui/material";
-import Layout from "./layout"
 import {ProductsDto} from "@/types/productType";
 import dayjs from "dayjs";
 import ProductList from "@/components/product/ProductList";
