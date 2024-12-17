@@ -60,7 +60,7 @@ export default function Header({userName}:userNameType){
                     onKeyDown={handleKeyPress}
                 >
                 </TextField>
-                    <Button sx={{bgcolor: "#FFDF00"}} onClick={searchHandler}>
+                    <Button sx={{bgcolor: "#FFDF00", color: "#000000"}} onClick={searchHandler}>
                 <SearchIcon />
                     </Button>
                 </Box>

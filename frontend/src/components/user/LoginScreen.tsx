@@ -20,7 +20,7 @@ export default function LoginScreen(){
         try {
             const res = await axios.post<TokenResponseDto>("http://localhost:8080/api/auth/login", send);
             if (res.status !== 200) { console.log("로그인 실패" + res.data); }
-            else { console.log("로그인 성공: ", res.data);
+            else { console.log("로그인 성공: ");
                 document.cookie = cookie.serialize("refreshToken",res.data.refreshToken, {
                     path: '/',  // 쿠키 저장 경로
                     // httpOnly: true,  // 보안을 위해 JavaScript에서 접근 불가

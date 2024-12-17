@@ -16,7 +16,7 @@ import timeStyle from "@/scripts/timeStyle";
 // TODO 대충 형태만 붙여넣기한 상태, 값 수정 필요
 export default function NoticeList() {
     const router = useRouter();
-    const paginationModel = {page: 0, pageSize: 5};
+    const paginationModel = {page: 0, pageSize: 10};
     // 데이터 그리드 컬럼 설정
     const columns: GridColDef[] = [
         {field: "title", headerName: "제목", width: 400},
