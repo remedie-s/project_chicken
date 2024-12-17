@@ -10,6 +10,7 @@ import type {OrderDto} from "@/types/orderType";
 import type {UsersDto} from "@/types/userType"
 import dayjs from "dayjs";
 import UserDeleteButton from "@/components/user/UserDeleteButton";
+import timeStyle from "@/scripts/timeStyle";
 
 
 export default function MypageProfile() {
@@ -32,28 +33,25 @@ export default function MypageProfile() {
     const gradeText = [
         "BASIC", "SILVER", "GOLD", "VIP"
     ]
+    const TextLine = (text:string) => {
+        return (
+            <Typography sx={{fontSize: 15, marginBottom:1}}>
+                {text}
+            </Typography>
+        )
+    }
 
 
     return (
         <Box sx={{width: "100%"}}>
-            <Card>
+            <Card sx={{padding: 3}}>
                 {userDetail ?
                     <CardContent>
-                        <Typography sx={{fontSize: 15}}>
-                            이름 : {userDetail.name}
-                        </Typography>
-                        <Typography sx={{fontSize: 15}}>
-                            이메일 : {userDetail.email}
-                        </Typography>
-                        <Typography sx={{fontSize: 15}}>
-                            가입일 : {dayjs(userDetail.createdAt).format('YYYY-MM-DD')}
-                        </Typography>
-                        <Typography sx={{fontSize: 15}}>
-                            주소 : {userDetail.address}
-                        </Typography>
-                        <Typography sx={{fontSize: 15}}>
-                            회원등급 : {gradeText[userDetail.userGrade]}
-                        </Typography>
+                        {TextLine(`이름 : ${userDetail.name}`)}
+                        {TextLine(`이메일 : ${userDetail.email}`)}
+                        {TextLine(`가입일 : ${timeStyle(userDetail.createdAt)}`)}
+                        {TextLine(`주소 : ${userDetail.address}`)}
+                        {TextLine(`회원등급 : ${gradeText[userDetail.userGrade]}`)}
                         {passwordChange ?
                             <PasswordChangeScreen passwordQuestion={userDetail.passwordQuestion}
                                                   passwordAnswer={userDetail.passwordAnswer}
@@ -64,10 +62,12 @@ export default function MypageProfile() {
                             <Button
                                 onClick={() => setPasswordChange(true)}
                                 variant="contained"
-                                sx={{backgroundColor: "#FFA000"}}>
+                                sx={{backgroundColor: "#FFA000", marginBottom: 2}}>
                                 비밀번호 변경 요청
                             </Button>}
+                        <Box sx={{display:"flex", alignItems: "flex-end", flexDirection: "column"}}>
                         <UserDeleteButton/>
+                        </Box>
                     </CardContent>
                     :
                     <CardContent>

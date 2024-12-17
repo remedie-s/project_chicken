@@ -55,7 +55,9 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
         let userCheck = () => productReview.usersDto.id === currentUser;
 
         const reviewDeleteHandler = async () => {
-            if (!confirm("정말 삭제하시겠습니까?")) { return; }
+            if (!confirm("정말 삭제하시겠습니까?")) {
+                return;
+            }
             try {
                 const res = await authApi.post(`/product/reviews/${productId}/delete/${productReview.id}`);
                 if (res.status !== 200) {
@@ -99,10 +101,9 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
         };
 
 
-
         return (
-            <Paper>
-                {reviewModify?
+            <Box>
+                {reviewModify ?
                     <Rating
                         value={newRating}
                         precision={0.5}
@@ -112,14 +113,14 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                         onChangeActive={(e, newHover) => {
                             setNewRatingHover(newHover !== null ? newHover : newRatingHover);
                         }}
-                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                        emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit"/>}
                     />
                     :
                     <Rating
-                    value={productReview.rating}
-                    precision={0.5}
-                    readOnly
-                />}
+                        value={productReview.rating}
+                        precision={0.5}
+                        readOnly
+                    />}
                 <Typography>
                     {productReview.usersDto.email} | {dayjs(productReview.createdAt).format('YYYY-MM-DD')}
                 </Typography>
@@ -150,7 +151,7 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                         </>
                     ) : null}
                 </Box>
-            </Paper>
+            </Box>
         )
     }
 
@@ -163,9 +164,9 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                     (productReview, index) =>
                         (<ReviewOne key={index} productReview={productReview}/>)))
                 :
-                <Paper>
+                <Box>
                     아직 리뷰가 없습니다.
-                </Paper>
+                </Box>
             }
         </Box>
     )

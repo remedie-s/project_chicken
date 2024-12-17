@@ -45,7 +45,7 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
 
 
     return (
-        <Box>
+        <Box sx={{marginY: 2}}>
             {qacheck?
                 <Box>
                     <TextField
@@ -72,19 +72,27 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
                 :
                 <Box>
                     패스워드 질문 : {passwordQuestion}
+                    <br/>
                     <TextField
                         label="답을 적어주세요"
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value)}
+                        sx={{marginY: 2}}
                     />
+                    <br/>
+                    <Box sx={{marginBottom:2}}>
                     <Button
-                    onClick={qacheckHandler}>
+                    onClick={qacheckHandler}
+                    sx={{backgroundColor: "#FFDF00", color: "#000000", marginRight:2}}>
                         확인
                     </Button>
                     <Button
-                        onClick={() => setPasswordChange(false)}>
+                        onClick={() => setPasswordChange(false)}
+                        sx={{backgroundColor: "#000000", color: "#FFFFFF"}}
+                    >
                         변경 취소
                     </Button>
+                    </Box>
                 </Box>
             }
         </Box>
