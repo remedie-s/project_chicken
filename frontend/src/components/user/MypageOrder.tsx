@@ -60,15 +60,16 @@ export default function MypageOrder( ){
     }));
 
     const columns: GridColDef[] = [
-        { field: 'image', headerName: '상품 이미지', width: 150, renderCell:
+        { field: "image", headerName: "상품 이미지", width: 150, renderCell:
                 (params) =>
                     <img src={params.value} alt="product" style={{width: '100px', height: 'auto'}} /> },
-        { field: 'name', headerName: '상품명', width: 120 },
-        { field: 'price', headerName: '상품 가격', width: 100 },
-        { field: 'discount', headerName: '할인', width: 80 },
-        { field: 'payPrice', headerName: '결제 금액', width: 100 },
-        { field: 'quantity', headerName: '수량', width: 50 },
-        { field: 'createdAt', headerName: '주문일', width: 180 },
+        { field: "name", headerName: "상품명", width: 120 },
+        { field: "price", headerName: "상품 가격", width: 100 },
+        { field: "discount", headerName: "할인", width: 80 },
+        { field: "payPrice", headerName: "결제 금액", width: 100 },
+        { field: "quantity", headerName: "수량", width: 50 },
+        { field: "createdAt", headerName: "주문일", width: 180 },
+        { field: "status", headerName: "주문 상태", width: 100 },
     ];
 
     const deleteHandler = async (ids: number[]) => {

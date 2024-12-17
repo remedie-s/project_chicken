@@ -6,6 +6,7 @@ import {useRouter} from "next/navigation";
 import CartsList from "@/components/carts/CartsList";
 import {Box} from "@mui/material";
 import LoadingScreen from "@/components/layout/LoadingScreen";
+import CenterBox from "@/components/layout/CenterBox";
 
 
 export default function page(){
@@ -24,8 +25,8 @@ export default function page(){
     }
 
     return (
-        <Box>
+        <CenterBox>
             <CartsList/>
-        </Box>
+        </CenterBox>
     );
 }

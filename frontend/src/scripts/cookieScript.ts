@@ -15,5 +15,5 @@ export function setCookie(name: string, value: string, days: number) {
 
 // 쿠키를 삭제하는 함수
 export function deleteCookie(name: string) {
-    document.cookie = cookie.serialize({name}, '', {maxAge: -1, path: '/'});
+    document.cookie = cookie.serialize(name, '', {maxAge: -1, path: '/'});
 }
