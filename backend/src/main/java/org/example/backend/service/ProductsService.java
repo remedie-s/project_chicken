@@ -374,4 +374,8 @@ public class ProductsService {
     }
 
 
+    // 자동완성 기능
+    public List<ProductDocument> autocomplete(String prefix) {
+        return productsSearchRepository.findByNameContaining(prefix);
+    }
 }
