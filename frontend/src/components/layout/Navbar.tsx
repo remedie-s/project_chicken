@@ -33,7 +33,7 @@ export default function Navbar() {
         )
     }
     const barMenu = ({name, url}:{name:string, url:string}) => {
-        const [bgColor, setBgColor] = useState("transparent");
+        const [bgColor, setBgColor] = useState("#000000");
         const router = useRouter();
 
         const handleMouseOver = () => {
@@ -41,7 +41,7 @@ export default function Navbar() {
         };
 
         const handleMouseOut = () => {
-            setBgColor("transparent");
+            setBgColor("#000000");
         };
         return (
             <Box sx={{
@@ -75,7 +75,7 @@ export default function Navbar() {
                             justifyContent: 'center', width: "10%"}}
                         onClick={menuOpen}>
                         <MenuIcon/>
-                        전체 카테고리
+                        카테고리
                     </Box>
                     {barMenu ({name:"홈", url:"/"})}
                     {barMenu ({name:"신상품", url:"/product/new"})}
