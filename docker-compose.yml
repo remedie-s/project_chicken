@@ -197,10 +197,13 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app  # 로컬 소스 마운트
+      - /app/node_modules  # 컨테이너 내부에서 node_modules을 별도로 관리
 
     working_dir: /app
     networks:
       - app-network
+    environment:
+      - NODE_ENV=production  # 프로덕션 환경에서 실행되도록 설정
 
   erpfront:
     build:
@@ -211,10 +214,14 @@ services:
       - "3001:3001"
     volumes:
       - ./erpfornt/my-next-app:/app  # 로컬 소스 마운트
+      - /app/node_modules  # 컨테이너 내부에서 node_modules을 별도로 관리
 
     working_dir: /app
     networks:
       - app-network
+    environment:
+      - NODE_ENV=production  # 프로덕션 환경에서 실행되도록 설정
+
 
 volumes:
   es_data:
