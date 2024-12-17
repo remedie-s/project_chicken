@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.erp.dto.KafkaElasticMessage;
 import org.example.erp.dto.KafkaProductMessage;
 import org.example.erp.dto.KafkaProductReviewMessage;
 import org.example.erp.dto.ProductsDto;
@@ -49,6 +50,7 @@ public class ProductsService {
 
         // ERP 시스템에서 물품 등록
         productsRepository.save(products);
+        KafkaElasticMessage.toKafkaMessage(products);
 
         // Kafka 메시지 발행 - JSON 형식
         sendKafkaMsg(products,"register");
