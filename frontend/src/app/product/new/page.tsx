@@ -1,6 +1,6 @@
 
 "use client"
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import ProductList from "@/components/product/ProductList";
 import {useEffect, useState} from "react";
 import {ProductsDto} from "@/types/productType";
@@ -26,7 +26,10 @@ export default function newProductPage () {
     }, [])
 
     return (
-        <Box sx={{height: 500}}>
+        <CenterBox>
+            <Typography variant="h5" sx={{marginBottom: 3}}>
+                신상품 페이지
+            </Typography>
             {products &&products.length!==0 ?
                 <ProductList products={products}/>
                 :
@@ -34,6 +37,6 @@ export default function newProductPage () {
                     현재 대상 물품이 없습니다.
                 </CenterBox>
             }
-        </Box>
+        </CenterBox>
     )
 }

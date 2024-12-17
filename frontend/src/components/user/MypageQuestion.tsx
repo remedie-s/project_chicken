@@ -13,6 +13,7 @@ import {useRouter} from "next/navigation";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import authErrorLogout from "@/scripts/auth/authErrorLogout";
+import timeStyle from "@/scripts/timeStyle";
 
 export default function MypageQuestion() {
     const router = useRouter();
@@ -20,7 +21,9 @@ export default function MypageQuestion() {
     // 데이터 그리드 컬럼 설정
     const columns: GridColDef[] = [
         {field: "title", headerName: "문의명", width: 300},
-        {field: "createTime", headerName: "작성일", width: 150},
+        { field: "createTime", headerName: "작성일", width: 200,
+            // 날짜 형식 변환
+            valueFormatter: (params) => timeStyle(params),},
         {
             field: "answerCheck",
             headerName: "답변 여부",
@@ -32,6 +35,7 @@ export default function MypageQuestion() {
                 )
         }
     ];
+
     const [questionList,setQuestionList] = useState<QuestionDto[]|null>(null);
 
     useEffect(() => {
