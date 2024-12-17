@@ -6,6 +6,7 @@ import {Box, Button, TextField} from "@mui/material";
 import {QuestionDto} from "@/types/questionType";
 import useAuth from "@/scripts/auth/useAuth";
 import LoadingScreen from "@/components/layout/LoadingScreen";
+import CenterBox from "@/components/layout/CenterBox";
 
 type formType = {
     questionId: number | null,
@@ -84,10 +85,10 @@ export default function QuestionForm({questionId, modifyRequest}: formType) {
     }
 
     return (
+        <CenterBox>
         <Box sx={{
             display: 'flex',
-            flexDirection: 'column',
-            width: "60%"
+            flexDirection: 'column'
         }}>
             <TextField
                 value={title}
@@ -108,5 +109,6 @@ export default function QuestionForm({questionId, modifyRequest}: formType) {
                 </>
             }
         </Box>
+        </CenterBox>
     )
 }

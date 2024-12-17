@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import LoadingScreen from "@/components/layout/LoadingScreen";
 import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 import useAuth from "@/scripts/auth/useAuth";
+import CenterBox from "@/components/layout/CenterBox";
 
 type orderProduct = {
     productId:number,
@@ -122,7 +123,7 @@ export default function odrerPage() {
 
 
     return (
-        <Box sx={{width: "100%"}}>
+        <CenterBox>
             <Paper sx={{height: 400, width: '100%'}}>
                 <DataGrid
                     rows={rows}
@@ -132,10 +133,10 @@ export default function odrerPage() {
                     sx={{border: 0}}
                 />
             </Paper>
-            <Box>
-                <Button onClick={orderCancleHandler}>구매 취소</Button>
-                <Button onClick={orderHandler}>구매</Button>
+            <Box sx={{marginTop: 3, display: "flex", justifyContent: "right"}}>
+                <Button onClick={orderCancleHandler} sx={{backgroundColor: "#000000", color: "#FFFFFF"}}>구매 취소</Button>
+                <Button onClick={orderHandler} sx={{marginLeft:2, backgroundColor: "#FFDF00", color: "#000000"}}>구매</Button>
             </Box>
-        </Box>
+        </CenterBox>
     )
 }

@@ -118,7 +118,7 @@ export default function ProductList({ products }: productsType) {
             </Button>
             {/*상품 리스트 출력*/}
             <Box>
-            <Grid2 container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
+            <Grid2 container spacing={{xs: 2, md: 3}} columns={{xs: 8, sm: 8, md: 12}}>
                 {page.map((row) => {
                     prepareRow(row);
                     return (

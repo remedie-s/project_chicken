@@ -2,14 +2,9 @@
 
 'use client'
 import {
-    AppBar,
     Box,
     Button,
-    IconButton,
     TextField,
-    Toolbar,
-    Typography,
-    Container
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -19,6 +14,8 @@ import {useRouter} from "next/navigation";
 import authLogout from "@/scripts/auth/authLogout";
 import logout from "@/scripts/auth/logout"
 const cookie = require("cookie");
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import PersonIcon from '@mui/icons-material/Person';
 
 type userNameType = {
     userName:string
@@ -47,8 +44,8 @@ export default function Header({userName}:userNameType){
 
 
     return (
-        <Box sx={{ margin: 1}}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems:"center", zIndex: 1100}}>
+        <Box sx={{ margin: 1, display: "flex", justifyContent: "center"}}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", width: "90%", alignItems:"center", zIndex: 1100}}>
                 <Box
                     component="img" src="/ToolBox_Logo.png"
                     sx={{ height: "70px", width: "auto", objectFit: "contain", margin: '0 10px', }}
@@ -71,10 +68,10 @@ export default function Header({userName}:userNameType){
                 <Box>
                     <Button
                         sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 1 }}
-                        onClick={()=>{router.push("/cart")}}>장바구니</Button>
+                        onClick={()=>{router.push("/cart")}}><ShoppingCartIcon/> 장바구니</Button>
                     <Button
                         sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 1 }}
-                        onClick={()=>{router.push("/user/mypage/order")}}>{userName}</Button>
+                        onClick={()=>{router.push("/user/mypage/order")}}> <PersonIcon/>{userName}</Button>
                     <Button
                         sx={{ backgroundColor: "#000000", color: "#FFFFFF" }}
                         onClick={logouHandler}>로그아웃</Button>
