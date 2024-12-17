@@ -256,31 +256,33 @@ public class ProductsService {
         productsSearchRepository.deleteById(products.getId());
     }
 
-    @KafkaListener(topics = "product-changes", groupId = "shopping-mall")
+    @KafkaListener(topics = "product-changes")
     public void listenProductChanges(String message) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             KafkaProductMessage productMessage = objectMapper.readValue(message, KafkaProductMessage.class);
+            Optional<Products> byId = this.productsRepository.findById(productMessage.getId());
+            if(!byId.isPresent()) {return;}
 
-//            switch (productMessage.getAction()) {
-//                case "register":
-//                    registerProductToElasticsearch(productMessage.toEntity());
-//                    log.info("{} 물품이 등록되어 엘라스틱 서치에 색인합니다", productMessage.getId());
-//                    break;
-//
-//                case "update":
-//                    updateProductInElasticsearch(productMessage.toEntity());
-//                    log.info("{} 물품이 갱신되어 엘라스틱 서치에 색인을 갱신합니다", productMessage.getId());
-//                    break;
-//
-//                case "delete":
-//                    deleteProductFromElasticsearch(productMessage.toEntity());
-//                    log.info("{} 물품이 삭제되어 엘라스틱 서치에 색인을 삭제합니다", productMessage.getId());
-//                    break;
-//
-//                default:
-//                    log.warn("Unknown action: {}", productMessage.getAction());
-//            }
+            switch (productMessage.getAction()) {
+                case "register":
+                    registerProductToElasticsearch(byId.get());
+                    log.info("{} 물품이 등록되어 엘라스틱 서치에 색인합니다", productMessage.getId());
+                    break;
+
+                case "update":
+                    updateProductInElasticsearch(byId.get());
+                    log.info("{} 물품이 갱신되어 엘라스틱 서치에 색인을 갱신합니다", productMessage.getId());
+                    break;
+
+                case "delete":
+                    deleteProductFromElasticsearch(byId.get());
+                    log.info("{} 물품이 삭제되어 엘라스틱 서치에 색인을 삭제합니다", productMessage.getId());
+                    break;
+
+                default:
+                    log.warn("Unknown action: {}", productMessage.getAction());
+            }
         } catch (JsonProcessingException e) {
             log.error("Failed to parse Kafka message: {}", message, e);
         }
