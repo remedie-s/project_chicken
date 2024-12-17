@@ -28,19 +28,23 @@ export default function UserDeleteButton() {
     };
 
     return (
-        <Box>
+        <Box sx={{marginY: 2}}>
             {checkDelete ?
 
                 <Box>
                     <Typography>
                         정말 탈퇴하시려면 "탈퇴"라고 입력해주세요.
                     </Typography>
-                    <TextField onChange={(e) => setConfirm(e.target.value)}/>
-                    <Button onClick={DeleteHandler}>탈퇴</Button>
-                    <Button onClick={() => setCheckDelete(false)}>탈퇴 취소</Button>
+                    <TextField onChange={(e) => setConfirm(e.target.value)}
+                    sx={{ marginBottom:2}}/>
+                    <br/>
+                    <Button onClick={DeleteHandler}
+                            sx={{backgroundColor: "#E00000", color: "#FFFFFF", marginRight: 2}}>탈퇴</Button>
+                    <Button onClick={() => setCheckDelete(false)}
+                            sx={{backgroundColor: "#FFDF00", color: "#000000"}}>탈퇴 취소</Button>
                 </Box>
                 :
-                <Button onClick={checkDeleteHandler}>
+                <Button onClick={checkDeleteHandler} sx={{backgroundColor: "#E00000", color: "#FFFFFF"}}>
                     계정 삭제
                 </Button>
             }

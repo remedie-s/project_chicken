@@ -9,7 +9,7 @@ import {
     Typography,
     useScrollTrigger
 } from "@mui/material";
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, ReactNode, useEffect, useState} from "react";
 import axios from "axios";
 import {useRouter} from "next/navigation";
 import Warranty from "@/components/product/Warranty";
@@ -129,12 +129,30 @@ export default function ProductDetail({productId}: { productId: string }) {
         }
     }
 
+   const categoryText = (
+            <Button onClick={() => router.push(`/category/${productDetail.category}`)}>
+                카테고리 : {productDetail.category}
+            </Button>
+        )
+
+    const brandText = (
+            <Button onClick={() => router.push(`/brand/${productDetail.brand}`)}>
+                브랜드 : {productDetail.brand}
+            </Button>
+        )
 
 
+    const ProductPaper = ({ children }:{children: ReactNode}) => {
+        return (
+            <Paper sx={{ marginBottom: 2, padding: 2 }}>
+                {children}
+            </Paper>
+        );
+    };
 
     return (
         <Box>
-            <Box sx={{ margin:5, display: "flex", justifyContent: "center"}}>
+            <Box sx={{ marginTop:5, display: "flex", justifyContent: "center"}}>
                 <Box
                     component="img" src={productDetail.imageUrl}
                     sx={{
@@ -143,12 +161,12 @@ export default function ProductDetail({productId}: { productId: string }) {
                         maxWidth: 600,
                         // 이미지 비율
                         aspectRatio: "4/3"}}/>
-                <Box sx={{display: "flexDirection", marginLeft: 5, width: "25%"}}>
-                    <Typography variant="h4">
+                <Box sx={{display: "flexDirection", marginLeft: 5, width: "40%"}}>
+                    <Box sx={{marginBottom: 1}}>
+                        {categoryText} - {brandText}
+                </Box>
+                    <Typography variant="h4" sx={{marginBottom:3}}>
                         {productDetail.name}
-                    </Typography>
-                    <Typography >
-                        브랜드 : {productDetail.brand}
                     </Typography>
                     <Typography>
                         ₩{productDetail.price}
@@ -186,27 +204,39 @@ export default function ProductDetail({productId}: { productId: string }) {
             </Box>
             <Box>
                 <Box>
-                    <Toolbar sx={{backgroundColor: "#000000", color: "#FFFFFF", width: "100%", justifyContent: "center", height: 40}}>
+                    <Toolbar sx={{
+                        backgroundColor: "#000000", color: "#FFFFFF",
+                        width: "100%",
+                        justifyContent: "center",
+                        height: 40,
+                        marginBottom:2}}>
                         <ScrollBox name="상세 설명" id="description"/>
                         <ScrollBox name="리뷰" id="review"/>
                         <ScrollBox name="판매 정책" id="rule"/>
                     </Toolbar>
                     <Box sx={{justifyItems: "center"}}>
-                        <Box sx={{width: "50%"}}>
-                        <Typography id="description" variant="h5">
+                        <Box sx={{width: "70%"}}>
+                            <ProductPaper>
+                        <Typography id="description" variant="h5" sx={{marginBottom: 2}}>
                             상세 설명
                         </Typography>
                         <Typography>
                             {productDetail.description}
                         </Typography>
-                        <Typography id="review" variant="h5">
+                            </ProductPaper>
+
+                            <ProductPaper>
+                        <Typography id="review" variant="h5" sx={{marginBottom: 2}}>
                             리뷰
                         </Typography>
                         <ReviewList productId={productId} reviewCreateAuth={reviewCreateAuth}/>
-                        <Typography id="rule" variant="h5">
+                            </ProductPaper>
+                            <ProductPaper>
+                        <Typography id="rule" variant="h5" sx={{marginBottom: 2}}>
                             판매 정책
                         </Typography>
                         <Warranty/>
+                            </ProductPaper>
                         </Box>
                     </Box>
                 </Box>

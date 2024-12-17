@@ -4,6 +4,7 @@ import FAQList from "@/components/qna/FAQList";
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {getCookie} from "@/scripts/cookieScript";
+import CenterBox from "@/components/layout/CenterBox";
 
 
 export default function servicePage() {
@@ -26,7 +27,7 @@ export default function servicePage() {
 
 
     return (
-        <Box sx={{margin: 3}}>
+        <CenterBox>
             <Box>
                 <Typography variant="h5">
                     자주 묻는 질문
@@ -38,10 +39,10 @@ export default function servicePage() {
             </Typography>
             <Button
                 onClick={qaMoveHandler}
-                sx={{bgcolor: "#FFDF00", color: "#000000", margin: 3}}
+                sx={{bgcolor: "#FFDF00", color: "#000000", margin: 3, width: "15%"}}
             >
                     문의 페이지로 (로그인 필요)
         </Button>
-</Box>
+</CenterBox>
 )
 }
