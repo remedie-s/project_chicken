@@ -55,6 +55,7 @@ public class ProductsDto {
         dto.setCategory(entity.getCategory());
         dto.setMainItemNumber(entity.getMainItemNumber());
         dto.setEvent(entity.getEvent());
+        dto.setBrand(entity.getBrand());
         // 파트너 정보가 있는 경우에만 설정
         if (entity.getPartner() != null) {
             dto.setPartnerDto(PartnerDto.partnerToDto(entity.getPartner()));

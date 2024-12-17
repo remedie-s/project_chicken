@@ -10,6 +10,7 @@ import {string} from "prop-types";
 import useAuth from "@/scripts/auth/useAuth";
 import authApi from "@/scripts/auth/authApi";
 import {useRouter} from "next/navigation";
+import timeStyle from "@/scripts/timeStyle";
 
 export default function MypageOrder( ){
     const [orders, setOrders] = useState<OrderDto[]|null>(null);
@@ -54,7 +55,7 @@ export default function MypageOrder( ){
         discount: order.discount,
         payPrice: order.payPrice,
         quantity: order.quantity,
-        createdAt: dayjs(order.createdAt).format("YYYY-MM-DD hh:mm"),
+        createdAt: timeStyle(order.createdAt),
         productId: order.products.id
     }));
 
@@ -63,9 +64,9 @@ export default function MypageOrder( ){
                 (params) =>
                     <img src={params.value} alt="product" style={{width: '100px', height: 'auto'}} /> },
         { field: 'name', headerName: '상품명', width: 120 },
-        { field: 'price', headerName: '가격', width: 100 },
+        { field: 'price', headerName: '상품 가격', width: 100 },
         { field: 'discount', headerName: '할인', width: 80 },
-        { field: 'payPrice', headerName: '최종 가격', width: 100 },
+        { field: 'payPrice', headerName: '결제 금액', width: 100 },
         { field: 'quantity', headerName: '수량', width: 50 },
         { field: 'createdAt', headerName: '주문일', width: 180 },
     ];
