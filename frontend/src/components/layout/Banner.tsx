@@ -26,16 +26,26 @@ export default function Banner(){
             <Box
                 sx={{
                     width: "100%",
-                    height: "300px", // 원하는 높이로 설정
+                    height: "auto",
                     backgroundImage: `url(${currentBackgroundImage})`,
-                    backgroundSize: "cover", // 이미지가 전체 박스를 덮도록 설정
-                    backgroundPosition: "center", // 이미지의 중앙을 기준으로 설정
-                    display: "flex", // Flexbox 사용
-                    justifyContent: "space-between", // 좌우로 배치
-                    alignItems: "center", // 세로로 가운데 정렬
+                    // 이미지가 박스 내에서 크기를 유지하도록 설정
+                    backgroundSize: "contain",
+                    // 이미지의 중앙을 기준으로 설정
+                    backgroundPosition: "center",
+                    // 이미지가 반복되지 않도록 설정
+                    backgroundRepeat: "no-repeat",
+                    // 박스 비율 설정
+                    aspectRatio: "16/3",
+                    // Flexbox
+                    display: "flex",
+                    // 버튼용 박스를 좌우로 배치
+                    justifyContent: "space-between",
+                    // 기준을 세로로 가운데 정렬
+                    alignItems: "center",
                 }}
             >
-                {/* 좌측 박스 */}
+
+            {/* 좌측 박스 */}
                 <Box
                     sx={{
                         width: "20%", // 20% 너비

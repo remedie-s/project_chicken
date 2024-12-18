@@ -1,4 +1,4 @@
-import {Box, Button, TextField} from "@mui/material";
+import {Box, Button, Paper, TextField} from "@mui/material";
 import {useState} from "react";
 import axios from "axios";
 import authApi from "@/scripts/auth/authApi";
@@ -48,30 +48,38 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
     return (
         <Box sx={{marginY: 2}}>
             {qacheck?
-                <Box>
+                <Paper variant="outlined" sx={{padding: 2, display: "inline-block", maxWidth: "100%"}}>
                     <TextField
                         type="password"
                         label="변경할 비밀번호"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
+                    <br/>
                     <TextField
                         type="password"
                         label="비밀번호 확인"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        sx={{marginY:2}}
                     />
+                    <Box>
                     <Button
-                        onClick={passwordChangeHandler}>
+                        onClick={passwordChangeHandler}
+                        sx={{backgroundColor: "#FFDF00", color: "#000000", marginRight: 2}}
+                    >
                         확인
                     </Button>
                     <Button
-                        onClick={() => setPasswordChange(false)}>
+                        onClick={() => setPasswordChange(false)}
+                        sx={{backgroundColor: "#000000", color: "#FFFFFF"}}
+                    >
                         비밀번호 변경 취소
                     </Button>
-                </Box>
+                    </Box>
+                </Paper>
                 :
-                <Box>
+                <Paper variant="outlined" sx={{padding: 2, display: "inline-block", maxWidth: "100%" }}>
                     패스워드 질문 : {passwordQuestion}
                     <br/>
                     <TextField
@@ -91,10 +99,10 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
                         onClick={() => setPasswordChange(false)}
                         sx={{backgroundColor: "#000000", color: "#FFFFFF"}}
                     >
-                        변경 취소
+                        비밀번호 변경 취소
                     </Button>
                     </Box>
-                </Box>
+                </Paper>
             }
         </Box>
     )

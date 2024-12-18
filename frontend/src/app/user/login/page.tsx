@@ -7,6 +7,7 @@ import PasswordChangeScreen from "@/components/user/PasswordChangeScreen";
 import axios from "axios";
 import {UsersDto} from "@/types/userType";
 import {useFCM} from "@/hooks/useFcm";
+import CenterBox from "@/components/layout/CenterBox";
 
 export default function page() {
     const [passwordUpdate, setPasswordUpdate] = useState(false);
@@ -43,7 +44,7 @@ export default function page() {
             )
         } else {
             return (
-                <Box>
+                <CenterBox name="">
                 <TextField
                     label="이메일을 입력해주세요."
                     value={email}
@@ -52,7 +53,7 @@ export default function page() {
                 </TextField>
                     <Button onClick={passwordQaHandler}>이메일 입력</Button>
                     <Button onClick={() => setPasswordUpdate(false)}>비밀번호 찾기 취소</Button>
-                </Box>
+                </CenterBox>
             )
         }
     };

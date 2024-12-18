@@ -62,12 +62,10 @@ export default function MypageProfile() {
                             <Button
                                 onClick={() => setPasswordChange(true)}
                                 variant="contained"
-                                sx={{backgroundColor: "#FFA000", marginBottom: 2}}>
+                                sx={{backgroundColor: "#FFA000"}}>
                                 비밀번호 변경 요청
                             </Button>}
-                        <Box sx={{display:"flex", alignItems: "flex-end", flexDirection: "column"}}>
                         <UserDeleteButton/>
-                        </Box>
                     </CardContent>
                     :
                     <CardContent>

@@ -29,14 +29,11 @@ export default function page() {
     }, [decodedId]);
 
     return(
-        <CenterBox>
-            <Typography variant="h5" sx={{marginBottom: 3}}>
-                {id} 검색 결과
-            </Typography>
+        <CenterBox name={`${id} 검색 결과`}>
             {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
-                <CenterBox>
+                <CenterBox name="">
                     현재 판매 중인 {decodedId} 상품이 아직 없습니다
                 </CenterBox>}
         </CenterBox>

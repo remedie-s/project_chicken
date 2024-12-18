@@ -27,11 +27,8 @@ export default function servicePage() {
 
 
     return (
-        <CenterBox>
-            <Box>
-                <Typography variant="h5">
-                    자주 묻는 질문
-                </Typography>
+        <CenterBox name="자주 묻는 질문">
+            <Box sx={{width: "100%"}}>
                 <FAQList/>
             </Box>
             <Typography variant="h5">

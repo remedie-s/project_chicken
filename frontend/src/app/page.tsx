@@ -35,11 +35,11 @@ export default function index() {
         <Box sx={{ flex: 1 }}>
             <NewestNotice/>
             <Banner/>
-            <CenterBox>
+            <CenterBox name="">
             {products ?
                 <ProductList products={products}/>
                 :
-                <CenterBox>
+                <CenterBox name="">
                     현재 판매 물품이 없습니다.
                 </CenterBox>
             }

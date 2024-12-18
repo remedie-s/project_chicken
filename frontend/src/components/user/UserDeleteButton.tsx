@@ -1,4 +1,4 @@
-import {Box, Button, TextField, Typography} from "@mui/material";
+import {Box, Button, Paper, TextField, Typography} from "@mui/material";
 import {useRef, useState} from "react";
 import axios from "axios";
 import authApi from "@/scripts/auth/authApi";
@@ -30,8 +30,7 @@ export default function UserDeleteButton() {
     return (
         <Box sx={{marginY: 2}}>
             {checkDelete ?
-
-                <Box>
+                <Paper variant="outlined" sx={{padding: 2, display: "inline-block", maxWidth: "100%" }}>
                     <Typography>
                         정말 탈퇴하시려면 "탈퇴"라고 입력해주세요.
                     </Typography>
@@ -42,7 +41,7 @@ export default function UserDeleteButton() {
                             sx={{backgroundColor: "#E00000", color: "#FFFFFF", marginRight: 2}}>탈퇴</Button>
                     <Button onClick={() => setCheckDelete(false)}
                             sx={{backgroundColor: "#FFDF00", color: "#000000"}}>탈퇴 취소</Button>
-                </Box>
+                </Paper>
                 :
                 <Button onClick={checkDeleteHandler} sx={{backgroundColor: "#E00000", color: "#FFFFFF"}}>
                     계정 삭제
