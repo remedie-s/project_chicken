@@ -37,10 +37,10 @@ export default function ReviewCreate({productId, setProductReviews}: reviewCreat
     }
     
     return (
-        <Box>
+        <Box sx={{marginY: 2}}>
             {createReview?
                 <Box>
-                    <Typography component="legend">별점</Typography>
+                    <Typography component="legend">별점 선택</Typography>
                     <Rating
                         value={ratingValue}
                         precision={0.5}
@@ -50,19 +50,25 @@ export default function ReviewCreate({productId, setProductReviews}: reviewCreat
                         onChangeActive={(e, newHover) => {
                             setRatingHover(newHover !== null ? newHover : ratingHover);
                         }}
-                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                        emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit"/>}
                     />
-            <TextField 
-                label="리뷰를 적어주세요."
-                value={reviewContent}
-                onChange={(e)=>setReviewContent(e.target.value)}
-            >
-            </TextField>
-            <Button onClick={createHandler}>리뷰 작성</Button>
-            <Button onClick={()=>setCreateReview(false)}>작성 취소</Button>
+                    <br/>
+                    <TextField
+                        label="리뷰 내용을 적어주세요."
+                        value={reviewContent}
+                        onChange={(e) => setReviewContent(e.target.value)}
+                        sx={{marginY: 2}}
+                    >
+                    </TextField>
+                    <br/>
+                    <Button onClick={createHandler}
+                            sx={{backgroundColor: "#FFDF00", color: "#000000"}}>리뷰 작성</Button>
+                    <Button onClick={() => setCreateReview(false)}
+                    sx={{backgroundColor: "#000000", color: "#FFFFFF", marginX: 2}}>작성 취소</Button>
                 </Box>
                 :
-            <Button onClick={()=>setCreateReview(true)}>리뷰 작성</Button>
+                <Button onClick={()=>setCreateReview(true)}
+                        sx={{backgroundColor: "#FFDF00", color: "#000000"}}>리뷰 작성</Button>
             }
         </Box>
     )

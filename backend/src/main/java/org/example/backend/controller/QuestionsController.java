@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.patterns.TypePatternQuestions;
+import org.example.backend.dto.AnswersDto;
 import org.example.backend.dto.QuestionsDto;
 import org.example.backend.entity.Users;
 import org.example.backend.service.QuestionsService;
@@ -52,6 +53,12 @@ public class QuestionsController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 글에 접근할 권한이 없습니다.");
         }
         return ResponseEntity.ok(questionsDto);
+    }
+
+    @GetMapping("/detail/{id}/answers")
+    public ResponseEntity<?> questionsAnswers(@AuthenticationPrincipal Users users, @PathVariable Long id) {
+        List<AnswersDto> answersDtoList = questionsService.findAnswersDtoList(id);
+        return ResponseEntity.ok(answersDtoList);
     }
     // 문의 수정
     @PostMapping("/modify/{id}")

@@ -8,7 +8,7 @@ import {OrderDto, OrderRequestType} from "@/types/orderType";
 import authApi from "@/scripts/auth/authApi";
 import {ProductsDto} from "@/types/productType";
 import {useRouter} from "next/navigation";
-import LoadingScreen from "@/components/layout/LoadingScreen";
+import Loading from "@/app/loading";
 import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 import useAuth from "@/scripts/auth/useAuth";
 import CenterBox from "@/components/layout/CenterBox";
@@ -53,13 +53,13 @@ export default function odrerPage() {
     }, [loading, user, router]);
 
     if (loading) {
-        return <LoadingScreen/>;
+        return <Loading/>;
     }
 
 
     if (!orderRequest) {
         return (
-            <LoadingScreen/>
+            <Loading/>
         );  // 또는 로딩 스피너나 placeholder 화면을 보여줄 수 있습니다.
     }
 

@@ -36,7 +36,9 @@ const NoticeModal = () => {
     if(!noticeDetail) {return null;}
 
     return (
-        <Modal open={open} onClose={handleClose}>
+        <Modal open={open}
+               onClose={handleClose}
+               BackdropProps={{ style: { backgroundColor: "transparent"} }}>
             <Box sx={{
                 position: 'absolute',
                 top: '50%',

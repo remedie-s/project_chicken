@@ -17,13 +17,11 @@ const cookie = require("cookie");
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 
-type userNameType = {
-    userName:string
-};
 
-export default function Header({userName}:userNameType){
+export default function Header(){
     const router = useRouter();
     const [keyword, setKeyword] = useState("");
+    const [userName,setUserName] = useState("");
 
     const goHome = () =>{
         router.push("/")
@@ -43,6 +41,16 @@ export default function Header({userName}:userNameType){
     };
 
 
+    useEffect(() => {
+        console.log("useEffect 실행");
+        const cookies = document.cookie ? cookie.parse(document.cookie) : {};
+        const loginUser = cookies.userName || null;
+        if (loginUser) {
+            setUserName(loginUser);
+        }
+    }, []);
+
+
     return (
         <Box sx={{ margin: 1, display: "flex", justifyContent: "center"}}>
             <Box sx={{ display: "flex", justifyContent: "space-between", width: "90%", alignItems:"center", zIndex: 1100}}>
@@ -60,7 +68,7 @@ export default function Header({userName}:userNameType){
                     onKeyDown={handleKeyPress}
                 >
                 </TextField>
-                    <Button sx={{bgcolor: "#FFDF00"}} onClick={searchHandler}>
+                    <Button sx={{bgcolor: "#FFDF00", color: "#000000"}} onClick={searchHandler}>
                 <SearchIcon />
                     </Button>
                 </Box>
