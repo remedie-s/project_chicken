@@ -28,6 +28,7 @@ export default function ReviewCreate({productId, setProductReviews}: reviewCreat
         const res = await authApi.post<ProductReviewsDto[]>(`/product/reviews/create/${productId}`, data);
         if(res.status!==200) {alert("리뷰 작성에 실패했습니다."); return;}
         setProductReviews(res.data);
+        setCreateReview(false);
     }
 
     const ratingChangeHandler = (e:SyntheticEvent, newValue:number|null) => {

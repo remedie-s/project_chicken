@@ -100,10 +100,16 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
             setNewContent(productReview.content); // 수정 취소 시 원래 내용으로 복원
             setNewRating(productReview.rating);
         };
-
+        // 리뷰용 이름 익명 처리
+        const maskName = (name:string) => {
+            if (name.length > 1) {
+                return name[0] + '**'; // 첫 글자만 남기고 '**' 추가
+            }
+            return name; // 이름이 한 글자면 그대로 반환
+        };
 
         return (
-            <Box>
+            <Box sx={{borderTop: '1px solid #ccc', paddingY: 1}}>
                 {reviewModify ?
                     <Rating
                         value={newRating}
@@ -123,7 +129,7 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                         readOnly
                     />}
                 <Typography>
-                    {productReview.usersDto.email} | {dayjs(productReview.createdAt).format('YYYY-MM-DD')}
+                    {maskName(productReview.usersDto.name)} | {dayjs(productReview.createdAt).format('YYYY-MM-DD')}
                 </Typography>
                 {reviewModify ? (
                     <TextField
@@ -145,8 +151,12 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                                 </>
                             ) : (
                                 <>
-                                    <Button onClick={() => setReviewModify(true)}>수정</Button>
-                                    <Button onClick={reviewDeleteHandler}>삭제</Button>
+                                    <Button onClick={() => setReviewModify(true)}
+                                            sx={{backgroundColor: "#000000", color: "#FFFFFF", marginRight: 2}}
+                                            size="small">수정</Button>
+                                    <Button onClick={reviewDeleteHandler}
+                                            sx={{backgroundColor: "#FFDF00", color: "#000000"}}
+                                            size="small">삭제</Button>
                                 </>
                             )}
                         </>
