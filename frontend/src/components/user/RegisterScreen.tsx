@@ -238,7 +238,11 @@ export default function RegisterScreen(){
                             </Select>
                         </FormControl>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker onChange={(date) =>birthdayChange(date)} value={birthday} />
+                            <DatePicker
+                                label="생일"
+                                onChange={(date) =>birthdayChange(date)}
+                                        value={birthday}
+                                format="YYYY-MM-DD" />
                         </LocalizationProvider>
                         <TextField
                             margin="normal"
