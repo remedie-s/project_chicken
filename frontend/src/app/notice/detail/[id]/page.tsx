@@ -1,7 +1,7 @@
 
 "use client"
 import {useParams} from "next/navigation";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {ProductsDto} from "@/types/productType";
 import {Box, Paper, Typography} from "@mui/material";
@@ -26,11 +26,8 @@ export default function () {
     }, [id]);
 
     return(
-        <CenterBox>
-            <Typography variant="h5" sx={{marginBottom: 3}}>
-                공지사항
-            </Typography>
-            <Paper sx={{padding:3}}>
+        <CenterBox name="공지사항">
+            <Paper sx={{padding:3, width: "90%", maxWidth: "1400px"}}>
             {noticeDetail?
                 <Box>
                     <Typography variant="h5" sx={{marginBottom:3,
@@ -40,19 +37,12 @@ export default function () {
                     <>
                         {noticeDetail.imageUrl?
                             (<Box
-                                // 이미지 크기 조절
+                                component="img" src={noticeDetail.imageUrl}
                                 sx={{
-                                    width: "100%",
-                                    height: "400px", // 원하는 높이로 설정
-                                    backgroundImage: `url(${noticeDetail.imageUrl})`,
-                                    backgroundSize: "cover", // 이미지가 전체 박스를 덮도록 설정
-                                    backgroundPosition: "center", // 이미지의 중앙을 기준으로 설정
-                                    display: "flex", // Flexbox 사용
-                                    justifyContent: "space-between", // 좌우로 배치
-                                    alignItems: "center", // 세로로 가운데 정렬
-                                    maxWidth: "800px"
-                                }}
-                            ></Box>)
+                                    width: "40%",
+                                    minWidth: 250,
+                                    maxWidth: 800,
+                                    objectFit: "contain"}}/>)
                             :
                                 (<></>)
                         }

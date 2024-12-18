@@ -118,18 +118,18 @@ export default function odrerPage() {
         router.back();
     }
 
-    const paginationModel = {page: 0, pageSize: 10};
+    const paginationModel = {page: 0, pageSize: 5};
 
 
 
     return (
-        <CenterBox>
+        <CenterBox name="주문">
             <Paper sx={{height: 400, width: '100%'}}>
                 <DataGrid
                     rows={rows}
                     columns={columns}
                     initialState={{pagination: {paginationModel}}}
-                    pageSizeOptions={[10, 20]}
+                    pageSizeOptions={[5, 10]}
                     sx={{border: 0}}
                 />
             </Paper>

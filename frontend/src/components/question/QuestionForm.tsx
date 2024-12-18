@@ -42,7 +42,7 @@ export default function QuestionForm({questionId, modifyRequest}: formType) {
     }, []);
 
     const check = () => {
-        if (title.trim().length === 0 || content.trim().length === 0) {
+        if (!title.trim() || !content.trim()) {
             alert("제목과 내용은 필수입니다.")
             return true;
         }
@@ -85,30 +85,40 @@ export default function QuestionForm({questionId, modifyRequest}: formType) {
     }
 
     return (
-        <CenterBox>
         <Box sx={{
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            minWidth: "400px",
+            maxWidth: "1000px"
         }}>
             <TextField
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}></TextField>
+                label="제목"
+                onChange={(e) => setTitle(e.target.value)}
+                sx={{marginY:2}}></TextField>
             <TextField
                 value={content}
+                label="내용"
+                multiline
+                minRows={10}
                 onChange={(e) => setContent(e.target.value)}></TextField>
-
+            <Box sx={{display: "flex", flexDirection: "row", marginY: 2}}>
             {modifyType ?
                 <>
-                    <Button onClick={modifyHandler}>작성 완료</Button>
-                    <Button onClick={() => router.push(`/user/mypage/qa/${questionId}`)}>작성 취소</Button>
+                    <Button onClick={modifyHandler}
+                    sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 2}}>작성 완료</Button>
+                    <Button onClick={() => router.push(`/user/mypage/qa/${questionId}`)}
+                            sx={{ backgroundColor: "#000000", color: "#FFFFFF"}}>작성 취소</Button>
                 </>
                 :
                 <>
-                    <Button onClick={createHandler}>작성 완료</Button>
-                    <Button onClick={() => router.push("/user/mypage")}>작성 취소</Button>
+                    <Button onClick={createHandler}
+                            sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 2}}>작성 완료</Button>
+                    <Button onClick={() => router.push("/user/mypage")}
+                            sx={{ backgroundColor: "#000000", color: "#FFFFFF"}}>작성 취소</Button>
                 </>
             }
+            </Box>
         </Box>
-        </CenterBox>
     )
 }

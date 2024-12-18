@@ -20,7 +20,6 @@ import gradeDiscountPrice from "@/scripts/GradeDiscountPrice";
 import {OrderRequestType} from "@/types/orderType";
 import ReviewList from "@/components/review/ReviewList";
 import {getCookie} from "@/scripts/cookieScript";
-import CenterBox from "@/components/layout/CenterBox";
 import ScrollBox from "@/components/product/ScrollBox";
 const cookie = require("cookie");
 
@@ -160,8 +159,7 @@ export default function ProductDetail({productId}: { productId: string }) {
                         width: "40%", 
                         minWidth: 250,
                         maxWidth: 600,
-                        // 이미지 비율
-                        aspectRatio: "4/3"}}/>
+                        objectFit: "contain"}}/>
                 <Box sx={{display: "flexDirection", marginLeft: 5, width: "40%"}}>
                     <Box sx={{marginBottom: 1}}>
                         {categoryText} - {brandText}
@@ -187,9 +185,8 @@ export default function ProductDetail({productId}: { productId: string }) {
                                    }
                                }}
                                size="small"
-                               sx={{marginBottom:3}}
                     />
-                    <Box sx={{display: "flex"}}>
+                    <Box sx={{display: "flex", marginY:2}}>
                         <Button onClick={orderOneHandler}
                         sx={{backgroundColor: "#FFDF00", color: "#000000", marginRight:2}}>구매하기</Button>
                         <Button onClick={cartAddHandler}
@@ -216,7 +213,7 @@ export default function ProductDetail({productId}: { productId: string }) {
                         <ScrollBox name="판매 정책" id="rule"/>
                     </Toolbar>
                     <Box sx={{justifyItems: "center"}}>
-                        <Box sx={{width: "70%"}}>
+                        <Box sx={{maxWidth: "1200px", width: "90%"}}>
                             <ProductPaper>
                         <Typography id="description" variant="h5" sx={{marginBottom: 2}}>
                             상세 설명

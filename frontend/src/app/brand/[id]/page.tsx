@@ -30,10 +30,7 @@ export default function () {
     }, [decodedId]);
 
     return(
-        <CenterBox>
-            <Typography variant="h5" sx={{marginBottom: 3}}>
-                {decodedId} 브랜드 상품
-            </Typography>
+        <CenterBox name={`${decodedId} 브랜드 상품`}>
         {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
