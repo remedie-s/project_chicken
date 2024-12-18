@@ -9,7 +9,7 @@ import {useRouter, useParams} from "next/navigation";
 import axios from "axios";
 import authErrorLogout from "@/scripts/auth/authErrorLogout";
 import AnswersList from "@/components/question/AnswersList";
-import LoadingScreen from "@/components/layout/LoadingScreen";
+import Loading from "@/app/loading";
 
 export default function page() {
     const [question, setQuestion] = useState<QuestionDto | null>(null);

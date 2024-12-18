@@ -28,14 +28,22 @@ export default function AnswersList({ questionId }: { questionId: number }) {
         <Paper sx={{padding: 3}}>
             {answers.length > 0 ?
                 answers.map((answer) => (
-                    <Box key={answer.id} sx={{
+                    <Paper key={answer.id} sx={{
                         borderBottom: '1px solid #ccc', marginBottom: 2 }}>
-                        <Typography variant="h6" sx={{marginBottom:1}}>{answer.title}</Typography>
+
+                        <Typography variant="h5" sx={{marginBottom:3,
+                            borderBottom: '1px solid #ccc'}}>
+                            {answer.title}
+                        </Typography>
                         <Box sx={{display:"flex", alignItems: "flex-end", flexDirection: "column"}}>
-                        <Typography>{timeStyle(answer.createTime)}</Typography>
+                            <Typography>
+                                작성일 : {timeStyle(answer.createTime)}
+                            </Typography>
                         </Box>
-                        <Typography>{answer.content}</Typography>
-                    </Box>
+                        <Typography sx={{ fontSize: "1.1rem"}}>
+                            {answer.content}
+                        </Typography>
+                    </Paper>
                 ))
                 :
                 <Typography>아직 답변이 없습니다.</Typography>

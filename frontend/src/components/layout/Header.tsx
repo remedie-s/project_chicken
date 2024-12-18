@@ -17,13 +17,11 @@ const cookie = require("cookie");
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 
-type userNameType = {
-    userName:string
-};
 
-export default function Header({userName}:userNameType){
+export default function Header(){
     const router = useRouter();
     const [keyword, setKeyword] = useState("");
+    const [userName,setUserName] = useState("");
 
     const goHome = () =>{
         router.push("/")
@@ -41,6 +39,16 @@ export default function Header({userName}:userNameType){
             searchHandler();
         }
     };
+
+
+    useEffect(() => {
+        console.log("useEffect 실행");
+        const cookies = document.cookie ? cookie.parse(document.cookie) : {};
+        const loginUser = cookies.userName || null;
+        if (loginUser) {
+            setUserName(loginUser);
+        }
+    }, []);
 
 
     return (
