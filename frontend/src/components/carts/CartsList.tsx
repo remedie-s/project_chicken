@@ -76,7 +76,7 @@ export default function CartsList() {
     }
 
     const deleteHandler = async (ids: number[]) => {
-        if (ids.length === 0 || ids === null) {
+        if (ids.length === 0 || !ids) {
             alert("제거를 원하시는 상품을 선택해주세요.");
             return;
         }
@@ -85,7 +85,7 @@ export default function CartsList() {
     }
 
     const orderHandler = (ids: number[]) => {
-        if (ids.length === 0 || ids === null) {
+        if (ids.length === 0 || !ids) {
             alert("구매를 원하시는 상품을 선택해주세요.");
             return;
         }
