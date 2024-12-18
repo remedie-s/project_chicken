@@ -101,8 +101,7 @@ export default function LoginScreen(){
                     />
                     <Button
                         fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                        sx={{ mt: 3, mb: 2, backgroundColor: "#FFDF00", color: "#000000" }}
                         onClick={loginHandler}
                     >
                         로그인

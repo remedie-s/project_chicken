@@ -35,19 +35,8 @@ export default function MypageOrder( ){
     }, []);
 
 
-    if (!orders || orders.length === 0) {
-        return (
-            <Box sx={{ width: "100%", minWidth: 700}}>
-                <Paper sx={{height: 400, width: '100%'}}>
-                    주문 내역이 없습니다.
-                </Paper>
-            </Box>
-        );
-    }
 
-
-
-    const rows = orders.map((order) => ({
+    const rows = orders?.map((order) => ({
         id: order.id,
         image: order.products.imageUrl,
         name: order.products.name,
@@ -57,20 +46,22 @@ export default function MypageOrder( ){
         quantity: order.quantity,
         createdAt: timeStyle(order.createdAt),
         productId: order.products.id,
-        status: order.status
+        status: order.status,
+        invoice: order.invoice||"미발송"
     }));
 
     const columns: GridColDef[] = [
-        { field: "image", headerName: "상품 이미지", width: 150, renderCell:
+        { field: "image", headerName: "상품 이미지", width: 100, renderCell:
                 (params) =>
-                    <img src={params.value} alt="product" style={{width: '100px', height: 'auto'}} /> },
+                    <img src={params.value} alt="product" style={{width: '80px', height: 'auto'}} /> },
         { field: "name", headerName: "상품명", width: 120 },
         { field: "price", headerName: "상품 가격", width: 100 },
-        { field: "discount", headerName: "할인", width: 80 },
+        { field: "discount", headerName: "할인 금액", width: 80 },
         { field: "payPrice", headerName: "결제 금액", width: 100 },
         { field: "quantity", headerName: "수량", width: 50 },
-        { field: "createdAt", headerName: "주문일", width: 180 },
+        { field: "createdAt", headerName: "주문일", width: 140 },
         { field: "status", headerName: "주문 상태", width: 100 },
+        { field: "invoice", headerName: "송장번호", width: 100 },
         {
             field: 'refundButton',
             headerName: "반품 신청",
@@ -134,12 +125,17 @@ export default function MypageOrder( ){
                     onRowDoubleClick={(params) => {
                         const productId = params.row.productId;
                         router.push(`/product/detail/${productId}`); }}
+                    localeText={{
+                        noRowsLabel: "주문 내역이 없습니다."
+                    }}
                     sx={{border: 0}}
                 />
             </Paper>
-            <Button onClick={()=>deleteHandler(selectedIds)}>
-                주문 목록에서 제거
+            <Box sx={{marginTop: 2, display:"flex", alignItems: "flex-end", flexDirection: "column" }}>
+            <Button onClick={()=>deleteHandler(selectedIds)} sx={{backgroundColor: "#000000", color: "#FFFFFF"}}>
+                선택 상품 주문 목록에서 제거
             </Button>
+            </Box>
         </Box>
     );
 }

@@ -1,33 +1,23 @@
-"use client";
 
 import { Box } from "@mui/material";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode } from "react";
 import Navbar from "@/components/layout/Navbar";
 import "@/styles/globals.css";
-import LoadingScreen from "@/components/layout/LoadingScreen";
+import Loading from "@/app/loading";
 import BrandTab from "@/components/layout/BrandTab";
 const cookie = require("cookie");
+
+
 
 type LayoutChildren = {
     children: ReactNode;
 };
 
 export default function RootLayout({ children }: LayoutChildren) {
-    const [userName, setUserName] = useState("");
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        console.log("useEffect 실행");
-        const cookies = document.cookie ? cookie.parse(document.cookie) : {};
-        const loginUser = cookies.userName || null;
-        if (loginUser) {
-            setUserName(loginUser);
-        }
-        setLoading(false);
-        console.log("useEffect 완료");
-    }, []);
+
 
     return (
         <html lang="kr">
@@ -35,9 +25,6 @@ export default function RootLayout({ children }: LayoutChildren) {
             <title>ToolBox</title>
         </head>
         <body>
-        {loading ? ( <LoadingScreen /> )
-            :
-            (
         <Box
             sx={{
                 minHeight: "100vh", // 최소 화면 높이가 브라우저 100%
@@ -48,7 +35,7 @@ export default function RootLayout({ children }: LayoutChildren) {
             }}
         >
             {/* 상단 검색창, 로그인 등 */}
-            <Header userName={userName} />
+            <Header />
             {/* 카테고리 바 */}
             <Navbar />
             {/* 브랜드 탭(bar형태) */}
@@ -65,7 +52,6 @@ export default function RootLayout({ children }: LayoutChildren) {
                 <Footer />
             </Box>
         </Box>
-            )}
         </body>
         </html>
     );

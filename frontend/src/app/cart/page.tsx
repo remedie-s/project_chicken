@@ -5,7 +5,7 @@ import useAuth from "@/scripts/auth/useAuth";
 import {useRouter} from "next/navigation";
 import CartsList from "@/components/carts/CartsList";
 import {Box} from "@mui/material";
-import LoadingScreen from "@/components/layout/LoadingScreen";
+import Loading from "@/app/loading";
 import CenterBox from "@/components/layout/CenterBox";
 
 
@@ -21,7 +21,7 @@ export default function page(){
     }, [loading, user, router]);
 
     if (loading) {
-        return <LoadingScreen/>;
+        return <Loading/>;
     }
 
     return (
