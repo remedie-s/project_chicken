@@ -3,6 +3,7 @@ import authErrorLogout from "@/scripts/auth/authErrorLogout";
 import {useRouter} from "next/navigation";
 const cookie = require("cookie");
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
 // 쿠키에서 JWT 토큰을 가져오는 함수
 function getCookie(name: string): string | undefined {
     const cookies = cookie.parse(document.cookie);
@@ -17,9 +18,9 @@ async function refreshAccessToken() {
     }
 
     try {
-        const response = await axios.post("http://localhost:8080/api/auth/refresh", {
-            refreshToken: refreshToken
-        }, {
+        const response = await axios.post(`${apiUrl}/auth/refresh`, {refreshToken: refreshToken}, {
+          
+
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -36,7 +37,7 @@ async function refreshAccessToken() {
 
 // Axios 인스턴스 생성
 const authApi = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: `${apiUrl}`,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',

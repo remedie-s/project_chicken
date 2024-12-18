@@ -11,7 +11,8 @@ const NoticeModal = () => {
         const hideNotice = localStorage.getItem('hideNotice');
         if (!hideNotice) {
             const fetchData = async () => {
-                const res = await axios.get<NoticeDto>("http://localhost:8080/api/notice/newest");
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+                const res = await axios.get<NoticeDto>(`${apiUrl}/notice/newest`);
                 if (res.data===null){return false;}
                 setNoticeDetail(res.data);
                 return true;

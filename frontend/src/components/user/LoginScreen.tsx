@@ -18,7 +18,8 @@ export default function LoginScreen(){
             password: password
         };
         try {
-            const res = await axios.post<TokenResponseDto>("http://localhost:8080/api/auth/login", send);
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+            const res = await axios.post<TokenResponseDto>(`${apiUrl}/auth/login`, send);
             if (res.status !== 200) { console.log("로그인 실패" + res.data); }
             else { console.log("로그인 성공: ");
                 document.cookie = cookie.serialize("refreshToken",res.data.refreshToken, {

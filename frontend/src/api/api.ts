@@ -1,8 +1,9 @@
 import axios from "axios";
 import { NotificationRequest, TokenData } from "@/types/fcmType";
 
-const API_URL = 'http://localhost:8080/api'; // Spring Boot ERP 페이지
+// const API_URL = 'http://localhost:8080/api'; // Spring Boot ERP 페이지
 // const API_URL =  'http://192.168.0.11:8080/api'; // Spring Boot ERP 페이지 - 차후 서버페이지로 변경
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // 쿠키에서 값을 추출하는 함수
 const getCookie = (name: string): string | null => {

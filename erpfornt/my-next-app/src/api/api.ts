@@ -9,10 +9,13 @@ import {
     signupData, TokenData, UsersDto
 } from "./datatype";
 
-const API_URL =  'http://localhost:8081/api'; // spring boot ERP 페이지
-// const API_URL =  'http://192.168.0.8:8081/api'; // spring boot ERP 페이지- 차후 서버페이지로 변경
+// const API_URL =  'http://localhost:8081/api'; // spring boot ERP 페이지
+// const API_URL =  'http://192.168.0.11:8081/api'; // spring boot ERP 페이지- 차후 서버페이지로 변경
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const api = axios.create({
     baseURL:API_URL, // Spring Boot 서버의 URL
+
 })
 // 요청 인터셉터 추가
 api.interceptors.request.use((config) => {
