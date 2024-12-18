@@ -22,8 +22,10 @@ export default function NoticeList() {
         {field: "title", headerName: "제목", width: 400},
         { field: "createTime", headerName: "작성일", width: 200,
             // 날짜 형식 변환
+            valueFormatter: (params) => timeStyle(params),},
+        { field: "updateTime", headerName: "수정일", width: 200,
             valueFormatter: (params) => timeStyle(params),}
-    ];
+    ]
     const [noticeList,setNoticeList] = useState<NoticeDto[]|null>(null);
 
     useEffect(() => {
@@ -56,7 +58,8 @@ export default function NoticeList() {
                     localeText={{
                         noRowsLabel: "조회 가능한 공지사항이 없습니다.",
                     }}
-                    onCellClick={handleCellClick} // 셀 클릭 핸들러
+                    // 셀 클릭 핸들러
+                    onCellClick={handleCellClick}
                 />
             </Paper>
         </Box>

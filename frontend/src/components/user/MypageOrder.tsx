@@ -56,7 +56,8 @@ export default function MypageOrder( ){
         payPrice: order.payPrice,
         quantity: order.quantity,
         createdAt: timeStyle(order.createdAt),
-        productId: order.products.id
+        productId: order.products.id,
+        status: order.status
     }));
 
     const columns: GridColDef[] = [
@@ -70,10 +71,22 @@ export default function MypageOrder( ){
         { field: "quantity", headerName: "수량", width: 50 },
         { field: "createdAt", headerName: "주문일", width: 180 },
         { field: "status", headerName: "주문 상태", width: 100 },
+        {
+            field: 'refundButton',
+            headerName: "반품 신청",
+            width: 100,
+            renderCell: (params) => (
+                <Button
+                    sx = {{backgroundColor: "#000000", color: "#FFFFFF"}}
+                    onClick={() => refundHandler(params.row.id)}>
+                    반품
+                </Button>
+            )
+        },
     ];
 
     const deleteHandler = async (ids: number[]) => {
-        if (ids.length === 0 || ids === null) {
+        if (ids.length === 0 || !ids) {
             alert("제거를 원하시는 상품을 선택해주세요.");
             return;
         }
@@ -92,6 +105,18 @@ export default function MypageOrder( ){
             alert("주문 제거 중 오류가 발생했습니다.");
         }
     }
+    const refundHandler = async (id:number) => {
+        if(!id){alert("반품하려는 상품 정보가 올바르지 않습니다."); return;}
+        if(!confirm("정말 반품하시겠습니까?\n주문 상태에 따라 반품이 취소 처리될 수도 있습니다.")) {return;}
+        try{
+            const res = await authApi.post(`/orders/refund/${id}`);
+            if (res.status!==200) {alert("반품 신청에 실패했습니다."); return;}
+            setOrders(res.data);
+        }
+        catch (error) {
+            alert("반품 신청 중 오류가 발생했습니다.");
+        }
+    }
 
     return (
         <Box sx={{ width: "100%"}}>
@@ -106,14 +131,14 @@ export default function MypageOrder( ){
                     onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
                         setSelectedIds(newSelection as number[]);
                     }}
-                    onRowClick={(params) => {
+                    onRowDoubleClick={(params) => {
                         const productId = params.row.productId;
                         router.push(`/product/detail/${productId}`); }}
                     sx={{border: 0}}
                 />
             </Paper>
             <Button onClick={()=>deleteHandler(selectedIds)}>
-                선택 주문 목록에서 제거
+                주문 목록에서 제거
             </Button>
         </Box>
     );
