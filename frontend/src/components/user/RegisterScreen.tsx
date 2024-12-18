@@ -116,7 +116,8 @@ export default function RegisterScreen(){
             phoneNumber: formatPhoneNumber(phone)
         };
         try {
-            const res = await axios.post("http://localhost:8080/api/auth/register", send);
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+            const res = await axios.post(`${apiUrl}/auth/register`, send);
             if (res.status !== 200) { console.log("가입실패" + res.data); }
             else {
                 alert("성공적으로 가입되었습니다.")

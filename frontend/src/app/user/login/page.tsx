@@ -21,7 +21,8 @@ export default function page() {
                 email: email
             }
         };
-        const res = await axios.get<UsersDto>("http://localhost:8080/api/auth/passwordqa", data);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+        const res = await axios.get<UsersDto>(`${apiUrl}/auth/passwordqa`, data);
         console.log("비밀번호 질답 통신 "+ res.data);
         if (res.status === 500) {
             alert("존재하지 않는 계정입니다.");

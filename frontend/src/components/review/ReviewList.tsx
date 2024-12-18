@@ -35,7 +35,8 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
             setCurrentUser(res.data.id)
         }
         const fetchData = async () => {
-            const res = await axios.get<ProductReviewsDto[] | null>(`http://localhost:8080/api/product/reviews/list/${productId}`);
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+            const res = await axios.get<ProductReviewsDto[] | null>(`${apiUrl}/product/reviews/list/${productId}`);
             if (res.status !== 200) {
                 alert("상품 리뷰를 불러오는데 문제가 발생했습니다.");
             } else {

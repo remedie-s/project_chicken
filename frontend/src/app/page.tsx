@@ -17,7 +17,8 @@ export default function index() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("http://localhost:8080/api/products/list/all");
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+                const res = await axios.get(`${apiUrl}/products/list/all`);
                 if (res.status !== 200) {
                     console.log("물품 조회에 실패했습니다")
                 };

@@ -204,6 +204,7 @@ services:
       - app-network
     environment:
       - NODE_ENV=production  # 프로덕션 환경에서 실행되도록 설정
+    command: sh -c "npm install && npm run build && npm run start"
 
   erpfront:
     build:
@@ -221,6 +222,7 @@ services:
       - app-network
     environment:
       - NODE_ENV=production  # 프로덕션 환경에서 실행되도록 설정
+    command: sh -c "npm install && npm run build && npm run start"
 
 
 volumes:
