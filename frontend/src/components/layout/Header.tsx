@@ -58,7 +58,7 @@ export default function Header(){
                     component="img" src="/ToolBox_Logo.png"
                     sx={{ height: "70px", width: "auto", objectFit: "contain", margin: '0 10px', }}
                     onClick={goHome}/>
-                <Box sx={{display: "flex", alignItems:"center", width: "50%", marginRight: 3 }}>
+                <Box sx={{display: "flex", alignItems:"center", width: "35%", marginRight: 3 }}>
                 <TextField
                     variant="outlined"
                     size="small"
