@@ -25,7 +25,7 @@ export default function page(){
     }
 
     return (
-        <CenterBox>
+        <CenterBox name="장바구니">
             <CartsList/>
         </CenterBox>
     );

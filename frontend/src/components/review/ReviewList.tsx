@@ -12,10 +12,11 @@ const cookie = require("cookie");
 
 type reviewListType = {
     productId: string,
-    reviewCreateAuth: boolean
+    reviewCreateAuth: boolean,
+    setAverageRating: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function ReviewList({productId, reviewCreateAuth}: reviewListType) {
+export default function ReviewList({productId, reviewCreateAuth, setAverageRating}: reviewListType) {
     const [productReviews, setProductReviews] = useState<ProductReviewsDto[] | null>();
     // 각 리뷰 작성자인지 확인용
     const [currentUser, setCurrentUser] = useState<number | null>(null);
@@ -26,6 +27,14 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
     }
 
     useEffect(() => {
+        // 리뷰 평균 점수
+        const calculateAverageRating = (reviews: ProductReviewsDto[]) => {
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            const numberOfReviews = reviews.length;
+            // 소수점 한 자리로 반올림 후 숫자로 변환
+            const average = parseFloat((totalRating / numberOfReviews).toFixed(1));
+            setAverageRating(average);
+        };
         const fetchDataUser = async () => {
             const accessToken = getCookie("accessToken");
             if (!accessToken) {
@@ -41,6 +50,9 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                 alert("상품 리뷰를 불러오는데 문제가 발생했습니다.");
             } else {
                 setProductReviews(res.data);
+                if(res.data) {
+                    calculateAverageRating(res.data);
+                }
             }
         }
         fetchDataUser();
@@ -100,10 +112,17 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
             setNewContent(productReview.content); // 수정 취소 시 원래 내용으로 복원
             setNewRating(productReview.rating);
         };
+        // 리뷰용 이름 익명 처리
+        const maskName = (name: string) => {
+            if (name.length > 1) {
+                return name[0] + '**'; // 첫 글자만 남기고 '**' 추가
+            }
+            return name; // 이름이 한 글자면 그대로 반환
+        };
 
 
         return (
-            <Box>
+            <Box sx={{borderTop: '1px solid #ccc', paddingY: 1}}>
                 {reviewModify ?
                     <Rating
                         value={newRating}
@@ -123,7 +142,7 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                         readOnly
                     />}
                 <Typography>
-                    {productReview.usersDto.email} | {dayjs(productReview.createdAt).format('YYYY-MM-DD')}
+                    {maskName(productReview.usersDto.name)} | {dayjs(productReview.createdAt).format('YYYY-MM-DD')}
                 </Typography>
                 {reviewModify ? (
                     <TextField
@@ -145,8 +164,12 @@ export default function ReviewList({productId, reviewCreateAuth}: reviewListType
                                 </>
                             ) : (
                                 <>
-                                    <Button onClick={() => setReviewModify(true)}>수정</Button>
-                                    <Button onClick={reviewDeleteHandler}>삭제</Button>
+                                    <Button onClick={() => setReviewModify(true)}
+                                            sx={{backgroundColor: "#000000", color: "#FFFFFF", marginRight: 2}}
+                                            size="small">수정</Button>
+                                    <Button onClick={reviewDeleteHandler}
+                                            sx={{backgroundColor: "#FFDF00", color: "#000000"}}
+                                            size="small">삭제</Button>
                                 </>
                             )}
                         </>

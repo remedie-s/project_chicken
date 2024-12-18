@@ -28,15 +28,12 @@ export default function eventProductPage () {
     }, [])
 
     return (
-        <CenterBox>
+        <CenterBox name="이벤트 상품">
             <Box>
-            <Typography variant="h5" sx={{marginBottom: 3}}>
-                이벤트 상품 페이지
-            </Typography>
             {products ?
                 <ProductList products={products}/>
                 :
-                <CenterBox>
+                <CenterBox name="">
                     현재 대상 물품이 없습니다.
                 </CenterBox>
             }

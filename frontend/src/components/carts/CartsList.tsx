@@ -151,7 +151,7 @@ export default function CartsList() {
         {field: 'price', headerName: '가격', width: 100},
         {field: 'payPrice', headerName: '예상 결제 금액', width: 120},
         {
-            field: 'quantity', headerName: '수량', width: 70, renderCell: (params) => {
+            field: 'quantity', headerName: '수량', width: 100, renderCell: (params) => {
                 return params.row.id === editRowId ? (
                     <TextField
                         type="number"
@@ -187,10 +187,10 @@ export default function CartsList() {
         {
             field: 'orderButton',
             headerName: '제품 구매',
-            width: 120,
+            width: 100,
             renderCell: (params) => (
                 <Button
-                    sx = {{backgroundColor: "#000000", color: "#FFFFFF"}}
+                    sx = {{backgroundColor: "#FFDF00", color: "#000000"}}
                     onClick={() => orderHandler([params.row.id])}>
                     구매
                 </Button>
@@ -199,7 +199,7 @@ export default function CartsList() {
         {
             field: 'deleteButton',
             headerName: '제품 제거',
-            width: 120,
+            width: 100,
             renderCell: (params) => (
                 <Button
                     sx = {{backgroundColor: "#000000", color: "#FFFFFF"}}

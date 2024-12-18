@@ -58,7 +58,10 @@ export default function MypageQuestion() {
 
     return (
         <Box sx={{ width: "100%"}}>
-            <Button onClick={()=>router.push("/user/mypage/qa/create")}>문의 작성</Button>
+            <Button
+                onClick={()=>router.push("/user/mypage/qa/create")}
+                sx={{backgroundColor: "#FFDF00", color: "#000000", marginBottom: 2}}
+            >문의 작성</Button>
             <Paper sx={{height: 400, width: '100%'}}>
             <DataGrid
                 rows={questionList||[]}
