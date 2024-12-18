@@ -1,5 +1,5 @@
 "use client"
-import {Box, Button, Paper, TextField} from "@mui/material";
+import {Box, Button, Paper, TextField, Typography} from "@mui/material";
 import {DataGrid, GridColDef, GridRowSelectionModel} from "@mui/x-data-grid";
 import {Dayjs} from "dayjs";
 import type {ProductsDto} from "@/types/productType";
@@ -76,7 +76,7 @@ export default function CartsList() {
     }
 
     const deleteHandler = async (ids: number[]) => {
-        if (ids.length === 0 || ids === null) {
+        if (ids.length === 0 || !ids) {
             alert("제거를 원하시는 상품을 선택해주세요.");
             return;
         }
@@ -85,7 +85,7 @@ export default function CartsList() {
     }
 
     const orderHandler = (ids: number[]) => {
-        if (ids.length === 0 || ids === null) {
+        if (ids.length === 0 || !ids) {
             alert("구매를 원하시는 상품을 선택해주세요.");
             return;
         }
@@ -128,18 +128,9 @@ export default function CartsList() {
     }, []);
 
     const paginationModel = {page: 0, pageSize: 10};
-    if (!carts || carts.length === 0) {
-        return (
-            <Box sx={{width: "100%", minWidth: 700}}>
-                <Paper sx={{height: 400, width: '100%'}}>
-                    장바구니가 비어있습니다.
-                </Paper>
-            </Box>
-        );
-    }
 
     // map으로 각 항목 값 배정
-    const rows = carts.map((cart) => ({
+    const rows = carts?.map((cart) => ({
         id: cart.id,
         image: cart.productsDto.imageUrl,
         name: cart.productsDto.name,
@@ -158,9 +149,9 @@ export default function CartsList() {
         },
         {field: 'name', headerName: '상품명', width: 120},
         {field: 'price', headerName: '가격', width: 100},
-        {field: 'payPrice', headerName: '실결제 가격', width: 100},
+        {field: 'payPrice', headerName: '예상 결제 금액', width: 120},
         {
-            field: 'quantity', headerName: '수량', width: 100, renderCell: (params) => {
+            field: 'quantity', headerName: '수량', width: 70, renderCell: (params) => {
                 return params.row.id === editRowId ? (
                     <TextField
                         type="number"
@@ -176,19 +167,17 @@ export default function CartsList() {
         {
             field: 'quantityChangeButton',
             headerName: '수량 변경',
-            width: 150,
+            width: 120,
             renderCell: (params) => {
                 return params.row.id === editRowId ? (
                     <Button
-                        variant="contained"
-                        color="primary"
+                        sx = {{backgroundColor: "#000000", color: "#FFFFFF"}}
                         onClick={() => handleQuantitySaveClick(params.row.id)}>
                         변경 확인
                     </Button>
                 ) : (
                     <Button
-                        variant="contained"
-                        color="primary"
+                        sx = {{backgroundColor: "#000000", color: "#FFFFFF"}}
                         onClick={() => handleQuantityEditClick(params.row.id, params.row.quantity)}>
                         수량 변경
                     </Button>
@@ -198,11 +187,10 @@ export default function CartsList() {
         {
             field: 'orderButton',
             headerName: '제품 구매',
-            width: 150,
+            width: 120,
             renderCell: (params) => (
                 <Button
-                    variant="contained"
-                    color="primary"
+                    sx = {{backgroundColor: "#000000", color: "#FFFFFF"}}
                     onClick={() => orderHandler([params.row.id])}>
                     구매
                 </Button>
@@ -211,11 +199,10 @@ export default function CartsList() {
         {
             field: 'deleteButton',
             headerName: '제품 제거',
-            width: 150,
+            width: 120,
             renderCell: (params) => (
                 <Button
-                    variant="contained"
-                    color="primary"
+                    sx = {{backgroundColor: "#000000", color: "#FFFFFF"}}
                     onClick={() => deleteHandler([params.row.id])}>
                     제거
                 </Button>
@@ -239,12 +226,22 @@ export default function CartsList() {
                     onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
                         setSelectedIds(newSelection as number[]);
                     }}
+                    localeText={{
+                        noRowsLabel: "장바구니가 비어있습니다.",
+                    }}
                     sx={{border: 0}}
                 />
             </Paper>
-            <Box>
-                <Button onClick={() => deleteHandler(selectedIds)}>삭제</Button>
-                <Button onClick={() => orderHandler(selectedIds)}>구매</Button>
+            <Box sx={{display:"flex", alignItems: "flex-end", flexDirection: "column", marginY: 2}}>
+                <Typography >
+                    선택한 상품을
+                </Typography>
+                <Box>
+                <Button onClick={() => deleteHandler(selectedIds)}
+                        sx={{ backgroundColor: "#E00000", color: "#FFFFFF", marginRight:2}}>삭제</Button>
+                <Button onClick={() => orderHandler(selectedIds)}
+                sx={{ backgroundColor: "#FFDF00", color: "#000000"}}>구매</Button>
+                </Box>
             </Box>
         </Box>
     );

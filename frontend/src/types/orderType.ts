@@ -12,6 +12,7 @@ export type OrderDto = {
     available: boolean,
     invoice: number,
     address: string,
+    status: string,
     // productsDto: ProductsDto
     products: ProductsDto
 };

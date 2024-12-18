@@ -65,6 +65,7 @@ public class AuthController {
         // 성공적으로 로그인한 사용자 정보와 토큰 반환
         return ResponseEntity.ok(new TokenResponseDto("Login successful", accessToken, refreshToken  ,login.getEmail(),login.getName(), login.getUserGrade()));
     }
+    // 리프레시 토큰 확인 후 재발급
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponseDto> refresh(@RequestBody RefreshRequest request) {
         String refreshToken = request.getRefreshToken();

@@ -1,5 +1,5 @@
 "use client"
-import {Box, Button} from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 import useAuth from "@/scripts/auth/useAuth";
 import {useEffect, useState} from "react";
 import authApi from "@/scripts/auth/authApi";
@@ -9,7 +9,7 @@ import {useRouter, useParams} from "next/navigation";
 import axios from "axios";
 import authErrorLogout from "@/scripts/auth/authErrorLogout";
 import AnswersList from "@/components/question/AnswersList";
-import LoadingScreen from "@/components/layout/LoadingScreen";
+import Loading from "@/app/loading";
 
 export default function page() {
     const [question, setQuestion] = useState<QuestionDto | null>(null);
@@ -17,18 +17,7 @@ export default function page() {
     const { user, loading } = useAuth();
     const router = useRouter();
 
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push("/user/login");
-        }
-    }, [loading, user, router]);
-
-    if (loading) {
-        return <LoadingScreen/>;
-    }
-
-
-    // TODO 차후 링크 수정
+    // TODO 임시 처리
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -39,7 +28,7 @@ export default function page() {
                     return;
                 }
                 if (user && res.data.userId !== user.id) {
-                    alert("작성자가 아닙니다.");
+                    alert("해당 문의글 작성자가 아닙니다.");
                     router.back(); // 이전 페이지로 리다이렉트 }
                 }
                 setQuestion(res.data);
@@ -52,6 +41,7 @@ export default function page() {
 
         fetchData();
     }, [id, router]);
+
     const deleteHandler = async () => {
         const confirm = window.confirm("정말로 이 문의글을 삭제하시겠습니까?");
         if (!confirm) {
@@ -81,11 +71,18 @@ export default function page() {
 
     return (
         <Box>
+            <Typography variant="h5" sx={{marginBottom: 3}}>
+                내 문의글 보기
+            </Typography>
             {question ?
                 <Box>
                     <QuestionDetail question={question}/>
-                    <Button onClick={modifyHandler}>수정</Button>
-                    <Button onClick={deleteHandler}>삭제</Button>
+                    <Box sx={{display:"flex", justifyContent: "right", marginY:2}}>
+                    <Button onClick={modifyHandler}
+                            sx = {{backgroundColor: "#000000", color: "#FFFFFF", marginRight:2}}>수정</Button>
+                    <Button onClick={deleteHandler}
+                            sx = {{backgroundColor: "#E00000", color: "#FFFFFF"}}>삭제</Button>
+                    </Box>
                     <AnswersList questionId={question.id}/>
                 </Box>
                 :

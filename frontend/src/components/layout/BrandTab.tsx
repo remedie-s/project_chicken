@@ -1,3 +1,4 @@
+"use client"
 import {AppBar, Box, Toolbar} from "@mui/material";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
