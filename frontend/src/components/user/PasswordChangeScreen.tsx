@@ -31,7 +31,8 @@ export default function PasswordChangeScreen ({passwordQuestion, passwordAnswer,
             email: email,
             password: newPassword
         }
-        const res = await axios.post("http://localhost:8080/api/auth/passwordchange", data);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+        const res = await axios.post(`${apiUrl}/auth/passwordchange`, data);
         if (res.status!==200) { alert("비밀번호 변경에 실패했습니다.");}
         else { alert("비밀번호 변경에 성공했습니다."); setPasswordChange(false);}
         return;

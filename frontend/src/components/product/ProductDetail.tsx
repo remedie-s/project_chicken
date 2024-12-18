@@ -38,11 +38,12 @@ export default function ProductDetail({productId}: { productId: string }) {
         const fetchData = async () => {
             const accessToken = getCookie("accessToken");
             try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
                 let res: { status: number, data: ProductsDto };
                 if (!accessToken){
-                    res = await axios.get<ProductsDto>(`http://localhost:8080/api/products/detail/${productId}`);
+                    res = await axios.get<ProductsDto>(`${apiUrl}/products/detail/${productId}`);
                 } else {
-                    res = await authApi.get<ProductsDto>(`http://localhost:8080/api/products/detail/${productId}/user`);
+                    res = await authApi.get<ProductsDto>(`${apiUrl}/products/detail/${productId}/user`);
                     setReviewCreateAuth(res.data.boughtUser);
                 }
                 if (res.status !== 200) {

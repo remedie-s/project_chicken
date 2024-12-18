@@ -5,7 +5,7 @@ export default class WebSocketClient {
     private client: Client;
 
     constructor(accessToken: string, onMessage: (message: any) => void, receiver?: string) {
-        const socketUrl = `http://localhost:8081/ws?access_token=${accessToken}`; // receiver를 URL에 포함하지 않음
+        const socketUrl = `${process.env.NEXT_PUBLIC_WS_URL}?access_token=${accessToken}`;
 
         this.client = new Client({
             webSocketFactory: () => new SockJS(socketUrl),

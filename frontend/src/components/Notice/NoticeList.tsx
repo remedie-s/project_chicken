@@ -29,7 +29,8 @@ export default function NoticeList() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get<NoticeDto[]|null>("http://localhost:8080/api/notice/list");
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+                const res = await axios.get<NoticeDto[]|null>(`${apiUrl}/notice/list`);
                 console.log("공지사항 불러오기 "+res.data)
                 setNoticeList(res.data);
             } catch (error) {

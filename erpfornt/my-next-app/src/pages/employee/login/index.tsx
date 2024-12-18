@@ -32,6 +32,11 @@ export default function LoginPage(): JSX.Element {
     // 로그인 핸들러
     const handleLogin = async () => {
         try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+
+            console.log('API URL:', apiUrl);
+            console.log('WebSocket URL:', wsUrl);
             setErrorMessage(null);
             setSuccessMessage(null);
             const response = await login(loginData);
