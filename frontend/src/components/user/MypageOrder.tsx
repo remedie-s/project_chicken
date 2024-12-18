@@ -17,7 +17,7 @@ export default function MypageOrder( ){
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const router = useRouter();
 
-    const paginationModel = {page: 0, pageSize: 10};
+    const paginationModel = {page: 0, pageSize: 5};
 
     const fetchData = async () => {
         try {
@@ -116,7 +116,7 @@ export default function MypageOrder( ){
                     rows={rows}
                     columns={columns}
                     initialState={{pagination: {paginationModel}}}
-                    pageSizeOptions={[10, 20]}
+                    pageSizeOptions={[5, 10]}
                     checkboxSelection
                     disableRowSelectionOnClick
                     onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {

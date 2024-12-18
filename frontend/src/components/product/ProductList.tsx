@@ -137,7 +137,7 @@ export default function ProductList({ products }: productsType) {
                                     image={row.original.imageUrl}
                                     alt={row.original.name}
                                     // 이미지 크기 조절
-                                    style={{ objectFit: 'cover', width: '100%', height: '200px' }}
+                                    style={{ objectFit: "contain", width: '100%', height: '200px' }}
                                 />
                                 <CardContent>
                                     <Typography variant="h6">{row.original.name}</Typography>

@@ -58,7 +58,7 @@ export default function Header(){
                     component="img" src="/ToolBox_Logo.png"
                     sx={{ height: "70px", width: "auto", objectFit: "contain", margin: '0 10px', }}
                     onClick={goHome}/>
-                <Box sx={{display: "flex", alignItems:"center", width: "50%", marginRight: 3 }}>
+                <Box sx={{display: "flex", alignItems:"center", width: "35%", marginRight: 3 }}>
                 <TextField
                     variant="outlined"
                     size="small"
@@ -75,7 +75,7 @@ export default function Header(){
                 {userName?
                 <Box>
                     <Button
-                        sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 1 }}
+                        sx={{ backgroundColor: "#FFDF00", color: "#000000", margin: 1 }}
                         onClick={()=>{router.push("/cart")}}><ShoppingCartIcon/> 장바구니</Button>
                     <Button
                         sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 1 }}
@@ -87,7 +87,7 @@ export default function Header(){
                     :
                 <Box>
                 <Button
-                    sx={{ backgroundColor: "#FFDF00", color: "#000000", marginRight: 1 }}
+                    sx={{ backgroundColor: "#FFDF00", color: "#000000", margin: 1 }}
                 onClick={()=>{router.push("/user/login")}}>로그인</Button>
                 <Button
                     sx={{ backgroundColor: "#000000", color: "#FFFFFF" }}

@@ -30,14 +30,11 @@ export default function () {
     }, [decodedId]);
 
     return(
-        <CenterBox>
-            <Typography variant="h5" sx={{marginBottom: 3}}>
-                {decodedId} 카테고리 상품
-            </Typography>
+        <CenterBox name={`${decodedId} 카테고리 상품`}>
             {productsList && productsList.length > 0 ?
                 <ProductList products={productsList}></ProductList>
                 :
-                <CenterBox>
+                <CenterBox name="">
                     현재 판매 중인 {decodedId} 상품이 아직 없습니다
                 </CenterBox>}
         </CenterBox>
