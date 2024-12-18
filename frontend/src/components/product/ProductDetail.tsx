@@ -3,7 +3,7 @@
 import {
     Box,
     Button,
-    Paper,
+    Paper, Rating,
     TextField,
     Toolbar,
     Typography,
@@ -21,6 +21,7 @@ import {OrderRequestType} from "@/types/orderType";
 import ReviewList from "@/components/review/ReviewList";
 import {getCookie} from "@/scripts/cookieScript";
 import ScrollBox from "@/components/product/ScrollBox";
+import StarIcon from "@mui/icons-material/Star";
 const cookie = require("cookie");
 
 export default function ProductDetail({productId}: { productId: string }) {
@@ -30,6 +31,7 @@ export default function ProductDetail({productId}: { productId: string }) {
     const [productReviews, setProductReviews] = useState<ProductReviewsDto[]|null>();
     const [quantity, setQuantity] = useState(0);
     const [reviewCreateAuth, setReviewCreateAuth] = useState(false);
+    const [averageRating, setAverageRating] = useState(0);
 
 
 
@@ -167,6 +169,12 @@ export default function ProductDetail({productId}: { productId: string }) {
                     <Typography variant="h4" sx={{marginBottom:3}}>
                         {productDetail.name}
                     </Typography>
+                    <Rating
+                        value={averageRating}
+                        precision={0.5}
+                        readOnly
+                        emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit"/>}
+                    />
                     <Typography>
                         ₩{productDetail.price}
                     </Typography>
@@ -227,7 +235,7 @@ export default function ProductDetail({productId}: { productId: string }) {
                         <Typography id="review" variant="h5" sx={{marginBottom: 2}}>
                             리뷰
                         </Typography>
-                        <ReviewList productId={productId} reviewCreateAuth={reviewCreateAuth}/>
+                        <ReviewList productId={productId} reviewCreateAuth={reviewCreateAuth} setAverageRating={setAverageRating}/>
                             </ProductPaper>
                             <ProductPaper>
                         <Typography id="rule" variant="h5" sx={{marginBottom: 2}}>
