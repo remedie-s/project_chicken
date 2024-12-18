@@ -41,7 +41,9 @@ export default function servicePage() {
                 onClick={qaMoveHandler}
                 sx={{bgcolor: "#FFDF00", color: "#000000", margin: 3, width: "15%"}}
             >
-                    문의 페이지로 (로그인 필요)
+                문의 페이지로
+                <br/>
+                (로그인 필요)
         </Button>
 </CenterBox>
 )

@@ -11,7 +11,7 @@ import axios from "axios";
 import authApi from "@/scripts/auth/authApi"
 import type {OrderDto} from "@/types/orderType"
 import {usePathname, useRouter} from "next/navigation";
-import LoadingScreen from "@/components/layout/LoadingScreen";
+import Loading from "@/app/loading";
 
 type LayoutChildren = {
     children: ReactNode;
@@ -27,7 +27,7 @@ export default function mypage({children}: LayoutChildren) {
     }, [loading, user, router]);
 
     if (loading) {
-        return <LoadingScreen/>;
+        return <Loading/>;
     }
 
     return (

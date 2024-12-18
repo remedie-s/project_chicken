@@ -8,9 +8,9 @@ export default function Banner(){
 
     // 배경 이미지 리스트
     const backgroundImages = [
-        "/banner_test1.jpg",
-        "/banner_test2.jpg",
-        "/banner_test3.jpg",
+        "/banner_test1.png",
+        "/banner_test2.png",
+        "/banner_test3.png",
     ];
 
     // 현재 배경 이미지
