@@ -4,6 +4,7 @@ import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/materi
 import  type {TokenResponseDto} from "@/types/userType";
 import {useRouter} from "next/navigation";
 import {useFCM} from "@/hooks/useFcm";
+import {setCookie} from "@/scripts/cookieScript";
 const cookie = require("cookie");
 
 export default function LoginScreen(){
@@ -22,34 +23,15 @@ export default function LoginScreen(){
             const res = await axios.post<TokenResponseDto>(`${apiUrl}/auth/login`, send);
             if (res.status !== 200) { console.log("로그인 실패" + res.data); }
             else { console.log("로그인 성공: ");
-                document.cookie = cookie.serialize("refreshToken",res.data.refreshToken, {
-                    path: '/',  // 쿠키 저장 경로
-                    // httpOnly: true,  // 보안을 위해 JavaScript에서 접근 불가
-                    httpOnly: false,  // 개발 환경상 어쩔 수 없음
-                    // secure: process.env.NODE_ENV === 'production',  // 보안을 위해HTTPS 환경에서만
-                    secure: false,  // 개발 환경은 http라서 false
-                    sameSite: true  // CSRF 방지
-                })
-                document.cookie = cookie.serialize("accessToken",res.data.accessToken, {
-                    path: '/',
-                    httpOnly: false,
-                    secure: false,
-                    sameSite: true
-                })
-                document.cookie = cookie.serialize("userName",res.data.name, {
-                    path: '/',  // 쿠키 저장 경로
-                    httpOnly: false,
-                    secure: false,
-                    sameSite: true  // CSRF 방지
-                })
-                document.cookie = cookie.serialize("userGrade",res.data.userGrade, {
-                    path: '/',  // 쿠키 저장 경로
-                    httpOnly: false,
-                    secure: false,
-                    sameSite: true  // CSRF 방지
-                })
+                    setCookie("refreshToken", res.data.refreshToken, 3);
+                    setCookie("accessToken", res.data.accessToken, 1);
+                    setCookie("userName", res.data.name, 3);
+                    setCookie("accessToken", res.data.accessToken, 1);
+                    setCookie("userGrade", res.data.userGrade, 3);
                 // 쿠키 설정 확인
-                if (document.cookie.includes("userName=" + res.data.name)) {
+                // 한글 이름이 URL 인코딩된 값으로 쿠키에 저장돼서 확인시 디코딩 거침
+                const decodedCookie = decodeURIComponent(document.cookie);
+                if (decodedCookie.includes(`userName=${res.data.name}`)) {
                     // 쿠키 설정 확인됐으면 홈으로
                     window.location.href = "/user/logined";
                 } else {
@@ -66,6 +48,7 @@ export default function LoginScreen(){
             alert("로그인에 실패했습니다. 이메일과 비밀번호를 다시 확인해주세요.")
         }
     }
+
 
     return (
             <Card sx={{ width: "50%", minWidth:300, maxWidth:600,  margin: 4 }}>
