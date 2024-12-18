@@ -5,7 +5,7 @@ import authApi from "@/scripts/auth/authApi";
 import {Box, Button, TextField} from "@mui/material";
 import {QuestionDto} from "@/types/questionType";
 import useAuth from "@/scripts/auth/useAuth";
-import LoadingScreen from "@/components/layout/LoadingScreen";
+import Loading from "@/app/loading";
 import CenterBox from "@/components/layout/CenterBox";
 
 type formType = {

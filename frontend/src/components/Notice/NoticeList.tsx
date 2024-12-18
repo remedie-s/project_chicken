@@ -16,14 +16,16 @@ import timeStyle from "@/scripts/timeStyle";
 // TODO 대충 형태만 붙여넣기한 상태, 값 수정 필요
 export default function NoticeList() {
     const router = useRouter();
-    const paginationModel = {page: 0, pageSize: 5};
+    const paginationModel = {page: 0, pageSize: 10};
     // 데이터 그리드 컬럼 설정
     const columns: GridColDef[] = [
         {field: "title", headerName: "제목", width: 400},
         { field: "createTime", headerName: "작성일", width: 200,
             // 날짜 형식 변환
+            valueFormatter: (params) => timeStyle(params),},
+        { field: "updateTime", headerName: "수정일", width: 200,
             valueFormatter: (params) => timeStyle(params),}
-    ];
+    ]
     const [noticeList,setNoticeList] = useState<NoticeDto[]|null>(null);
 
     useEffect(() => {
@@ -57,7 +59,8 @@ export default function NoticeList() {
                     localeText={{
                         noRowsLabel: "조회 가능한 공지사항이 없습니다.",
                     }}
-                    onCellClick={handleCellClick} // 셀 클릭 핸들러
+                    // 셀 클릭 핸들러
+                    onCellClick={handleCellClick}
                 />
             </Paper>
         </Box>

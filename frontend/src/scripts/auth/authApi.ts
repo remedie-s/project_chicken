@@ -18,9 +18,10 @@ async function refreshAccessToken() {
     }
 
     try {
-        const response = await axios.post(`${apiUrl}/auth/refresh`, {}, {
+        const response = await axios.post(`${apiUrl}/auth/refresh`, {refreshToken: refreshToken}, {
+          
+
             headers: {
-                Authorization: `Bearer ${refreshToken}`,
                 'Content-Type': 'application/json',
             },
             withCredentials: true,

@@ -21,7 +21,7 @@ export default function LoginScreen(){
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
             const res = await axios.post<TokenResponseDto>(`${apiUrl}/auth/login`, send);
             if (res.status !== 200) { console.log("로그인 실패" + res.data); }
-            else { console.log("로그인 성공: ", res.data);
+            else { console.log("로그인 성공: ");
                 document.cookie = cookie.serialize("refreshToken",res.data.refreshToken, {
                     path: '/',  // 쿠키 저장 경로
                     // httpOnly: true,  // 보안을 위해 JavaScript에서 접근 불가
@@ -102,8 +102,7 @@ export default function LoginScreen(){
                     />
                     <Button
                         fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                        sx={{ mt: 3, mb: 2, backgroundColor: "#FFDF00", color: "#000000" }}
                         onClick={loginHandler}
                     >
                         로그인

@@ -105,7 +105,7 @@ export default function ProductList({ products }: productsType) {
     } = instance;
 
     return (
-        <Box sx={{alignItems: 'center', justifyItems: 'center'}}>
+        <Box sx={{alignItems: 'center', justifyItems: 'center', marginBottom: 3}}>
             {/* 정렬 버튼 */}
             <Button onClick={toggleDateSortOrder} sx={{color: "#000000"}}>
                 {dateSortOrder === "asc" ? "출시일순 ▼" : "출시일순 ▲"}
