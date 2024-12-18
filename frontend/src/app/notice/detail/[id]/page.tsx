@@ -16,7 +16,8 @@ export default function () {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get(`http://localhost:8080/api/notice/detail/${id}`)
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
+            const res = await axios.get(`${apiUrl}/notice/detail/${id}`)
             setNoticeDetail(res.data);
         }
         if (id && typeof id === "string") {
