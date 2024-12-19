@@ -216,7 +216,7 @@ services:
     volumes:
       - ./erpfornt/my-next-app:/app  # 로컬 소스 마운트
       - /app/node_modules  # 컨테이너 내부에서 node_modules을 별도로 관리
-      - ./certificates:/app/certificates  # 인증서 폴더 마운트
+      - ./erpfornt/my-next-app/certificates:/app/certificates  # 인증서 폴더 마운트
     working_dir: /app
     networks:
       - app-network
