@@ -33,8 +33,6 @@ export default function ProductDetail({productId}: { productId: string }) {
     const [reviewCreateAuth, setReviewCreateAuth] = useState(false);
     const [averageRating, setAverageRating] = useState(0);
 
-
-
     useEffect(() => {
         const fetchData = async () => {
             const accessToken = getCookie("accessToken");
@@ -62,6 +60,7 @@ export default function ProductDetail({productId}: { productId: string }) {
     if (!productDetail) {
         return (<>잘못된 상품입니다.</>)
     }
+
 
 
     // 수량 입력 함수(최대치 재고, 소수점 안 받음 등)
@@ -175,6 +174,7 @@ export default function ProductDetail({productId}: { productId: string }) {
                         readOnly
                         emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit"/>}
                     />
+                    {averageRating===0? "아직 리뷰가 없습니다.": ""}
                     <Typography>
                         ₩{productDetail.price}
                     </Typography>
