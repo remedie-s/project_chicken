@@ -522,7 +522,7 @@ export const deleteUser = async (id: number) => {//TODO
 // 모든 주문 로드해서 총 판매액, 할인액, 결과액, 원가 추출하는 API 호출
 export const getAllFianceData = async () => {
     try {
-        const response = await api.get('${API_URL}/fiance/all');
+        const response = await api.get(`${API_URL}/fiance/all`);
         return response.data; // 성공시 응답 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패시 에러 반환
@@ -531,7 +531,7 @@ export const getAllFianceData = async () => {
 // 특정 기간의 데이터를 로드하는 API 호출
 export const getFianceDataByDate = async (startDate: string, endDate: string) => {
     try {
-        const response = await api.get('${API_URL}/fiance/date', {
+        const response = await api.get(`${API_URL}/fiance/date`, {
             params: {
                 startDate,
                 endDate
@@ -545,7 +545,7 @@ export const getFianceDataByDate = async (startDate: string, endDate: string) =>
 // 카테고리별 데이터를 로드하는 API 호출
 export const getFianceDataByCategory = async (category: string) => {
     try {
-        const response = await api.get('${API_URL}/fiance/cate', {
+        const response = await api.get(`${API_URL}/fiance/cate`, {
             params: { category }
         });
         return response.data; // 성공시 응답 데이터 반환
@@ -556,7 +556,7 @@ export const getFianceDataByCategory = async (category: string) => {
 // 내부 재산 데이터를 조회하는 API 호출
 export const getInnerFianceData = async () => {
     try {
-        const response = await api.get('${API_URL}/fiance/inner');
+        const response = await api.get(`${API_URL}/fiance/inner`);
         return response.data; // 성공시 응답 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패시 에러 반환
@@ -565,7 +565,7 @@ export const getInnerFianceData = async () => {
 // 내부 재산을 생성하는 API 호출
 export const createInnerFianceData = async (fianceDto: FianceDto) => {
     try {
-        const response = await api.post('${API_URL}/fiance/inner/create', fianceDto, {
+        const response = await api.post(`${API_URL}/fiance/inner/create`, fianceDto, {
             headers: { 'Content-Type': 'application/json' }
         });
         return response.data; // 성공시 응답 데이터 반환
@@ -684,7 +684,7 @@ export const storeToken = async (tokenData:TokenData ) => {
 // FCM 토큰 저장 여부 확인
 export const getFCMIsStore = async () => {
     try {
-        const response = await api.get('${API_URL}/fcm/isStore');
+        const response = await api.get(`${API_URL}/fcm/isStore`);
         return response.data; // 성공시 응답 데이터 반환
     } catch (error: any) {
         throw error.response.data; // 실패시 에러 반환
@@ -797,7 +797,7 @@ export const chatPrivate = async (sender:string,receiver:string)=>{
 // 질문 전체 리스트 불러오기
 export const getAllQuestions = async () => {
     try {
-        const response = await api.get('/answers/questions');
+        const response = await api.get(`/answers/questions`);
         return response.data; // 질문 리스트 반환
     }     catch(error:any){
         throw error.response.data; // 오류 발생 시 에러 반환
@@ -827,7 +827,7 @@ export const getQuestionById = async (id:number) => {
 // 질문 생성
 export const createQuestion = async (questionData:any) => {
     try {
-        const response = await api.post('/answers/question', questionData, {
+        const response = await api.post(`/answers/question`, questionData, {
             headers: {
                 'Content-Type': 'application/json',
             },
