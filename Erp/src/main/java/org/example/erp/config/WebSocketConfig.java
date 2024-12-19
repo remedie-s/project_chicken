@@ -26,7 +26,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:3000", "http://localhost:3001","https://localhost:3000", "https://localhost:3001")
+                .setAllowedOrigins("http://localhost:3000", "http://localhost:3001","https://localhost:3000", "https://localhost:3001","https://192.168.0.11:3000",
+                        "https://192.168.0.11:3001", // Erp 클라이언트
+                        "https://192.168.0.11:8080",
+                        "https://192.168.0.11:8081",  // 추가 허용 포트
+                        "http://192.168.0.11:3000",
+                        "http://192.168.0.11:3001", // Erp 클라이언트
+                        "http://192.168.0.11:8080",
+                        "http://192.168.0.11:8081")
                 .addInterceptors(webSocketAuthInterceptor)
                 .withSockJS();
     }
