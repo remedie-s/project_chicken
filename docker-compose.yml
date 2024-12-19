@@ -212,17 +212,17 @@ services:
       dockerfile: Dockerfile  # Dockerfile 파일명 (기본적으로 Dockerfile이므로 생략 가능)
     container_name: erpfront
     ports:
-      - "3001:3001"
+      - "3001:3001"  # 외부 포트와 컨테이너 포트 매핑
     volumes:
       - ./erpfornt/my-next-app:/app  # 로컬 소스 마운트
       - /app/node_modules  # 컨테이너 내부에서 node_modules을 별도로 관리
-
+      - ./certificates:/app/certificates  # 인증서 폴더 마운트
     working_dir: /app
     networks:
       - app-network
     environment:
       - NODE_ENV=production  # 프로덕션 환경에서 실행되도록 설정
-    command: sh -c "npm install && npm run build && npm run start"
+    command: sh -c "npm install && npm run build && node server.js"  # 서버 실행 명령어
 
 
 volumes:
