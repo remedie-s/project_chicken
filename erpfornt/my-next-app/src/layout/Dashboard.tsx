@@ -47,7 +47,6 @@ import PartnerIndex from "@/pages/partner";
 import PartnerCreate from "@/pages/partner/create";
 import EmployeeAdminPage from "@/pages/admin/empList";
 import EmployeePage from "@/pages/employee/list";
-import {useFCM} from "@/hooks/useFCM";
 
 // firebase
 import "@/utils/firebase"
