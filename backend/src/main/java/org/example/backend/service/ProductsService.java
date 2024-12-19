@@ -142,6 +142,23 @@ public class ProductsService {
     public List<ProductDocument> searchProductsByKeyword(String keyword) {
         return productsSearchRepository.findByNameContaining(keyword);
     }
+    // 공백 포함해서 검색 처리
+    public List<ProductDocument> searchProductsByKeywordUp(String keyword) {
+        return productsSearchRepository.findByProductNameUsingQueryString(keyword);
+    }
+
+//    public List<ProductDocument> searchProductsByKeyword(String keyword) {
+//        List<ProductDocument> products = productsSearchRepository.findByNameContaining(keyword);
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+//        return products.stream().map(product -> {
+//            if (product.getCreatedAt() != null) {
+//                LocalDateTime createdAt = LocalDateTime.parse(product.getCreatedAt() + "T00:00:00", formatter);
+//                product.setCreatedAt(createdAt.format(formatter));
+//            }
+//            return product;
+//        }).collect(Collectors.toList());
+//    }
 
     /**
      * 카테고리 검색
@@ -375,7 +392,10 @@ public class ProductsService {
 
 
     // 자동완성 기능
+//    public List<ProductDocument> autocomplete(String prefix) {
+//        return productsSearchRepository.findByNameContaining(prefix);
+//    }
     public List<ProductDocument> autocomplete(String prefix) {
-        return productsSearchRepository.findByNameContaining(prefix);
+        return productsSearchRepository.findByProductNameUsingQueryString(prefix);
     }
 }
