@@ -83,7 +83,7 @@ export default function ProductList({ products }: productsType) {
             columns,
             data: sortedProducts,
             // 첫 페이지 번호, 페이지마다 몇 개 나올지
-            initialState: {pageIndex: 0, pageSize: 8} as TableStateWithPagination<ProductsDto>,
+            initialState: {pageIndex: 0, pageSize: 9} as TableStateWithPagination<ProductsDto>,
         },
         useSortBy,
         usePagination
@@ -118,13 +118,13 @@ export default function ProductList({ products }: productsType) {
             </Button>
             {/*상품 리스트 출력*/}
             <Box>
-            <Grid2 container spacing={{xs: 2, md: 3}} columns={{xs: 8, sm: 8, md: 12}}>
+            <Grid2 container spacing={{xs: 2, md: 3, sm: 8}} columns={{xs: 12, sm: 12, md: 12}}>
                 {page.map((row) => {
                     prepareRow(row);
                     return (
                         <Grid2
                             key={row.original.id}
-                            size={{ xs: 4, sm: 4, md: 3 }}
+                            size={{ xs: 4, sm: 4, md: 4 }}
                         >
                             <Card onClick={() => {
                                 router.push(`/product/detail/${row.original.id}`)
