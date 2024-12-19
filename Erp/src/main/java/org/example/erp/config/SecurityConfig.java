@@ -56,7 +56,15 @@ public class SecurityConfig {
                 "http://192.168.0.11:3000",
                 "http://192.168.0.11:3001", // Erp 클라이언트
                 "http://192.168.0.11:8080",
-                "http://192.168.0.11:8081"
+                "http://192.168.0.11:8081",
+                "https://localhost:3000", // Next.js 클라이언트
+                "https://localhost:3001", // Erp 클라이언트
+                "https://localhost:8080", // 추가 허용 포트
+                "https://localhost:8081",  // 추가 허용 포트
+                "https://192.168.0.11:3000",
+                "https://192.168.0.11:3001", // Erp 클라이언트
+                "https://192.168.0.11:8080",
+                "https://192.168.0.11:8081"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
