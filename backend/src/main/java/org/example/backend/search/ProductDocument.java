@@ -3,11 +3,14 @@ package org.example.backend.search;
 import lombok.Data;
 import org.example.backend.entity.Products;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Document(indexName = "products")
@@ -39,8 +42,12 @@ public class ProductDocument {
     @Field(type = FieldType.Text)
     private String brand;
 
+//    @Field(type = FieldType.Date)
+//    private String createdAt; // 상품 생성일 추가
+
     @Field(type = FieldType.Date)
-    private LocalDateTime createdAt; // 상품 생성일 추가
+    private LocalDate createdAt; // LocalDateTime으로 유지
+
 
     @Field(type = FieldType.Integer)
     private Integer event; // 이벤트 번호 추가
@@ -59,7 +66,8 @@ public class ProductDocument {
         document.setImageUrl(product.getImageUrl());
         document.setSellCount(product.getSellCount());
         document.setBrand(product.getBrand());
-        document.setCreatedAt(product.getCreatedAt());
+        document.setCreatedAt(product.getCreatedAt().toLocalDate()); // LocalDate로 변환
+
         document.setEvent(product.getEvent()); // event 값 추가
         document.setCost(product.getCost()); // cost 값 추가
         return document;

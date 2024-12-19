@@ -43,6 +43,18 @@ export default function Navbar() {
         const handleMouseOut = () => {
             setBgColor("#000000");
         };
+
+
+        const handleClick = () => {
+            if (url === "/") {
+                // 홈일 경우 goHome 호출
+                window.location.href = "/";
+            } else {
+                // 그 외 URL일 경우 router.push 사용
+                router.push(url);
+            }
+        };
+
         return (
             <Box sx={{
                 color: "#FFFFFF",
@@ -55,7 +67,7 @@ export default function Navbar() {
                 justifyContent: "center",
                 alignItems: "center"
             }}
-                 onClick={() => router.push(`${url}`)}
+                 onClick={handleClick}
                  onMouseOver={handleMouseOver}
                  onMouseOut={handleMouseOut}
             >
@@ -63,6 +75,10 @@ export default function Navbar() {
             </Box>
         )
     }
+
+    const goHome = () => {
+        window.location.href="/"
+    };
 
     return (
         <>

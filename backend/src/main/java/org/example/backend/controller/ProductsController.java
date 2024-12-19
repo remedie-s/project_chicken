@@ -160,6 +160,12 @@ public class ProductsController {
     public ResponseEntity<List<ProductDocument>> getProductsByKeyword(@PathVariable String keyword) {
         return ResponseEntity.ok(this.productsService.searchProductsByKeyword(keyword));
     }
+
+    // 물품 검색 (엘라스틱 띄어쓰기 포함)
+    @GetMapping("/search/up/{keyword}")
+    public ResponseEntity<List<ProductDocument>> getProductsByKeywordUp(@PathVariable String keyword) {
+        return ResponseEntity.ok(this.productsService.searchProductsByKeywordUp(keyword));
+    }
     // 자동완성 엔드포인트
     @GetMapping("/autocomplete")
     public List<ProductDocument> autocomplete(@RequestParam String prefix) {

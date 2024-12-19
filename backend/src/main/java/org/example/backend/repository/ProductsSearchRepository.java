@@ -12,6 +12,10 @@ public interface ProductsSearchRepository extends ElasticsearchRepository<Produc
     List<ProductDocument> findByNameContaining(String keyword);
     List<ProductDocument> findByCategory(String category);
     List<ProductDocument> findByPriceBetween(Double minPrice, Double maxPrice);
+    
+    // 상품명 기반 띄어쓰기 가능한 검색
+@Query("{\"query_string\": {\"query\": \"*?0*\", \"fields\": [\"name\"], \"default_operator\": \"OR\"}}")
+List<ProductDocument> findByProductNameUsingQueryString(String productName);
 
     // 카테고리와 키워드 검색
     List<ProductDocument> findByCategoryAndNameContaining(String category, String keyword);
