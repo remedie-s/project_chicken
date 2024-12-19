@@ -8,7 +8,7 @@ import {ProductReviewsDto} from "@/types/productReviewType";
 
 type reviewCreateType = {
     productId: string,
-    setProductReviews: React.Dispatch<React.SetStateAction<ProductReviewsDto[] | null | undefined>>
+    setProductReviews: React.Dispatch<React.SetStateAction<ProductReviewsDto[] | null>>
 }
 
 export default function ReviewCreate({productId, setProductReviews}: reviewCreateType) {

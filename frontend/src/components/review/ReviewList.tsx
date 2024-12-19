@@ -17,7 +17,7 @@ type reviewListType = {
 }
 
 export default function ReviewList({productId, reviewCreateAuth, setAverageRating}: reviewListType) {
-    const [productReviews, setProductReviews] = useState<ProductReviewsDto[] | null>();
+    const [productReviews, setProductReviews] = useState<ProductReviewsDto[] | null>(null);
     // 각 리뷰 작성자인지 확인용
     const [currentUser, setCurrentUser] = useState<number | null>(null);
 
@@ -27,14 +27,6 @@ export default function ReviewList({productId, reviewCreateAuth, setAverageRatin
     }
 
     useEffect(() => {
-        // 리뷰 평균 점수
-        const calculateAverageRating = (reviews: ProductReviewsDto[]) => {
-            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-            const numberOfReviews = reviews.length;
-            // 소수점 한 자리로 반올림 후 숫자로 변환
-            const average = parseFloat((totalRating / numberOfReviews).toFixed(1));
-            setAverageRating(average);
-        };
         const fetchDataUser = async () => {
             const accessToken = getCookie("accessToken");
             if (!accessToken) {
@@ -50,14 +42,28 @@ export default function ReviewList({productId, reviewCreateAuth, setAverageRatin
                 alert("상품 리뷰를 불러오는데 문제가 발생했습니다.");
             } else {
                 setProductReviews(res.data);
-                if(res.data) {
-                    calculateAverageRating(res.data);
-                }
             }
         }
         fetchDataUser();
         fetchData();
     }, []);
+
+
+    useEffect(()=>{
+        // 리뷰 평균 점수
+        const calculateAverageRating = (reviews: ProductReviewsDto[]) => {
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+            const numberOfReviews = reviews.length;
+            // 소수점 한 자리로 반올림 후 숫자로 변환
+            const average = parseFloat((totalRating / numberOfReviews).toFixed(1));
+            setAverageRating(average);
+        };
+        if(productReviews && productReviews.length>0) {
+            calculateAverageRating(productReviews);
+        } else {
+            setAverageRating(0);
+        }
+    },[productReviews])
 
     // 각 리뷰 생성, 관리하는 컴포넌트
     const ReviewOne = ({productReview}: { productReview: ProductReviewsDto }) => {
