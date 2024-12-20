@@ -60,8 +60,9 @@ const NoticeModal = () => {
                             width: "100%",
                             height: "400px", // 원하는 높이로 설정
                             backgroundImage: `url(${noticeDetail.imageUrl})`,
-                            backgroundSize: "cover", // 이미지가 전체 박스를 덮도록 설정
+                            backgroundSize: "contain", // 이미지 원본 비율 유지
                             backgroundPosition: "center", // 이미지의 중앙을 기준으로 설정
+                            backgroundRepeat: "no-repeat", // 이미지 작을 때 복사되는 거 방지
                             display: "flex", // Flexbox 사용
                             justifyContent: "space-between", // 좌우로 배치
                             alignItems: "center", // 세로로 가운데 정렬
