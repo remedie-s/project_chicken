@@ -55,7 +55,7 @@ export default function NoticeCreatePage(): JSX.Element {
             title: '',
             content: '',
             imageUrl: '',
-            type: 'general',
+            type: '0',
             createTime: '',
             updateTime: '',
             deleteTime: '',

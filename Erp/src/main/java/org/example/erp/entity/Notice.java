@@ -32,7 +32,7 @@ public class Notice {
     // 공지사항에 이미지 유알엘이 있다면 유알엘
     private String imageUrl;
     // 사내 공지사항, 일반 사용자용 알림사항등 타입
-    private Integer type;
+    private String type;
     // 생성일
     private LocalDateTime createTime;
     // 갱신일
