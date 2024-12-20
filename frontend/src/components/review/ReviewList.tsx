@@ -13,10 +13,11 @@ const cookie = require("cookie");
 type reviewListType = {
     productId: string,
     reviewCreateAuth: boolean,
-    setAverageRating: React.Dispatch<React.SetStateAction<number>>
+    setAverageRating: React.Dispatch<React.SetStateAction<number>>,
+    averageRating: number
 }
 
-export default function ReviewList({productId, reviewCreateAuth, setAverageRating}: reviewListType) {
+export default function ReviewList({productId, reviewCreateAuth, setAverageRating, averageRating}: reviewListType) {
     const [productReviews, setProductReviews] = useState<ProductReviewsDto[] | null>(null);
     // 각 리뷰 작성자인지 확인용
     const [currentUser, setCurrentUser] = useState<number | null>(null);
@@ -56,6 +57,7 @@ export default function ReviewList({productId, reviewCreateAuth, setAverageRatin
             const numberOfReviews = reviews.length;
             // 소수점 한 자리로 반올림 후 숫자로 변환
             const average = parseFloat((totalRating / numberOfReviews).toFixed(1));
+            if(averageRating===average){return;}
             setAverageRating(average);
         };
         if(productReviews && productReviews.length>0) {

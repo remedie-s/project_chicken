@@ -18,6 +18,7 @@ const cookie = require("cookie");
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import {ProductsDto} from "@/types/productType";
+import {removeSpecialCharacters} from "@/scripts/removeSpecialCharacters";
 
 
 export default function Header() {
@@ -42,7 +43,7 @@ export default function Header() {
     };
 
     const searchHandler = async () => {
-        router.push(`/product/search/${keyword}`)
+        router.push(`/product/search/${encodeURIComponent(keyword)}`)
     }
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -73,7 +74,8 @@ export default function Header() {
                 const res = await axios.get<ProductsDto[]>(`${apiUrl}/products/autocomplete`, {
                     // string 전달이 잘 안 돼서 params 설정
                     params: {
-                        prefix: keyword
+                        // 특수문자 공백 처리
+                        prefix: removeSpecialCharacters(keyword)
                     }
                 });
                 // 자동완성 결과 업데이트
