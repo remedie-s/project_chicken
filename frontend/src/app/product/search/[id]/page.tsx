@@ -13,11 +13,17 @@ export default function page() {
     const [productsList,setProductsList] = useState<ProductsDto[]>();
 
 
-    // 이스케이프 처리 함수
-    const encodeSearchTerm = (term:string) => {
-        // 특수문자 및 공백을 이스케이프 처리
-        return term.replace(/\s+/g, '\\s').replace(/[-+*?"&|]/g, '\\$&'); // 여기에 필요한 특수문자 추가
-    };
+    // 이스케이프 처리 함수, 사용해도 특수문자 문제 있는 듯
+    // const encodeSearchTerm = (term:string) => {
+    //     // 특수문자 및 공백을 이스케이프 처리
+    //     return term.replace(/[-+*?"&|]/g, '\\$&'); // 여기에 필요한 특수문자 추가
+    // };
+    // 특수문자 제거, 현재 적용 중
+    function removeSpecialCharacters(input: string): string {
+        // 공백과 알파벳, 숫자, 한글 외에 모든 특수문자만 제거
+        return input.replace(/[^\w\s가-힣]/g, '');
+    }
+
 
     useEffect(() => {
         if (id && typeof id === "string") {
@@ -31,7 +37,7 @@ export default function page() {
             if(decodedId===null){return;}
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
             // const res = await axios.get(`${apiUrl}/products/search/${decodedId}`)
-            const res = await axios.get(`${apiUrl}/products/search/up/${decodedId}`)
+            const res = await axios.get(`${apiUrl}/products/search/up/${removeSpecialCharacters(decodedId)}`)
             setProductsList(res.data);
         }
         fetchData();

@@ -235,7 +235,12 @@ export default function ProductDetail({productId}: { productId: string }) {
                         <Typography id="review" variant="h5" sx={{marginBottom: 2}}>
                             리뷰
                         </Typography>
-                        <ReviewList productId={productId} reviewCreateAuth={reviewCreateAuth} setAverageRating={setAverageRating}/>
+                        <ReviewList
+                            productId={productId}
+                            reviewCreateAuth={reviewCreateAuth}
+                            setAverageRating={setAverageRating}
+                            averageRating={averageRating}
+                        />
                             </ProductPaper>
                             <ProductPaper>
                         <Typography id="rule" variant="h5" sx={{marginBottom: 2}}>
