@@ -22,6 +22,8 @@ public class NoticeService {
         try {
             Notice notice = new Notice();
             BeanUtils.copyProperties(noticeDto, notice);
+            Integer i = Integer.valueOf(noticeDto.getType());
+            notice.setType(i);
             noticeRepository.save(notice);
             return true;
         } catch (Exception e) {
