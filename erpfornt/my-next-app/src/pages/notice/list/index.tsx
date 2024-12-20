@@ -52,6 +52,7 @@ const NoticeAdminPage = () => {
         },
         { field: 'createTime', headerName: 'Create Time', width: 200 },
         { field: 'updateTime', headerName: 'Update Time', width: 200 },
+        { field: 'imageUrl', headerName: '이미지 URL',width:200 },
         { field: 'deleteTime', headerName: 'Expire Time', width: 200 },
         {
             field: 'actions',

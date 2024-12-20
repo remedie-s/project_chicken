@@ -762,7 +762,7 @@ export const noticeCreate = async (noticeData:noticeData)=>{
     }
 }
 export const noticeDelete = async (noticeId:number)=>{
-    try{const response = await api.delete(`${API_URL}/notice/delete/{noticeId}`, {
+    try{const response = await api.delete(`${API_URL}/notice/delete/${noticeId}`, {
         headers :{
             'Content-Type' :'application/json',
         },
