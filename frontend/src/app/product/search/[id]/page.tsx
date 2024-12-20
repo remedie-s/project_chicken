@@ -7,6 +7,7 @@ import {ProductsDto} from "@/types/productType";
 import axios from "axios";
 import ProductList from "@/components/product/ProductList";
 import CenterBox from "@/components/layout/CenterBox";
+import {removeSpecialCharacters} from "@/scripts/removeSpecialCharacters";
 export default function page() {
     const { id } = useParams();
     const [decodedId, setDecodedId] = useState<string | null>(null);
@@ -19,11 +20,6 @@ export default function page() {
     //     return term.replace(/[-+*?"&|]/g, '\\$&'); // 여기에 필요한 특수문자 추가
     // };
     // 특수문자 제거, 현재 적용 중
-    function removeSpecialCharacters(input: string): string {
-        // 공백과 알파벳, 숫자, 한글 외에 모든 특수문자만 제거
-        return input.replace(/[^\w\s가-힣]/g, '');
-    }
-
 
     useEffect(() => {
         if (id && typeof id === "string") {
@@ -36,7 +32,7 @@ export default function page() {
             // 변수 초기화시 실행되는 거 방지
             if(decodedId===null){return;}
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
-            // const res = await axios.get(`${apiUrl}/products/search/${decodedId}`)
+            // 특수문자 공백 처리
             const res = await axios.get(`${apiUrl}/products/search/up/${removeSpecialCharacters(decodedId)}`)
             setProductsList(res.data);
         }
