@@ -42,7 +42,7 @@ export default function Header() {
     };
 
     const searchHandler = async () => {
-        router.push(`/product/search/${keyword}`)
+        router.push(`/product/search/${encodeURIComponent(keyword)}`)
     }
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
