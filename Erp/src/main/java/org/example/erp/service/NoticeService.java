@@ -37,6 +37,8 @@ public class NoticeService {
         return noticeRepository.findById(noticeDto.getId())
                 .map(notice -> {
                     BeanUtils.copyProperties(noticeDto, notice);
+                    Integer i = Integer.valueOf(noticeDto.getType());
+                    notice.setType(i);
                     notice.setUpdateTime(LocalDateTime.now());
                     noticeRepository.save(notice);
                     return true;
