@@ -23,7 +23,7 @@ export default function () {
             // 변수 초기화시 실행되는 거 방지
             if(decodedId===null){return;}
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'; // 기본값 설정
-            const res = await axios.get(`${apiUrl}/api/products/category/${decodedId}`)
+            const res = await axios.get(`${apiUrl}/products/category/${decodedId}`)
             setProductsList(res.data);
         }
         fetchData();
