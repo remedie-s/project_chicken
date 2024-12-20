@@ -21,7 +21,7 @@ public class NoticeService {
 
     // 공지사항 공용,쇼핑몰 페이지만 조회
     public List<Notice> findByType() {
-        List<Notice> byTypeIn = this.noticeRepository.findByTypeIn((Arrays.asList(0, 2)));
+        List<Notice> byTypeIn = this.noticeRepository.findByTypeInOrderByIdDesc((Arrays.asList(0, 2)));
         return byTypeIn;
     }
 
@@ -32,7 +32,7 @@ public class NoticeService {
     }
 
     public Object findNewest() {
-        List<Notice> noticeList = this.noticeRepository.findByTypeIn((Arrays.asList(0, 2)));
+        List<Notice> noticeList = this.noticeRepository.findByTypeInOrderByIdDesc((Arrays.asList(0, 2)));
         if (noticeList.isEmpty()) {
             return null;
         }
