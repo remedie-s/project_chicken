@@ -1,5 +1,6 @@
 package org.example.erp.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.erp.dto.ChatMessage;
@@ -19,6 +20,7 @@ public class ChatController {
 
     private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
 
 
     @MessageMapping("/chat.sendMessage")
@@ -52,7 +54,6 @@ public class ChatController {
             message.setSender(username);
         }
 
-        log.debug("Private message content: {}", message);
 
         ChatMessageEntity messageEntity = new ChatMessageEntity();
         messageEntity.setSender(message.getSender());
@@ -61,11 +62,15 @@ public class ChatController {
         messageEntity.setTimestamp(LocalDateTime.now());
         chatService.saveMessage(messageEntity);
 
-        messagingTemplate.convertAndSendToUser(
-                message.getReceiver(),
-                "/queue/private",
-                message
-        );
+        String chatRoomId = generateChatRoomId(message.getSenderId(), message.getReceiverId());
+        String destination = String.format("/queue/private/%s", chatRoomId);
+
+        messagingTemplate.convertAndSend(destination, message);
     }
 
+    private String generateChatRoomId(String senderId, String receiverId) {
+        int lessId = Math.min(Integer.parseInt(senderId), Integer.parseInt(receiverId));
+        int greaterId = Math.max(Integer.parseInt(senderId), Integer.parseInt(receiverId));
+        return lessId + "-" + greaterId;
+    }
 }

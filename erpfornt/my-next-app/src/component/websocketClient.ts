@@ -4,14 +4,29 @@ import SockJS from "sockjs-client";
 export default class WebSocketClient {
     private client: Client;
 
-    constructor(accessToken: string, onMessage: (message: any) => void, receiver?: string) {
+    constructor(accessToken: string, onMessage: (message: any) => void, chatRoomId?: string) {
         const socketUrl = `${process.env.NEXT_PUBLIC_WS_URL}?access_token=${accessToken}`;
 
         this.client = new Client({
             webSocketFactory: () => new SockJS(socketUrl),
             connectHeaders: {},
             debug: (str) => console.log("WebSocket Debug:", str),
-            onConnect: () => console.log("WebSocket connected"),
+            onConnect: () => {
+                console.log("WebSocket connected");
+                if (chatRoomId) {
+                    // 개인 메시지 구독
+                    const subscriptionPath = `/queue/private/${chatRoomId}`;
+                    this.client.subscribe(subscriptionPath, (message) => {
+                        onMessage(JSON.parse(message.body));
+                    });
+                } else {
+                    // 공용 메시지 구독
+                    const publicPath = "/topic/public";
+                    this.client.subscribe(publicPath, (message) => {
+                        onMessage(JSON.parse(message.body));
+                    });
+                }
+            },
             onDisconnect: () => console.log("WebSocket disconnected"),
             onStompError: (frame) => console.error("WebSocket error:", frame),
         });
@@ -24,24 +39,8 @@ export default class WebSocketClient {
             console.log("Unhandled message:", message.body);
         };
 
-        // 구독 설정
-        this.client.onConnect = () => {
-            if (receiver) {
-                // 개인 메시지 구독
-                this.client.subscribe("/user/queue/private", (message) => {
-                    onMessage(JSON.parse(message.body));
-                });
-            } else {
-                // 공용 메시지 구독
-                this.client.subscribe("/topic/public", (message) => {
-                    onMessage(JSON.parse(message.body));
-                });
-            }
-        };
-
         this.client.activate(); // WebSocket 활성화
     }
-
     sendMessage(destination: string, body: object) {
         this.client.publish({
             destination,

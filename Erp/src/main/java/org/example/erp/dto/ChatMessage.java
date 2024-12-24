@@ -10,6 +10,8 @@ public class ChatMessage {
     private String receiver;
     private String content;
     private MessageType type;
+    private String senderId;
+    private String receiverId;
 
     public enum MessageType {
         CHAT,
