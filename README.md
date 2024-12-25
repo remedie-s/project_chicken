@@ -1,8 +1,11 @@
 # 기본 구성도
-backend : 쇼핑몰 백엔드
-frontend : 쇼핑몰 프론트엔드
-erpfront/my-next-app : ERP 프론트엔드
-Erp : ERP 프론트 엔드
+- backend : 쇼핑몰 백엔드 / 스프링부트
+- frontend : 쇼핑몰 프론트엔드 / 스프링 부트
+- erpfront/my-next-app : ERP 프론트엔드 / 넥스트 js
+- erp : ERP 프론트 엔드 / 넥스트 js
+
+# 기술 스택 
+Spring Boot, React, TypeScript, NextJs, MySQL, Kafka, Firebase Cloud Messaging(FCM), WebSocket, Docker, GitHub, JWT, Spring Security
 
 # 실행 방법
 아래 기본 설정 후 도커 데스크탑 실행후 각 프론트 폴더에서 npm install 후 npm run build 후에 루트 폴더에서 docker compose up -d 필요
