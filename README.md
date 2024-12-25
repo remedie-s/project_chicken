@@ -4,6 +4,9 @@
 - erpfront/my-next-app : ERP 프론트엔드 / 넥스트 js
 - erp : ERP 프론트 엔드 / 넥스트 js
 
+# PPT 
+https://docs.google.com/presentation/d/1q17vbbbgPtdraI-nsZQg3qHRiGko01x3AGXdQX_h_h0/edit?usp=sharing
+
 # 기술 스택 
 Spring Boot, React, TypeScript, NextJs, MySQL, Kafka, Firebase Cloud Messaging(FCM), WebSocket, Docker, GitHub, JWT, Spring Security
 
