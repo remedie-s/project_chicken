@@ -5,22 +5,42 @@
 - erp : ERP 프론트 엔드 / 넥스트 js
 
 # PPT 
-https://docs.google.com/presentation/d/1q17vbbbgPtdraI-nsZQg3qHRiGko01x3AGXdQX_h_h0/edit?usp=sharing
+- https://docs.google.com/presentation/d/1q17vbbbgPtdraI-nsZQg3qHRiGko01x3AGXdQX_h_h0/edit?usp=sharing
 
 # 기술 스택 
-Spring Boot, React, TypeScript, NextJs, MySQL, Kafka, Firebase Cloud Messaging(FCM), WebSocket, Docker, GitHub, JWT, Spring Security
+- Spring Boot
+- React
+- TypeScript
+- NextJs
+- MySQL
+- Kafka
+- Firebase Cloud Messaging(FCM)
+- WebSocket
+- Docker
+- GitHub
+- JWT
+- Spring Security
+- Elastic Search
 
 # 실행 방법
 아래 기본 설정 후 도커 데스크탑 실행후 각 프론트 폴더에서 npm install 후 npm run build 후에 루트 폴더에서 docker compose up -d 필요
 
 # 도커 가동되는 서비스 목록
-zookeeper, kafka1,2,3 , elasticSearch, kibana, mysql, backend, frontend, erpfront, erp
+- zookeeper
+- kafka1,2,3
+- e0lasticSearch
+- kibana
+- mysql
+- backend
+- frontend
+- erpfront
+- erp
 
 
 # 기본 설정 파일
-도커 컴포즈 파일 주소 변경
-.env 파일 주소 변경
-스프링부트 환경 설정 파일 변경
+- 도커 컴포즈 파일 주소 변경
+- .env 파일 주소 변경
+- 스프링부트 환경 설정 파일 변경
 
 # 기본 파이어베이스 파일 설정
 
